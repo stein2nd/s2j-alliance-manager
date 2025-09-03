@@ -18,10 +18,14 @@ class AllianceManagerAdmin {
   }
 
   private async init() {
+    console.log('AllianceManagerAdmin init started');
     await this.loadData();
+    console.log('Data loaded, settings:', this.settings);
     this.isInitialized = true;
+    console.log('isInitialized set to true');
     this.renderAdmin();
     this.bindEvents();
+    console.log('AllianceManagerAdmin init completed');
   }
 
   private async loadData() {
@@ -84,9 +88,13 @@ class AllianceManagerAdmin {
     this.saveData();
   };
 
-  private updateContentModels = (contentModels: ContentModel[]) => {
+  private updateContentModels = async (contentModels: ContentModel[]) => {
+    console.log('updateContentModels called with:', contentModels.length, 'models');
     this.settings.content_models = contentModels;
-    this.saveData();
+    console.log('Settings updated, triggering saveData');
+    await this.saveData();
+    console.log('saveData completed, re-rendering admin');
+    this.renderAdmin();
   };
 
   private updateLoadingState() {
@@ -119,30 +127,52 @@ class AllianceManagerAdmin {
   }
 
   private renderAdmin() {
+    console.log('renderAdmin called, isInitialized:', this.isInitialized);
+    
     // Render display settings
     const displaySettingsContainer = document.getElementById('s2j-display-settings');
+    console.log('displaySettingsContainer:', displaySettingsContainer);
     if (displaySettingsContainer) {
-      render(
-        <SettingsForm
-          settings={this.settings}
-          onSave={this.updateSettings}
-          isLoading={this.isLoading}
-        />,
-        displaySettingsContainer
-      );
+      try {
+        console.log('About to render SettingsForm');
+        render(
+          <SettingsForm
+            settings={this.settings}
+            onSave={this.updateSettings}
+            isLoading={this.isLoading}
+          />,
+          displaySettingsContainer
+        );
+        console.log('SettingsForm rendered successfully');
+      } catch (error) {
+        console.error('Error rendering SettingsForm:', error);
+      }
     }
 
     // Render content models
+    console.log('About to get contentModelsContainer');
     const contentModelsContainer = document.getElementById('s2j-content-models');
+    console.log('contentModelsContainer:', contentModelsContainer);
+    console.log('this.isInitialized:', this.isInitialized);
+    console.log('this.settings.content_models:', this.settings.content_models);
+    
     if (contentModelsContainer && this.isInitialized) {
-      render(
-        <ContentList
-          contentModels={this.settings.content_models}
-          onUpdate={this.updateContentModels}
-          isLoading={this.isLoading}
-        />,
-        contentModelsContainer
-      );
+      console.log('Rendering ContentList component');
+      try {
+        render(
+          <ContentList
+            contentModels={this.settings.content_models}
+            onUpdate={this.updateContentModels}
+            isLoading={this.isLoading}
+          />,
+          contentModelsContainer
+        );
+        console.log('ContentList rendered successfully');
+      } catch (error) {
+        console.error('Error rendering ContentList:', error);
+      }
+    } else {
+      console.log('ContentList not rendered - container:', !!contentModelsContainer, 'initialized:', this.isInitialized);
     }
   }
 
@@ -154,5 +184,6 @@ class AllianceManagerAdmin {
 
 // Initialize admin when DOM is ready
 jQuery(document).ready(() => {
+  console.log('jQuery document ready, initializing AllianceManagerAdmin');
   new AllianceManagerAdmin();
 });

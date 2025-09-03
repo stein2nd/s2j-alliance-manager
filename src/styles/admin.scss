@@ -104,6 +104,45 @@
   padding: $spacing-lg;
 }
 
+.s2j-content-actions {
+  padding: $spacing-lg;
+  border-bottom: 1px solid $border-color;
+  background: $white;
+  
+  button {
+    padding: $spacing-sm $spacing-md;
+    border: 1px solid $primary-color;
+    border-radius: $border-radius-sm;
+    background: $primary-color;
+    color: $white;
+    cursor: pointer;
+    font-size: 14px;
+    font-weight: 600;
+    
+    &:hover {
+      background: color.adjust($primary-color, $lightness: -10%);
+      border-color: color.adjust($primary-color, $lightness: -10%);
+    }
+    
+    &:disabled {
+      background: $text-light;
+      border-color: $text-light;
+      cursor: not-allowed;
+    }
+  }
+}
+
+.s2j-empty-state {
+  padding: $spacing-xl;
+  text-align: center;
+  color: $text-light;
+  
+  p {
+    margin: 0;
+    font-style: italic;
+  }
+}
+
 .s2j-content-model {
   display: grid;
   grid-template-columns: auto 1fr auto auto auto auto auto auto;

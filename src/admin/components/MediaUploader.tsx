@@ -114,15 +114,15 @@ export const MediaUploader: React.FC<MediaUploaderProps> = ({
       
       <div className="s2j-media-actions">
         <Button
-          isSmall
+          size="small"
           onClick={openMediaLibrary}
         >
           {media ? __('Change', 's2j-alliance-manager') : __('Select', 's2j-alliance-manager')}
         </Button>
         {media && (
           <Button
-            isSmall
-            isDestructive
+            size="small"
+            variant="destructive"
             onClick={removeMedia}
           >
             {__('Remove', 's2j-alliance-manager')}

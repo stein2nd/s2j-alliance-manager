@@ -32,15 +32,18 @@
     "makepot": "wp i18n make-pot . languages/s2j-alliance-manager.pot --domain=s2j-alliance-manager"
   },
   "dependencies": {
-    "react": "^19.1.1",
-    "react-dom": "^19.1.1"
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0"
+  },
+  "overrides": {
+    "rollup": "^4.50.0"
   },
   "devDependencies": {
-    "@rollup/rollup-darwin-arm64": "^4.50.0",
+    "rollup": "^4.50.0",
     "@types/jquery": "^3.5.33",
     "@types/node": "^24.3.0",
-    "@types/react": "^19.1.12",
-    "@types/react-dom": "^19.1.9",
+    "@types/react": "^18.2.0",
+    "@types/react-dom": "^18.2.0",
     "@typescript-eslint/eslint-plugin": "^8.42.0",
     "@typescript-eslint/parser": "^8.42.0",
     "@wordpress/api-fetch": "^7.29.0",

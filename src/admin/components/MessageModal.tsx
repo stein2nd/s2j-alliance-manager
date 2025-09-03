@@ -41,13 +41,13 @@ export const MessageModal: React.FC<MessageModalProps> = ({
         
         <div className="modal-actions">
           <Button
-            isSecondary
+            variant="secondary"
             onClick={handleCancel}
           >
             {__('Cancel', 's2j-alliance-manager')}
           </Button>
           <Button
-            isPrimary
+            variant="primary"
             onClick={handleSave}
           >
             {__('Save Message', 's2j-alliance-manager')}

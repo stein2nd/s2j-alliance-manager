@@ -108,6 +108,9 @@
   padding: $spacing-lg;
   border-bottom: 1px solid $border-color;
   background: $white;
+  display: flex;
+  align-items: center;
+  gap: $spacing-sm;
   
   button {
     padding: $spacing-sm $spacing-md;
@@ -118,16 +121,31 @@
     cursor: pointer;
     font-size: 14px;
     font-weight: 600;
+    transition: all 0.2s ease;
     
-    &:hover {
+    &:hover:not(:disabled) {
       background: color.adjust($primary-color, $lightness: -10%);
       border-color: color.adjust($primary-color, $lightness: -10%);
+      transform: translateY(-1px);
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
     }
     
     &:disabled {
       background: $text-light;
       border-color: $text-light;
       cursor: not-allowed;
+      opacity: 0.6;
+    }
+    
+    // Save button specific styling
+    &[style*="background-color: #00a32a"] {
+      background: #00a32a !important;
+      border-color: #00a32a !important;
+      
+      &:hover:not(:disabled) {
+        background: color.adjust(#00a32a, $lightness: -10%) !important;
+        border-color: color.adjust(#00a32a, $lightness: -10%) !important;
+      }
     }
   }
 }
@@ -144,6 +162,7 @@
 }
 
 .s2j-content-model {
+  position: relative;
   display: grid;
   grid-template-columns: auto 1fr auto auto auto auto auto auto;
   gap: $spacing-md;
@@ -156,6 +175,20 @@
   
   &:hover {
     box-shadow: $shadow-sm;
+  }
+  
+  .s2j-row-number {
+    position: absolute;
+    top: 4px;
+    left: 4px;
+    background: $primary-color;
+    color: $white;
+    font-size: 10px;
+    font-weight: bold;
+    padding: 2px 4px;
+    border-radius: 2px;
+    line-height: 1;
+    z-index: 1;
   }
   
   .s2j-model-field {

@@ -177,6 +177,30 @@
     box-shadow: $shadow-sm;
   }
   
+  // 保留中の変更がある場合のスタイル
+  &.s2j-pending-changes {
+    background: #fef7e0; // 薄いクリーム色
+    border-color: #f0b849; // 少し濃いクリーム色のボーダー
+    position: relative;
+    
+    // 保留状態を示す小さなインジケーター
+    &::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 4px;
+      height: 100%;
+      background: #f0b849;
+      border-radius: 2px 0 0 2px;
+    }
+    
+    &:hover {
+      background: #fdf2d1; // ホバー時は少し濃いクリーム色
+      box-shadow: 0 2px 8px rgba(240, 184, 73, 0.2);
+    }
+  }
+  
   .s2j-row-number {
     position: absolute;
     top: 4px;
@@ -188,7 +212,12 @@
     padding: 2px 4px;
     border-radius: 2px;
     line-height: 1;
-    z-index: 1;
+    z-index: 2;
+    
+    // 保留状態の場合は左側のインジケーターを避ける
+    .s2j-pending-changes & {
+      left: 8px;
+    }
   }
   
   .s2j-model-field {

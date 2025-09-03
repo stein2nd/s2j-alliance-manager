@@ -39,21 +39,39 @@ export const ContentList: React.FC<ContentListProps> = ({
       behavior: 'jump',
       message: ''
     };
-    const updatedModels = [...contentModels, newModel];
+    const currentModels = pendingModels || contentModels;
+    const updatedModels = [...currentModels, newModel];
     console.log('Updated models:', updatedModels.length);
-    await onUpdate(updatedModels);
+    
+    // 追加は常に保留状態にする
+    setPendingModels(updatedModels);
+    setHasUnsavedChanges(true);
+    // 新しいモデルの元の順序を追加
+    setOriginalOrder([...originalOrder, originalOrder.length]);
   };
 
   const updateModel = async (index: number, field: keyof ContentModel, value: any) => {
-    const updated = [...contentModels];
+    const currentModels = pendingModels || contentModels;
+    const updated = [...currentModels];
     updated[index] = { ...updated[index], [field]: value };
-    await onUpdate(updated);
+    
+    // 更新は常に保留状態にする
+    setPendingModels(updated);
+    setHasUnsavedChanges(true);
   };
 
   const deleteModel = async (index: number) => {
     if (window.confirm(__('Are you sure you want to delete this item?', 's2j-alliance-manager'))) {
-      const updated = contentModels.filter((_, i) => i !== index);
-      await onUpdate(updated);
+      const currentModels = pendingModels || contentModels;
+      const updated = currentModels.filter((_, i) => i !== index);
+      
+      // 削除は常に保留状態にする
+      setPendingModels(updated);
+      setHasUnsavedChanges(true);
+      
+      // 元の順序も更新（削除されたインデックス以降を1つずつ前にずらす）
+      const newOriginalOrder = originalOrder.filter((_, i) => i !== index);
+      setOriginalOrder(newOriginalOrder);
     }
   };
 
@@ -132,7 +150,7 @@ export const ContentList: React.FC<ContentListProps> = ({
               : index + 1;
             
             return (
-            <div key={`model-${index}-${model.logo}`} className="s2j-content-model">
+            <div key={`model-${index}-${model.logo}`} className={`s2j-content-model ${hasUnsavedChanges ? 's2j-pending-changes' : ''}`}>
               <div className="s2j-row-number">#{rowNumber}</div>
               <div className="s2j-model-field frontpage">
                 <CheckboxControl

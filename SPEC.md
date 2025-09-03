@@ -36,34 +36,39 @@ s2j-alliance-manager/
 ├─ `SPEC.md` # プラグイン固有仕様
 ├─ `vite.config.ts`
 ├─ `tsconfig.json`
+├─ `eslint.config.js` # ESLint設定
 ├─ `LICENSE`
 ├─ `readme.md`
 ├─ `s2j-alliance-manager.php` # プラグイン本体
 ├─ `uninstall.php` # プラグイン削除時の処理
 ├─ includes/ # PHP クラス群 (REST、Settings、Admin UI)
 │　├─ `SettingsPage.php` (設定画面)
-│　├─ `RestController.php`
+│　├─ `RestController.php` (REST API)
 │　├─ `AllianceManager.php` (Gutenberg ブロック)
 │　└─ ...
 ├─ src/ # TypeScript/React (Gutenberg ブロック、設定画面) /SCSS ソース
 │　├─ admin/ # 設定画面用
+│　│　├── `index.tsx` # 管理画面メインエントリーポイント
 │　│　├── components/
-│　│　│　├── SettingsForm.tsx # 初期設定保存フォーム
-│　│　│　├── ContentList.tsx # 一覧表 UI
-│　│　│　├── MessageModal.tsx # メッセージ編集モーダル
-│　│　│　└── MediaUploader.tsx # WPメディアアップローダ統合
-│　│　└─ ...
+│　│　│　├── `SettingsForm.tsx` # 初期設定保存フォーム
+│　│　│　├── `ContentList.tsx` # 一覧表 UI (Create Content Model実装)
+│　│　│　├── `MessageModal.tsx` # メッセージ編集モーダル
+│　│　│　└── `MediaUploader.tsx` # WPメディアアップローダ統合
+│　│　└── data/
+│　│　　　└── `constants.ts` # 定数定義 (表示形式、ランク、動作オプション)
 │　├─ gutenberg/ # Gutenberg ブロック用
-│　│　└─ ...
+│　│　└─ `index.tsx`
 │　├─ classic/ # MetaBox 用
-│　│　└─ ...
+│　│　└─ `index.ts`
 │　├─ styles/ # プラグイン用のスタイル定義
 │　│　├─ `admin.scss` (設定画面用)
 │　│　├─ `gutenberg.scss` (Gutenberg ブロック用)
 │　│　├─ `classic.scss` (MetaBox 用)
+│　│　├─ `variables.scss` (SCSS 変数定義)
 │　│　└─ ...
 │　└─ types/ # プラグイン用のグローバル・タイプ・定義
-│　　　└─ ...
+│　　　├─ `index.ts` (ContentModel 型定義)
+│　　　└─ `wordpress.d.ts` (WordPress 型定義)
 ├─ dist/ # Vite ビルド成果物 (Git 管理外)、アイコン
 │　├─ js/ # プラグイン用のGutenberg ブロック、設定画面
 │　│　└─ ...
@@ -75,11 +80,18 @@ s2j-alliance-manager/
 ### 3.2 主要ファイル
 
 * `s2j-alliance-manager.php` : プラグイン起点、クラスロード・初期化
-* `includes/SettingsPage.php` : 管理画面の設定フォーム
-* `includes/RestController.php` : REST API エンドポイント定義
-* `includes/AllianceManager.php` :
+* `includes/SettingsPage.php` : 管理画面のHTML構造・メニュー登録
+* `includes/RestController.php` : REST API エンドポイント定義・データ処理
+* `includes/AllianceManager.php` : Gutenberg ブロック登録・レンダリング
+* `src/admin/index.tsx` : 管理画面のメインエントリーポイント (React初期化・データ管理)
+* `src/admin/components/ContentList.tsx` : 一覧表UI (Create Content Model実装)
+* `src/admin/components/SettingsForm.tsx` : 表示形式設定フォーム
+* `src/admin/components/MessageModal.tsx` : メッセージ編集モーダル
+* `src/admin/components/MediaUploader.tsx` : WordPressメディアアップローダ統合
+* `src/admin/data/constants.ts` : 定数定義 (表示形式、ランク、動作オプション)
 * `src/gutenberg/index.tsx` : Gutenberg ブロックの UI ロジック
 * `src/classic/index.ts` : Classic エディタ対応スクリプト
+* `src/types/index.ts` : TypeScript型定義 (ContentModel 等)
 
 ---
 
@@ -126,18 +138,27 @@ s2j-alliance-manager/
 #### 6.1.2 一覧表
 
 * [Create Content Model](https://github.com/Automattic/create-content-model) で実装します。
-  * `frontpage` (チェックボックス) … 掲出有無
-  * `rank` (コンボボックス) … ゴールド、シルバー等
-    * slug 追加可 (slug の並び順を、序列の順番とする)
-  * `shiftUp` (ボタン) … エントリーを上に移動
-  * `shiftDown` (ボタン) … エントリーを下に移動
-  * `logo` (メディアボタン) … ロゴ画像 (または動画) の追加/変更
-    * サムネイル表示
-  * `jump_url` (テキストボックス) … 遷移先 URL
-  * `behavior` (コンボボックス)
-    * 選択肢: `jump` … 指定 URL にジャンプ
-    * 選択肢: `modal` … モーダルで指定メッセージを表示
-  * `message` (ボタン) … 「メッセージ編集」モーダルを呼び出し
+  * **行番号表示**: 各レコードに `#1`, `#2`, `#3` の形式で行番号を表示
+  * **保留状態の視覚化**: 変更がある場合は全行がクリーム色の背景に変更、左端にインジケーター表示
+  * **Saveボタン**: 何らかの変更がある場合に表示、一括保存機能
+  * **フィールド構成**:
+    * `frontpage` (チェックボックス) … 掲出有無
+    * `rank` (コンボボックス) … ゴールド、シルバー等
+      * slug 追加可 (slug の並び順を、序列の順番とする)
+    * `logo` (メディアボタン) … ロゴ画像 (または動画) の追加/変更
+      * サムネイル表示
+    * `jump_url` (テキストボックス) … 遷移先 URL
+    * `behavior` (コンボボックス)
+      * 選択肢: `jump` … 指定 URL にジャンプ
+      * 選択肢: `modal` … モーダルで指定メッセージを表示
+    * `message` (ボタン) … 「メッセージ編集」モーダルを呼び出し
+    * `shiftUp` (ボタン) … エントリーを上に移動
+    * `shiftDown` (ボタン) … エントリーを下に移動
+    * `Delete` (ボタン) … エントリーを削除
+* **操作フロー**:
+  1. 何らかの変更操作 → Saveボタン表示・保留状態の視覚化
+  2. Saveボタンクリック → 一括保存・通常状態に戻る
+* **翻訳対応**: すべての表示文字列が `__()` 関数でラップ済み
 
 #### 6.1.3 メッセージ編集モーダル
 

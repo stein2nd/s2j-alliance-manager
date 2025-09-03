@@ -1,0 +1,328 @@
+@use 'variables' as *;
+@use 'sass:color';
+
+// S2J Alliance Manager - Admin Styles
+
+.s2j-admin-container {
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.s2j-admin-header {
+  margin-bottom: $spacing-xl;
+  
+  h2 {
+    margin: 0 0 $spacing-sm 0;
+    color: $text-color;
+  }
+  
+  p {
+    margin: 0;
+    color: $text-light;
+  }
+}
+
+.s2j-admin-content {
+  display: grid;
+  grid-template-columns: 300px 1fr;
+  gap: $spacing-lg;
+  
+  @media (max-width: $breakpoint-lg) {
+    grid-template-columns: 1fr;
+  }
+}
+
+.s2j-admin-sidebar {
+  .s2j-admin-card {
+    background: $white;
+    border: 1px solid $border-color;
+    border-radius: $border-radius-md;
+    padding: $spacing-lg;
+    box-shadow: $shadow-sm;
+  }
+  
+  h3 {
+    margin: 0 0 $spacing-md 0;
+    font-size: 16px;
+    color: $text-color;
+  }
+}
+
+.s2j-admin-main {
+  .s2j-admin-card {
+    background: $white;
+    border: 1px solid $border-color;
+    border-radius: $border-radius-md;
+    box-shadow: $shadow-sm;
+    
+    &-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: $spacing-lg;
+      border-bottom: 1px solid $border-color;
+      
+      h3 {
+        margin: 0;
+        font-size: 18px;
+        color: $text-color;
+      }
+    }
+  }
+}
+
+// Display Settings Form
+.s2j-display-settings {
+  .form-field {
+    margin-bottom: $spacing-md;
+    
+    label {
+      display: block;
+      margin-bottom: $spacing-xs;
+      font-weight: 600;
+      color: $text-color;
+    }
+    
+    select {
+      width: 100%;
+      padding: $spacing-sm;
+      border: 1px solid $border-color;
+      border-radius: $border-radius-sm;
+      background: $white;
+      
+      &:focus {
+        border-color: $primary-color;
+        outline: none;
+        box-shadow: 0 0 0 1px $primary-color;
+      }
+    }
+  }
+}
+
+// Content Models List
+.s2j-content-models {
+  padding: $spacing-lg;
+}
+
+.s2j-content-model {
+  display: grid;
+  grid-template-columns: auto 1fr auto auto auto auto auto auto;
+  gap: $spacing-md;
+  align-items: center;
+  padding: $spacing-md;
+  border: 1px solid $border-color;
+  border-radius: $border-radius-sm;
+  margin-bottom: $spacing-md;
+  background: $white;
+  
+  &:hover {
+    box-shadow: $shadow-sm;
+  }
+  
+  .s2j-model-field {
+    display: flex;
+    align-items: center;
+    
+    &.frontpage {
+      input[type="checkbox"] {
+        margin: 0;
+      }
+    }
+    
+    &.rank {
+      select {
+        min-width: 120px;
+        padding: $spacing-xs;
+        border: 1px solid $border-color;
+        border-radius: $border-radius-sm;
+      }
+    }
+    
+    &.logo {
+      .s2j-logo-preview {
+        width: 40px;
+        height: 40px;
+        border-radius: $border-radius-sm;
+        object-fit: cover;
+        border: 1px solid $border-color;
+      }
+      
+      .s2j-logo-placeholder {
+        width: 40px;
+        height: 40px;
+        background: $background-color;
+        border: 1px solid $border-color;
+        border-radius: $border-radius-sm;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 12px;
+        color: $text-light;
+      }
+    }
+    
+    &.jump-url {
+      input[type="url"] {
+        width: 200px;
+        padding: $spacing-xs;
+        border: 1px solid $border-color;
+        border-radius: $border-radius-sm;
+      }
+    }
+    
+    &.behavior {
+      select {
+        min-width: 100px;
+        padding: $spacing-xs;
+        border: 1px solid $border-color;
+        border-radius: $border-radius-sm;
+      }
+    }
+    
+    &.actions {
+      display: flex;
+      gap: $spacing-xs;
+      
+      button {
+        padding: $spacing-xs $spacing-sm;
+        border: 1px solid $border-color;
+        border-radius: $border-radius-sm;
+        background: $white;
+        cursor: pointer;
+        font-size: 12px;
+        
+        &:hover {
+          background: $background-color;
+        }
+        
+        &.button-primary {
+          background: $primary-color;
+          color: $white;
+          border-color: $primary-color;
+          
+          &:hover {
+            background: color.adjust($primary-color, $lightness: -10%);
+          }
+        }
+        
+        &.button-danger {
+          background: $error-color;
+          color: $white;
+          border-color: $error-color;
+          
+          &:hover {
+            background: color.adjust($error-color, $lightness: -10%);
+          }
+        }
+      }
+    }
+  }
+}
+
+// Message Modal
+.s2j-message-modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.5);
+  z-index: $z-index-modal;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  
+  &-content {
+    background: $white;
+    border-radius: $border-radius-md;
+    padding: $spacing-lg;
+    max-width: 500px;
+    width: 90%;
+    max-height: 80vh;
+    overflow-y: auto;
+    
+    h3 {
+      margin: 0 0 $spacing-md 0;
+      color: $text-color;
+    }
+    
+    .form-field {
+      margin-bottom: $spacing-md;
+      
+      label {
+        display: block;
+        margin-bottom: $spacing-xs;
+        font-weight: 600;
+        color: $text-color;
+      }
+      
+      textarea {
+        width: 100%;
+        min-height: 100px;
+        padding: $spacing-sm;
+        border: 1px solid $border-color;
+        border-radius: $border-radius-sm;
+        resize: vertical;
+        
+        &:focus {
+          border-color: $primary-color;
+          outline: none;
+          box-shadow: 0 0 0 1px $primary-color;
+        }
+      }
+    }
+    
+    .modal-actions {
+      display: flex;
+      gap: $spacing-sm;
+      justify-content: flex-end;
+      margin-top: $spacing-lg;
+    }
+  }
+}
+
+// Media Uploader
+.s2j-media-uploader {
+  .s2j-media-preview {
+    margin-bottom: $spacing-sm;
+    
+    img {
+      max-width: 100px;
+      max-height: 100px;
+      border-radius: $border-radius-sm;
+      border: 1px solid $border-color;
+    }
+  }
+  
+  .s2j-media-actions {
+    display: flex;
+    gap: $spacing-xs;
+    
+    button {
+      padding: $spacing-xs $spacing-sm;
+      border: 1px solid $border-color;
+      border-radius: $border-radius-sm;
+      background: $white;
+      cursor: pointer;
+      font-size: 12px;
+      
+      &:hover {
+        background: $background-color;
+      }
+    }
+  }
+}
+
+// Responsive Design
+@media (max-width: $breakpoint-md) {
+  .s2j-content-model {
+    grid-template-columns: 1fr;
+    gap: $spacing-sm;
+    
+    .s2j-model-field {
+      &.actions {
+        justify-content: flex-end;
+      }
+    }
+  }
+}

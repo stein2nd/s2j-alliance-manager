@@ -1,0 +1,327 @@
+# Copyright (C) 2024 S2J Alliance Manager
+# This file is distributed under the GPL v2 or later.
+msgid ""
+msgstr ""
+"Project-Id-Version: S2J Alliance Manager 1.0.0\n"
+"Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/s2j-alliance-manager\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"POT-Creation-Date: 2024-01-01 00:00+0000\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"X-Generator: WP-CLI 2.8.1\n"
+"X-Domain: s2j-alliance-manager\n"
+
+#: s2j-alliance-manager.php:15
+msgid "S2J Alliance Manager"
+msgstr ""
+
+#: s2j-alliance-manager.php:16
+msgid "Alliance Manager"
+msgstr ""
+
+#: s2j-alliance-manager.php:17
+msgid "アライアンス関係にある協力会社のリンク付きバナー（ロゴ・動画含む）を管理し、Front page 等でブロック表示します。"
+msgstr ""
+
+#: includes/SettingsPage.php:25
+msgid "S2J Alliance Manager"
+msgstr ""
+
+#: includes/SettingsPage.php:26
+msgid "Alliance Manager"
+msgstr ""
+
+#: includes/SettingsPage.php:27
+msgid "manage_options"
+msgstr ""
+
+#: includes/SettingsPage.php:28
+msgid "s2j-alliance-manager"
+msgstr ""
+
+#: includes/SettingsPage.php:29
+msgid "admin_page"
+msgstr ""
+
+#: includes/SettingsPage.php:50
+msgid "Alliance Partner Management"
+msgstr ""
+
+#: includes/SettingsPage.php:51
+msgid "Manage your alliance partner banners and links."
+msgstr ""
+
+#: includes/SettingsPage.php:58
+msgid "Display Settings"
+msgstr ""
+
+#: includes/SettingsPage.php:67
+msgid "Alliance Partners"
+msgstr ""
+
+#: includes/SettingsPage.php:68
+msgid "Add New Partner"
+msgstr ""
+
+#: includes/AllianceManager.php:45
+msgid "Alliance Banner"
+msgstr ""
+
+#: includes/AllianceManager.php:46
+msgid "s2j_alliance_manager_meta_box"
+msgstr ""
+
+#: includes/AllianceManager.php:47
+msgid "Alliance Banner"
+msgstr ""
+
+#: includes/AllianceManager.php:48
+msgid "side"
+msgstr ""
+
+#: includes/AllianceManager.php:49
+msgid "default"
+msgstr ""
+
+#: includes/AllianceManager.php:60
+msgid "Display Style:"
+msgstr ""
+
+#: includes/AllianceManager.php:63
+msgid "Single Column Grid"
+msgstr ""
+
+#: includes/AllianceManager.php:66
+msgid "Multi Column Grid"
+msgstr ""
+
+#: includes/AllianceManager.php:69
+msgid "Masonry Layout"
+msgstr ""
+
+#: includes/AllianceManager.php:73
+msgid "Insert Alliance Banner"
+msgstr ""
+
+#: includes/AllianceManager.php:74
+msgid "s2j-insert-alliance-banner"
+msgstr ""
+
+#: includes/AllianceManager.php:75
+msgid "Insert Alliance Banner"
+msgstr ""
+
+#: includes/AllianceManager.php:120
+msgid "No alliance partners found."
+msgstr ""
+
+#: includes/AllianceManager.php:125
+msgid "Alliance partner logo"
+msgstr ""
+
+#: includes/AllianceManager.php:130
+msgid "No logo"
+msgstr ""
+
+#: includes/AllianceManager.php:135
+msgid "Invalid logo"
+msgstr ""
+
+#: includes/AllianceManager.php:140
+msgid "Alliance partner logo"
+msgstr ""
+
+#: includes/RestController.php:80
+msgid "Settings saved successfully."
+msgstr ""
+
+#: includes/RestController.php:85
+msgid "Failed to save settings."
+msgstr ""
+
+#: includes/RestController.php:86
+msgid "save_failed"
+msgstr ""
+
+#: includes/RestController.php:87
+msgid "Failed to save settings."
+msgstr ""
+
+#: includes/RestController.php:88
+msgid "500"
+msgstr ""
+
+#: src/admin/components/SettingsForm.tsx:25
+msgid "Display Style"
+msgstr ""
+
+#: src/admin/components/SettingsForm.tsx:30
+msgid "Choose how alliance banners are displayed on the frontend."
+msgstr ""
+
+#: src/admin/components/SettingsForm.tsx:40
+msgid "Saving..."
+msgstr ""
+
+#: src/admin/components/SettingsForm.tsx:44
+msgid "Save Settings"
+msgstr ""
+
+#: src/admin/components/ContentList.tsx:30
+msgid "Are you sure you want to delete this item?"
+msgstr ""
+
+#: src/admin/components/ContentList.tsx:50
+msgid "Frontpage"
+msgstr ""
+
+#: src/admin/components/ContentList.tsx:55
+msgid "Rank"
+msgstr ""
+
+#: src/admin/components/ContentList.tsx:65
+msgid "Logo"
+msgstr ""
+
+#: src/admin/components/ContentList.tsx:75
+msgid "Jump URL"
+msgstr ""
+
+#: src/admin/components/ContentList.tsx:85
+msgid "Behavior"
+msgstr ""
+
+#: src/admin/components/ContentList.tsx:95
+msgid "Move Up"
+msgstr ""
+
+#: src/admin/components/ContentList.tsx:102
+msgid "Move Down"
+msgstr ""
+
+#: src/admin/components/ContentList.tsx:109
+msgid "Edit Message"
+msgstr ""
+
+#: src/admin/components/ContentList.tsx:110
+msgid "Message"
+msgstr ""
+
+#: src/admin/components/ContentList.tsx:117
+msgid "Delete"
+msgstr ""
+
+#: src/admin/components/ContentList.tsx:118
+msgid "Delete"
+msgstr ""
+
+#: src/admin/components/ContentList.tsx:130
+msgid "Add New Partner"
+msgstr ""
+
+#: src/admin/components/MessageModal.tsx:20
+msgid "Edit Message"
+msgstr ""
+
+#: src/admin/components/MessageModal.tsx:25
+msgid "Message"
+msgstr ""
+
+#: src/admin/components/MessageModal.tsx:28
+msgid "This message will be displayed in a modal when the partner logo is clicked."
+msgstr ""
+
+#: src/admin/components/MessageModal.tsx:35
+msgid "Cancel"
+msgstr ""
+
+#: src/admin/components/MessageModal.tsx:41
+msgid "Save Message"
+msgstr ""
+
+#: src/admin/components/MediaUploader.tsx:45
+msgid "Select Media"
+msgstr ""
+
+#: src/admin/components/MediaUploader.tsx:46
+msgid "Select"
+msgstr ""
+
+#: src/admin/components/MediaUploader.tsx:65
+msgid "Loading..."
+msgstr ""
+
+#: src/admin/components/MediaUploader.tsx:75
+msgid "No logo"
+msgstr ""
+
+#: src/admin/components/MediaUploader.tsx:90
+msgid "Change"
+msgstr ""
+
+#: src/admin/components/MediaUploader.tsx:90
+msgid "Select"
+msgstr ""
+
+#: src/admin/components/MediaUploader.tsx:100
+msgid "Remove"
+msgstr ""
+
+#: src/gutenberg/index.tsx:30
+msgid "Display Settings"
+msgstr ""
+
+#: src/gutenberg/index.tsx:33
+msgid "Display Style"
+msgstr ""
+
+#: src/gutenberg/index.tsx:40
+msgid "Choose how alliance banners are displayed."
+msgstr ""
+
+#: src/gutenberg/index.tsx:50
+msgid "Alliance Banner"
+msgstr ""
+
+#: src/gutenberg/index.tsx:52
+msgid "This block will display your alliance partner banners. Configure the display style in the block settings."
+msgstr ""
+
+#: src/gutenberg/index.tsx:56
+msgid "Display Style:"
+msgstr ""
+
+#: src/gutenberg/index.tsx:57
+msgid "Alliance banners will be displayed here based on your settings."
+msgstr ""
+
+#: src/gutenberg/index.tsx:70
+msgid "Alliance Banner"
+msgstr ""
+
+#: src/gutenberg/index.tsx:71
+msgid "Display alliance partner banners with customizable layouts."
+msgstr ""
+
+#: src/gutenberg/index.tsx:75
+msgid "alliance"
+msgstr ""
+
+#: src/gutenberg/index.tsx:76
+msgid "partners"
+msgstr ""
+
+#: src/gutenberg/index.tsx:77
+msgid "banners"
+msgstr ""
+
+#: src/gutenberg/index.tsx:78
+msgid "logos"
+msgstr ""
+
+#: src/classic/index.ts:25
+msgid "Alliance banner inserted successfully."
+msgstr ""

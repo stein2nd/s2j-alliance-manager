@@ -1,0 +1,48 @@
+@use 'variables' as *;
+
+// S2J Alliance Manager - Classic Editor Styles
+
+#s2j-alliance-classic-editor {
+  .form-field {
+    margin-bottom: $spacing-md;
+    
+    label {
+      display: block;
+      margin-bottom: $spacing-xs;
+      font-weight: 600;
+      color: $text-color;
+    }
+    
+    select {
+      width: 100%;
+      padding: $spacing-sm;
+      border: 1px solid $border-color;
+      border-radius: $border-radius-sm;
+      background: $white;
+      
+      &:focus {
+        border-color: $primary-color;
+        outline: none;
+        box-shadow: 0 0 0 1px $primary-color;
+      }
+    }
+  }
+  
+  .button {
+    width: 100%;
+    justify-content: center;
+  }
+}
+
+// Meta Box Styles
+#s2j_alliance_manager_meta_box {
+  .postbox-header {
+    h2 {
+      color: $text-color;
+    }
+  }
+  
+  .inside {
+    padding: $spacing-md;
+  }
+}

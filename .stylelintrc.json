@@ -1,0 +1,63 @@
+{
+  "extends": ["stylelint-config-standard-scss"],
+  "rules": {
+    "scss/at-rule-no-unknown": [
+      true,
+      {
+        "ignoreAtRules": [
+          "tailwind",
+          "apply",
+          "variants",
+          "responsive",
+          "screen",
+          "layer"
+        ]
+      }
+    ],
+    "color-hex-length": "short",
+    "color-named": "never",
+    "declaration-block-no-redundant-longhand-properties": null,
+    "declaration-no-important": null,
+    "font-family-name-quotes": "always-where-recommended",
+    "font-weight-notation": "named-where-possible",
+    "function-url-quotes": "always",
+    "length-zero-no-unit": true,
+    "max-nesting-depth": 5,
+    "no-descending-specificity": null,
+    "no-duplicate-selectors": true,
+    "property-no-vendor-prefix": null,
+    "selector-attribute-quotes": "always",
+    "selector-max-compound-selectors": 4,
+    "selector-max-id": null,
+    "selector-max-type": 2,
+    "selector-no-qualifying-type": [
+      true,
+      {
+        "ignore": ["attribute", "class"]
+      }
+    ],
+    "selector-no-vendor-prefix": null,
+    "shorthand-property-no-redundant-values": null,
+    "value-no-vendor-prefix": null,
+    "selector-class-pattern": null,
+    "color-function-notation": null,
+    "alpha-value-notation": null,
+    "scss/no-global-function-names": null,
+    "color-function-alias-notation": null,
+    "selector-id-pattern": null,
+    "scss/function-color-relative": [
+      true,
+      {
+        "message": "Use color.adjust() instead of deprecated color functions like darken(), lighten(), etc."
+      }
+    ]
+  },
+  "ignoreFiles": [
+    "node_modules/**/*",
+    "dist/**/*",
+    "vendor/**/*",
+    "build/**/*",
+    "*.min.css",
+    "coverage/**/*"
+  ]
+}

@@ -202,6 +202,14 @@ msgstr ""
 msgid "Move Down"
 msgstr ""
 
+#: src/admin/components/ContentList.tsx:212
+msgid "Up"
+msgstr ""
+
+#: src/admin/components/ContentList.tsx:220
+msgid "Down"
+msgstr ""
+
 #: src/admin/components/ContentList.tsx:109
 msgid "Edit Message"
 msgstr ""

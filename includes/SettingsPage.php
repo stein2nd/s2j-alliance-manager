@@ -111,15 +111,6 @@ class S2J_Alliance_Manager_SettingsPage {
                     </div>
                     
                     <div class="s2j-admin-content">
-                        <div class="s2j-admin-sidebar">
-                            <div class="s2j-admin-card">
-                                <h3><?php _e('Display Settings', 's2j-alliance-manager'); ?></h3>
-                                <div id="s2j-display-settings">
-                                    <!-- Display settings will be rendered here by React -->
-                                </div>
-                            </div>
-                        </div>
-                        
                         <div class="s2j-admin-main">
                             <div class="s2j-admin-card">
                                 <div class="s2j-admin-card-header">
@@ -127,6 +118,15 @@ class S2J_Alliance_Manager_SettingsPage {
                                 </div>
                                 <div id="s2j-content-models">
                                     <!-- Content models will be rendered here by React -->
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="s2j-admin-sidebar">
+                            <div class="s2j-admin-card">
+                                <h3><?php _e('Display Settings', 's2j-alliance-manager'); ?></h3>
+                                <div id="s2j-display-settings">
+                                    <!-- Display settings will be rendered here by React -->
                                 </div>
                             </div>
                         </div>

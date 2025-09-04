@@ -122,17 +122,17 @@ export const ContentList: React.FC<ContentListProps> = ({
         <button
           onClick={addNewModel}
           disabled={isLoading}
-          style={{ padding: '8px 16px', backgroundColor: '#0073aa', color: 'white', border: 'none', borderRadius: '4px' }}
+          className="s2j-add-partner-btn"
         >
-          {__('Add New Partner', 's2j-alliance-manager')}
+          <span>{__('Add New Partner', 's2j-alliance-manager')}</span>
         </button>
         {hasUnsavedChanges && (
           <button
             onClick={saveChanges}
             disabled={isLoading}
-            style={{ padding: '8px 16px', backgroundColor: '#00a32a', color: 'white', border: 'none', borderRadius: '4px', marginLeft: '8px' }}
+            className="s2j-save-changes-btn"
           >
-            {__('Save', 's2j-alliance-manager')}
+            <span>{__('Save', 's2j-alliance-manager')}</span>
           </button>
         )}
       </div>
@@ -208,22 +208,25 @@ export const ContentList: React.FC<ContentListProps> = ({
                   onClick={() => moveModel(index, 'up')}
                   disabled={index === 0}
                   title={__('Move Up', 's2j-alliance-manager')}
+                  className="s2j-move-up-btn"
                 >
-                  ↑
+                  <span>▲ {__('Up', 's2j-alliance-manager')}</span>
                 </Button>
                 <Button
                   size="small"
                   onClick={() => moveModel(index, 'down')}
                   disabled={index === displayModelsLength - 1}
                   title={__('Move Down', 's2j-alliance-manager')}
+                  className="s2j-move-down-btn"
                 >
-                  ↓
+                  <span>▼ {__('Down', 's2j-alliance-manager')}</span>
                 </Button>
                 <Button
                   size="small"
                   onClick={() => openMessageModal(index)}
                   disabled={model.behavior !== 'modal'}
                   title={model.behavior === 'modal' ? __('Edit Message', 's2j-alliance-manager') : __('Message is only available when behavior is set to "Show Modal"', 's2j-alliance-manager')}
+                  className="s2j-message-btn"
                 >
                   {__('Message', 's2j-alliance-manager')}
                 </Button>
@@ -232,6 +235,7 @@ export const ContentList: React.FC<ContentListProps> = ({
                   variant="destructive"
                   onClick={() => deleteModel(index)}
                   title={__('Delete', 's2j-alliance-manager')}
+                  className="s2j-delete-btn"
                 >
                   {__('Delete', 's2j-alliance-manager')}
                 </Button>

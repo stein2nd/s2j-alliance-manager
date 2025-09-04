@@ -87,7 +87,7 @@ export const MediaUploader: React.FC<MediaUploaderProps> = ({
       <div className="s2j-media-uploader">
         <div className="s2j-media-preview">
           <div className="s2j-logo-placeholder">
-            {__('Loading...', 's2j-alliance-manager')}
+            <span>{__('Loading...', 's2j-alliance-manager')}</span>
           </div>
         </div>
       </div>
@@ -107,7 +107,7 @@ export const MediaUploader: React.FC<MediaUploaderProps> = ({
       ) : (
         <div className="s2j-media-preview">
           <div className="s2j-logo-placeholder">
-            {__('No logo', 's2j-alliance-manager')}
+            <span>{__('No logo', 's2j-alliance-manager')}</span>
           </div>
         </div>
       )}
@@ -116,16 +116,18 @@ export const MediaUploader: React.FC<MediaUploaderProps> = ({
         <Button
           size="small"
           onClick={openMediaLibrary}
+          className="s2j-media-select-btn"
         >
-          {media ? __('Change', 's2j-alliance-manager') : __('Select', 's2j-alliance-manager')}
+          <span>{media ? __('Change', 's2j-alliance-manager') : __('Select', 's2j-alliance-manager')}</span>
         </Button>
         {media && (
           <Button
             size="small"
             variant="destructive"
             onClick={removeMedia}
+            className="s2j-media-remove-btn"
           >
-            {__('Remove', 's2j-alliance-manager')}
+            <span>{__('Remove', 's2j-alliance-manager')}</span>
           </Button>
         )}
       </div>

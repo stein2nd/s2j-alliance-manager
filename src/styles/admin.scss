@@ -24,8 +24,10 @@
 
 .s2j-admin-content {
   display: grid;
-  grid-template-columns: 300px 1fr;
+  grid-template-columns: 1fr 280px;
   gap: $spacing-lg;
+  max-width: 100%;
+  overflow: hidden;
   
   @media (max-width: $breakpoint-lg) {
     grid-template-columns: 1fr;
@@ -49,11 +51,16 @@
 }
 
 .s2j-admin-main {
+  min-width: 0; // Grid item の横幅制御を改善
+  
   .s2j-admin-card {
     background: $white;
     border: 1px solid $border-color;
     border-radius: $border-radius-md;
     box-shadow: $shadow-sm;
+    width: 100%;
+    max-width: 100%;
+    overflow: hidden;
     
     &-header {
       display: flex;
@@ -137,15 +144,31 @@
       opacity: 0.6;
     }
     
-    // Save button specific styling
-    &[style*="background-color: #00a32a"] {
-      background: #00a32a !important;
-      border-color: #00a32a !important;
-      
-      &:hover:not(:disabled) {
-        background: color.adjust(#00a32a, $lightness: -10%) !important;
-        border-color: color.adjust(#00a32a, $lightness: -10%) !important;
-      }
+    span {
+      display: inline-block;
+    }
+  }
+  
+  // 特定のボタンクラス用のスタイル
+  .s2j-add-partner-btn {
+    background: $primary-color;
+    border-color: $primary-color;
+    color: $white;
+    
+    &:hover:not(:disabled) {
+      background: color.adjust($primary-color, $lightness: -10%);
+      border-color: color.adjust($primary-color, $lightness: -10%);
+    }
+  }
+  
+  .s2j-save-changes-btn {
+    background: #00a32a;
+    border-color: #00a32a;
+    color: $white;
+    
+    &:hover:not(:disabled) {
+      background: color.adjust(#00a32a, $lightness: -10%);
+      border-color: color.adjust(#00a32a, $lightness: -10%);
     }
   }
 }
@@ -283,6 +306,8 @@
     &.actions {
       display: flex;
       gap: $spacing-xs;
+      flex-wrap: wrap; // ボタンがはみ出した場合の折り返し
+      min-width: 0; // フレックスアイテムの幅制御
       
       button {
         padding: $spacing-xs $spacing-sm;
@@ -291,6 +316,7 @@
         background: $white;
         cursor: pointer;
         font-size: 12px;
+        flex-shrink: 0; // ボタンの縮小を防ぐ
         
         &:hover {
           background: $background-color;
@@ -314,6 +340,39 @@
           &:hover {
             background: color.adjust($error-color, $lightness: -10%);
           }
+        }
+      }
+      
+      // 特定のボタンクラス用のスタイル
+      .s2j-move-up-btn,
+      .s2j-move-down-btn {
+        min-width: 65px; // 少し小さくしてスペースを確保
+        padding: 4px 6px;
+        font-size: 11px;
+        white-space: nowrap; // テキストの改行を防ぐ
+        
+        span {
+          display: inline-block;
+        }
+      }
+      
+      .s2j-message-btn {
+        min-width: 55px;
+        padding: 4px 6px;
+        font-size: 11px;
+      }
+      
+      .s2j-delete-btn {
+        min-width: 55px;
+        padding: 4px 6px;
+        font-size: 11px;
+        background: $error-color;
+        color: $white;
+        border-color: $error-color;
+        
+        &:hover:not(:disabled) {
+          background: color.adjust($error-color, $lightness: -10%);
+          border-color: color.adjust($error-color, $lightness: -10%);
         }
       }
     }
@@ -395,6 +454,12 @@
     }
   }
   
+  .s2j-logo-placeholder {
+    span {
+      display: inline-block;
+    }
+  }
+  
   .s2j-media-actions {
     display: flex;
     gap: $spacing-xs;
@@ -409,6 +474,33 @@
       
       &:hover {
         background: $background-color;
+      }
+      
+      span {
+        display: inline-block;
+      }
+    }
+    
+    // 特定のボタンクラス用のスタイル
+    .s2j-media-select-btn {
+      background: $primary-color;
+      color: $white;
+      border-color: $primary-color;
+      
+      &:hover:not(:disabled) {
+        background: color.adjust($primary-color, $lightness: -10%);
+        border-color: color.adjust($primary-color, $lightness: -10%);
+      }
+    }
+    
+    .s2j-media-remove-btn {
+      background: $error-color;
+      color: $white;
+      border-color: $error-color;
+      
+      &:hover:not(:disabled) {
+        background: color.adjust($error-color, $lightness: -10%);
+        border-color: color.adjust($error-color, $lightness: -10%);
       }
     }
   }

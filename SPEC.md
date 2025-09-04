@@ -24,7 +24,7 @@
     * Gutenberg ブロックでの処理内容を基本的に再現します。
   * 管理画面でバナー画像(または動画)・リンク先 URL・グループ等を保存します。
     * 管理 UI は [Create Content Model](https://github.com/Automattic/create-content-model) を取込んで実装します。
-    * basic版 / pro版 を視野に入れた設計 (masonry 表示は pro 版にて提供)
+    * basic版 / pro版 を視野に入れた設計とします (masonry 表示は pro 版にて提供)。
 
 ## 3. プロジェクト構成
 
@@ -98,26 +98,81 @@ s2j-alliance-manager/
 ## 4. ビルド要件
 
 * Vite + TypeScript + SCSS
-  * `vite.config.ts` を用いて IIFE 形式でバンドルする
-  * JavaScript は WordPress 同梱の jQuery を利用可能とする （外部 import 不要） (`jQuery(function($) { ... })`)
-  * CSS も IIFE 出力し、エディタ用・フロント用を区別すること
-* 出力は `./dist`
+  * `vite.config.ts` を用いて IIFE 形式でバンドルします。
+  * JavaScript は WordPress 同梱の jQuery を利用可能とします (外部 import 不要) (`jQuery(function($) { ... })`)。
+  * CSS も IIFE 出力し、エディタ用・フロント用を区別します。
+* 出力は `./dist` とします。
 
-### 4.1 `package.json` の `scripts`
+### 4.1 依存関係モジュールのバージョン選択理由
+
+#### 4.1.1 React モジュール
+* **React**: `^18.2.0`
+* **React-DOM**: `^18.2.0`
+* **理由**: WordPress 6.3以降で標準採用されているバージョンです。WordPress の Gutenberg エディタとの互換性を確保するため、最新版ではなく安定版を採用します。
+
+#### 4.1.2 Rollup モジュール
+* **Rollup**: `^4.50.0`
+* **用途**: Vite の内部バンドラーとして使用します。IIFE 形式での出力と WordPress 環境での動作最適化を実現します。
+* **理由**: Vite 7.x系との互換性を確保するため、最新版ではなく安定版を採用します。WordPress 環境でのビルド安定性を重視します。
+
+#### 4.1.3 WordPress パッケージ群
+* **@wordpress/api-fetch**: `^7.29.0` - REST API 通信とデータフェッチ機能
+* **@wordpress/block-editor**: `^15.2.0` - Gutenberg ブロックエディタの UI コンポーネント
+* **@wordpress/blocks**: `^15.2.0` - ブロック登録とレンダリング機能
+* **@wordpress/components**: `^30.2.0` - WordPress 標準 UI コンポーネント（Button、SelectControl 等）
+* **@wordpress/data**: `^10.29.0` - 状態管理とデータストア機能
+* **@wordpress/element**: `^6.29.0` - React 要素とフック機能
+* **@wordpress/i18n**: `^6.2.0` - 国際化機能（`__()`、`_e()` 関数）
+* **@wordpress/scripts**: `^30.22.0` - WordPress 開発用スクリプトとツール
+* **@wordpress/url**: `^4.29.0` - URL 処理とバリデーション機能
+* **理由**: WordPress 6.3系での安定動作を確保するため、各パッケージの互換性を重視します。最新版ではなく、WordPress 公式で推奨される安定版を採用します。
+
+### 4.2 `package.json` の `scripts`
 
 * `npm run build:dev` → 開発用ビルド（minify 無効）
 * `npm run build:production` → 本番用ビルド（minify 有効）
 
-## 5. 国際化
+## 5. 技術的実装詳細
 
-* テキストはすべて `__()` または `_e()` を使用
-* 翻訳ファイルは `languages/` に配置
-* 翻訳テンプレート `.pot` は `makepot` により生成
-* Text Domain は plugin-slug に合わせる
+### 5.1 フロントエンド技術スタック
 
-## 6. 固有仕様
+* **React 18.2**: 管理画面 UI の構築
+* **TypeScript 5.9**: 型安全性の確保
+* **SCSS**: スタイル管理とデザインシステム
+* **Vite 7.1**: 高速ビルドとモジュールバンドリング
 
-### 6.1 管理画面
+### 5.2 スタイル設計原則
+
+* **統一されたデザインシステム**: すべてのボタンと UI コンポーネントで、一貫したスタイルを目指します。
+* **レスポンシブ対応**: モバイル環境では縦積みレイアウトとします。
+* **アクセシビリティ**: 適切なコントラスト比とフォーカス状態を目指します。
+* **国際化対応**: すべての UI 要素を翻訳可能とします。
+
+### 5.3 コンポーネント設計
+
+* **ContentList**: アライアンス・パートナー一覧の管理 UI
+* **MediaUploader**: WordPress メディア・ライブラリとの統合
+* **MessageModal**: モーダル表示機能
+* **SettingsForm**: 表示設定フォーム
+
+### 5.4 パフォーマンス最適化
+
+* **IIFE 形式**: WordPress 環境での最適な読み込みを目指します。
+* **コード分割**: 管理画面、Gutenberg、Classic エディタ用を分離します。
+* **最小化**: 本番環境でのファイルサイズ最適化を目指します。
+
+## 6. 国際化
+
+* テキストはすべて `__()` または `_e()` を使用します。
+* 翻訳ファイルは `languages/` に配置します。
+* 翻訳テンプレート `.pot` は `makepot` により生成します。
+* Text Domain は plugin-slug に合わせます。
+
+---
+
+## 7. 固有仕様
+
+### 7.1 管理画面
 
 * 下記 HTML 要素を内包する、専用管理画面を用意します。
   * 表示形式コンボボックス
@@ -128,44 +183,47 @@ s2j-alliance-manager/
 * `sanitize_textarea_field` でメッセージ整形します。
 * メディアは `attachment_url_to_postid` で確認し、存在しない場合は無効化します。
 
-#### 6.1.1 表示形式コンボボックス `display_style`
+#### 7.1.1 表示形式コンボボックス `display_style`
 
 * 選択肢は下記のとおりとします:
   * `grid-single` … 単一カラムのグリッド
   * `grid-multi` … 複数カラムのグリッド
   * `masonry` … masonry (石畳) 表示 (pro 版限定予定)
 
-#### 6.1.2 一覧表
+#### 7.1.2 一覧表
 
 * [Create Content Model](https://github.com/Automattic/create-content-model) で実装します。
-  * **行番号表示**: 各レコードに `#1`, `#2`, `#3` の形式で行番号を表示
-  * **保留状態の視覚化**: 変更がある場合は全行がクリーム色の背景に変更、左端にインジケーター表示
-  * **Saveボタン**: 何らかの変更がある場合に表示、一括保存機能
+  * **行番号表示**: 各レコードに `#1`, `#2`, `#3` の形式で行番号を表示。
+  * **保留状態の視覚化**: 変更がある場合は、全行の背景がクリーム色に変化。左端にインジケーター表示。
+  * **Save ボタン**: 何らかの変更がある場合に表示。一括保存機能。
+  * **レイアウト**: メインコンテンツ (ContentList) を左側、サイドバー (Display Settings) を右側に配置。
+  * **ボタンスタイル**: すべてのボタンラベルを span 要素でラップし、SCSS で統一管理。
   * **フィールド構成**:
-    * `frontpage` (チェックボックス) … 掲出有無
-    * `rank` (コンボボックス) … ゴールド、シルバー等
-      * slug 追加可 (slug の並び順を、序列の順番とする)
-    * `logo` (メディアボタン) … ロゴ画像 (または動画) の追加/変更
-      * サムネイル表示
-    * `jump_url` (テキストボックス) … 遷移先 URL
+    * `frontpage` (チェックボックス) … 掲出有無。
+    * `rank` (コンボボックス) … ゴールド、シルバー等。
+      * slug 追加可 (slug の並び順を、序列の順番とする)。
+    * `logo` (メディアボタン) … ロゴ画像 (または動画) の追加/変更。
+      * サムネイル表示。
+    * `jump_url` (テキストボックス) … 遷移先 URL。
     * `behavior` (コンボボックス)
-      * 選択肢: `jump` … 指定 URL にジャンプ
-      * 選択肢: `modal` … モーダルで指定メッセージを表示
-    * `message` (ボタン) … 「メッセージ編集」モーダルを呼び出し
-    * `shiftUp` (ボタン) … エントリーを上に移動
-    * `shiftDown` (ボタン) … エントリーを下に移動
-    * `Delete` (ボタン) … エントリーを削除
+      * 選択肢: `jump` … 指定 URL にジャンプ。
+      * 選択肢: `modal` … モーダルで指定メッセージを表示。
+    * `Up` (ボタン) … エントリーを上に移動 (Unicode 文字 ▲ 使用)。
+    * `Down` (ボタン) … エントリーを下に移動 (Unicode 文字 ▼ 使用)。
+    * `message` (ボタン) … 「メッセージ編集」モーダルを呼び出し。
+    * `Delete` (ボタン) … エントリーを削除。
 * **操作フロー**:
-  1. 何らかの変更操作 → Saveボタン表示・保留状態の視覚化
-  2. Saveボタンクリック → 一括保存・通常状態に戻る
-* **翻訳対応**: すべての表示文字列が `__()` 関数でラップ済み
+  1. 何らかの変更操作 → Save ボタン表示・保留状態の視覚化。
+  2. Save ボタンクリック → 一括保存・通常状態に戻る。
+* **翻訳対応**: すべての表示文字列が `__()` 関数でラップ済み。
+* **スタイル管理**: インラインスタイルを排除し、SCSS ファイルで一元管理。
 
-#### 6.1.3 メッセージ編集モーダル
+#### 7.1.3 メッセージ編集モーダル
 
 * `behavior: 'modal'` の場合に表示します。
   * `text` (テキストエリア) … 補足メッセージ
 
-### 6.2 Gutenberg ブロック対応
+### 7.2 Gutenberg ブロック対応
 
 * REST API 経由でデータを取得します。
   * `frontpage:'YES'` のレコードを抽出します。
@@ -178,13 +236,13 @@ s2j-alliance-manager/
     * `behavior: 'jump'` の場合は、「target='_blank' rel='noopener noreferrer'」で `jump_url` にジャンプ可能にします。
     * `behavior: 'modal'` の場合は、`logo` に `text` を添えて、モーダル表示します。
 
-### 6.3 Classic エディタ対応
+### 7.3 Classic エディタ対応
 
 * Gutenberg ブロック同様、MetaBox として追加します。
 
-## 7. REST API 仕様
+## 8. REST API 仕様
 
-### 7.1 エンドポイント
+### 8.1 エンドポイント
 
 * `GET /wp-json/s2j-alliance-manager/v1/settings`
   * 管理画面設定取得
@@ -195,12 +253,14 @@ s2j-alliance-manager/
 * `POST /wp-json/s2j-alliance-manager/v1/save-all`
   * 設定＋モデル一括保存
 
-### 7.2 セキュリティ
+### 8.2 セキュリティ
 
 * nonce チェック必須
 * `current_user_can( 'manage_options' )` 権限がある場合のみ利用可
 
-## 8. pro 版拡張予定
+---
+
+## 9. pro 版拡張予定
 
 * Masonry レイアウト
 * 並び順ドラッグ＆ドロップ対応

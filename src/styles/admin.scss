@@ -3,6 +3,11 @@
 
 // S2J Alliance Manager - Admin Styles
 
+// Button text utility class
+.s2j-button-text {
+  display: inline-block;
+}
+
 .s2j-admin-container {
   max-width: 1200px;
   margin: 0 auto;
@@ -101,6 +106,262 @@
         border-color: $primary-color;
         outline: none;
         box-shadow: 0 0 0 1px $primary-color;
+      }
+    }
+  }
+}
+
+// Rank Label Manager
+.s2j-rank-label-manager {
+  .s2j-rank-label-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: $spacing-lg;
+    
+    h3 {
+      margin: 0;
+      font-size: 18px;
+      color: $text-color;
+    }
+    
+    .s2j-rank-label-actions {
+      display: flex;
+      gap: $spacing-sm;
+      
+      button {
+        padding: $spacing-sm $spacing-md;
+        border: 1px solid $primary-color;
+        border-radius: $border-radius-sm;
+        background: $primary-color;
+        color: $white;
+        cursor: pointer;
+        font-size: 14px;
+        font-weight: 600;
+        transition: all 0.2s ease;
+        
+        &:hover:not(:disabled) {
+          background: color.adjust($primary-color, $lightness: -10%);
+          border-color: color.adjust($primary-color, $lightness: -10%);
+          transform: translateY(-1px);
+          box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+        
+        &:disabled {
+          background: $text-light;
+          border-color: $text-light;
+          cursor: not-allowed;
+          opacity: 0.6;
+        }
+        
+      }
+      
+      .s2j-add-rank-label-btn {
+        background: $primary-color;
+        border-color: $primary-color;
+        color: $white;
+        
+        &:hover:not(:disabled) {
+          background: color.adjust($primary-color, $lightness: -10%);
+          border-color: color.adjust($primary-color, $lightness: -10%);
+        }
+      }
+      
+      .s2j-save-rank-labels-btn {
+        background: #00a32a;
+        border-color: #00a32a;
+        color: $white;
+        
+        &:hover:not(:disabled) {
+          background: color.adjust(#00a32a, $lightness: -10%);
+          border-color: color.adjust(#00a32a, $lightness: -10%);
+        }
+      }
+      
+      .s2j-cancel-rank-labels-btn {
+        background: $text-light;
+        border-color: $text-light;
+        color: $white;
+        
+        &:hover:not(:disabled) {
+          background: color.adjust($text-light, $lightness: -10%);
+          border-color: color.adjust($text-light, $lightness: -10%);
+        }
+      }
+    }
+  }
+  
+  .s2j-rank-labels {
+    padding: $spacing-lg;
+  }
+}
+
+.s2j-rank-label {
+  position: relative;
+  display: grid;
+  grid-template-columns: auto 1fr 1fr auto auto;
+  gap: $spacing-md;
+  align-items: center;
+  padding: $spacing-md;
+  border: 1px solid $border-color;
+  border-radius: $border-radius-sm;
+  margin-bottom: $spacing-md;
+  background: $white;
+  
+  &:hover {
+    box-shadow: $shadow-sm;
+  }
+  
+  // 保留中の変更がある場合のスタイル
+  &.s2j-pending-changes {
+    background: #fef7e0; // 薄いクリーム色
+    border-color: #f0b849; // 少し濃いクリーム色のボーダー
+    position: relative;
+    
+    // 保留状態を示す小さなインジケーター
+    &::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 4px;
+      height: 100%;
+      background: #f0b849;
+      border-radius: 2px 0 0 2px;
+    }
+    
+    &:hover {
+      background: #fdf2d1; // ホバー時は少し濃いクリーム色
+      box-shadow: 0 2px 8px rgba(240, 184, 73, 0.2);
+    }
+  }
+  
+  .s2j-row-number {
+    position: absolute;
+    top: 4px;
+    left: 4px;
+    background: $primary-color;
+    color: $white;
+    font-size: 10px;
+    font-weight: bold;
+    padding: 2px 4px;
+    border-radius: 2px;
+    line-height: 1;
+    z-index: 2;
+    
+    // 保留状態の場合は左側のインジケーターを避ける
+    .s2j-pending-changes & {
+      left: 8px;
+    }
+  }
+  
+  .s2j-label-field {
+    display: flex;
+    align-items: center;
+    
+    &.title {
+      input[type="text"] {
+        width: 100%;
+        padding: $spacing-xs;
+        border: 1px solid $border-color;
+        border-radius: $border-radius-sm;
+      }
+    }
+    
+    &.content {
+      textarea {
+        width: 100%;
+        min-height: 60px;
+        padding: $spacing-xs;
+        border: 1px solid $border-color;
+        border-radius: $border-radius-sm;
+        resize: vertical;
+      }
+    }
+    
+    &.thumbnail {
+      .s2j-logo-preview {
+        width: 40px;
+        height: 40px;
+        border-radius: $border-radius-sm;
+        object-fit: cover;
+        border: 1px solid $border-color;
+      }
+      
+      .s2j-logo-placeholder {
+        width: 40px;
+        height: 40px;
+        background: $background-color;
+        border: 1px solid $border-color;
+        border-radius: $border-radius-sm;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 12px;
+        color: $text-light;
+      }
+    }
+    
+    &.actions {
+      display: flex;
+      gap: $spacing-xs;
+      flex-wrap: wrap;
+      min-width: 0;
+      
+      button {
+        padding: $spacing-xs $spacing-sm;
+        border: 1px solid $border-color;
+        border-radius: $border-radius-sm;
+        background: $white;
+        cursor: pointer;
+        font-size: 12px;
+        flex-shrink: 0;
+        
+        &:hover {
+          background: $background-color;
+        }
+        
+        &.button-primary {
+          background: $primary-color;
+          color: $white;
+          border-color: $primary-color;
+          
+          &:hover {
+            background: color.adjust($primary-color, $lightness: -10%);
+          }
+        }
+        
+        &.button-danger {
+          background: $error-color;
+          color: $white;
+          border-color: $error-color;
+          
+          &:hover {
+            background: color.adjust($error-color, $lightness: -10%);
+          }
+        }
+      }
+      
+      .s2j-move-up-btn,
+      .s2j-move-down-btn {
+        min-width: 65px;
+        padding: 4px 6px;
+        font-size: 11px;
+        white-space: nowrap;
+      }
+      
+      .s2j-delete-btn {
+        min-width: 55px;
+        padding: 4px 6px;
+        font-size: 11px;
+        background: $error-color;
+        color: $white;
+        border-color: $error-color;
+        
+        &:hover:not(:disabled) {
+          background: color.adjust($error-color, $lightness: -10%);
+          border-color: color.adjust($error-color, $lightness: -10%);
+        }
       }
     }
   }
@@ -350,10 +611,6 @@
         padding: 4px 6px;
         font-size: 11px;
         white-space: nowrap; // テキストの改行を防ぐ
-        
-        span {
-          display: inline-block;
-        }
       }
       
       .s2j-message-btn {
@@ -508,6 +765,17 @@
 
 // Responsive Design
 @media (max-width: $breakpoint-md) {
+  .s2j-rank-label {
+    grid-template-columns: 1fr;
+    gap: $spacing-sm;
+    
+    .s2j-label-field {
+      &.actions {
+        justify-content: flex-end;
+      }
+    }
+  }
+  
   .s2j-content-model {
     grid-template-columns: 1fr;
     gap: $spacing-sm;

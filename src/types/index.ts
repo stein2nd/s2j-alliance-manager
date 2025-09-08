@@ -64,6 +64,15 @@ export interface BehaviorOption {
   description: string;
 }
 
+export interface RankLabel {
+  id: number;
+  title: string;
+  content: string;
+  thumbnail_id: number;
+  menu_order: number;
+  slug: string;
+}
+
 // WordPress specific types
 declare global {
   interface Window {

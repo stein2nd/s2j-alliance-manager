@@ -23,12 +23,12 @@
     "build:production:gutenberg": "FLUSH_DIST=false VITE_LOG_LEVEL=error vite build --mode production",
     "build:production:classic": "FLUSH_DIST=false VITE_LOG_LEVEL=error vite build --mode production",
     "dev": "vite build --mode development --watch",
+    "lint": "npm run lint:ts && npm run lint:scss",
+    "lint:fix": "npm run lint:ts:fix && npm run lint:scss:fix",
     "lint:ts": "eslint src/**/*.{ts,tsx} --ext .ts,.tsx",
     "lint:ts:fix": "eslint src/**/*.{ts,tsx} --ext .ts,.tsx --fix",
     "lint:scss": "stylelint src/**/*.scss",
     "lint:scss:fix": "stylelint src/**/*.scss --fix",
-    "lint": "npm run lint:ts && npm run lint:scss",
-    "lint:fix": "npm run lint:ts:fix && npm run lint:scss:fix",
     "makepot": "wp i18n make-pot . languages/s2j-alliance-manager.pot --domain=s2j-alliance-manager"
   },
   "dependencies": {

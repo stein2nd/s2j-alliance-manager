@@ -2,7 +2,8 @@ import { render } from '@wordpress/element';
 import { __ } from '@wordpress/i18n';
 import { SettingsForm } from './components/SettingsForm';
 import { ContentList } from './components/ContentList';
-import { AllianceSettings, ContentModel } from '../types';
+import { RankLabelManager } from './components/RankLabelManager';
+import { AllianceSettings, ContentModel, RankLabel } from '../types';
 import '@/styles/admin.scss';
 
 class AllianceManagerAdmin {
@@ -10,6 +11,7 @@ class AllianceManagerAdmin {
     display_style: 'grid-single',
     content_models: []
   };
+  private rankLabels: RankLabel[] = [];
   private isInitialized = false;
   private isLoading = false;
 
@@ -20,7 +22,9 @@ class AllianceManagerAdmin {
   private async init() {
     console.log('AllianceManagerAdmin init started');
     await this.loadData();
+    await this.loadRankLabels();
     console.log('Data loaded, settings:', this.settings);
+    console.log('Rank labels loaded:', this.rankLabels);
     this.isInitialized = true;
     console.log('isInitialized set to true');
     this.renderAdmin();
@@ -42,6 +46,26 @@ class AllianceManagerAdmin {
       }
     } catch (error) {
       console.error('Error loading settings:', error);
+    }
+  }
+
+  private async loadRankLabels() {
+    try {
+      const response = await fetch(`${window.s2jAllianceManager.apiUrl}rank-labels`, {
+        headers: {
+          'X-WP-Nonce': window.s2jAllianceManager.nonce
+        }
+      });
+
+      if (response.ok) {
+        const data = await response.json();
+        this.rankLabels = data;
+        console.log('Rank labels loaded:', data);
+      } else {
+        console.error('Failed to load rank labels:', response.status, response.statusText);
+      }
+    } catch (error) {
+      console.error('Error loading rank labels:', error);
     }
   }
 
@@ -97,6 +121,13 @@ class AllianceManagerAdmin {
     this.renderAdmin();
   };
 
+  private updateRankLabels = async (rankLabels: RankLabel[]) => {
+    console.log('updateRankLabels called with:', rankLabels.length, 'labels');
+    this.rankLabels = rankLabels;
+    console.log('Rank labels updated, re-rendering admin');
+    this.renderAdmin();
+  };
+
   private updateLoadingState() {
     const elements = document.querySelectorAll('.s2j-admin-loading');
     elements.forEach(el => {
@@ -149,6 +180,28 @@ class AllianceManagerAdmin {
       }
     }
 
+    // Render rank label manager
+    const rankLabelContainer = document.getElementById('s2j-rank-labels');
+    console.log('rankLabelContainer:', rankLabelContainer);
+    if (rankLabelContainer && this.isInitialized) {
+      try {
+        console.log('Rendering RankLabelManager component');
+        render(
+          <RankLabelManager 
+            rankLabels={this.rankLabels}
+            onUpdate={this.updateRankLabels}
+            isLoading={this.isLoading} 
+          />,
+          rankLabelContainer
+        );
+        console.log('RankLabelManager rendered successfully');
+      } catch (error) {
+        console.error('Error rendering RankLabelManager:', error);
+      }
+    } else {
+      console.log('RankLabelManager not rendered - container:', !!rankLabelContainer, 'initialized:', this.isInitialized);
+    }
+
     // Render content models
     console.log('About to get contentModelsContainer');
     const contentModelsContainer = document.getElementById('s2j-content-models');
@@ -163,6 +216,7 @@ class AllianceManagerAdmin {
           <ContentList
             contentModels={this.settings.content_models}
             onUpdate={this.updateContentModels}
+            rankLabels={this.rankLabels}
             isLoading={this.isLoading}
           />,
           contentModelsContainer

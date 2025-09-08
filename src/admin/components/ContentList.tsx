@@ -1,20 +1,22 @@
 import React, { useState, useEffect } from 'react';
 import { __ } from '@wordpress/i18n';
 import { Button, CheckboxControl, SelectControl, TextControl } from '@wordpress/components';
-import { ContentModel } from '../../types';
-import { rankOptions, behaviorOptions } from '../data/constants';
+import { ContentModel, RankLabel } from '../../types';
+import { behaviorOptions } from '../data/constants';
 import { MediaUploader } from './MediaUploader';
 import { MessageModal } from './MessageModal';
 
 interface ContentListProps {
   contentModels: ContentModel[];
   onUpdate: (models: ContentModel[]) => Promise<void>;
+  rankLabels: RankLabel[];
   isLoading?: boolean;
 }
 
 export const ContentList: React.FC<ContentListProps> = ({
   contentModels,
   onUpdate,
+  rankLabels,
   isLoading = false
 }) => {
   const [showMessageModal, setShowMessageModal] = useState<number | null>(null);
@@ -28,6 +30,24 @@ export const ContentList: React.FC<ContentListProps> = ({
       setOriginalOrder(contentModels.map((_, index) => index));
     }
   }, [contentModels, originalOrder.length]);
+
+  // Generate rank options from rank labels
+  const getRankOptions = () => {
+    const options = rankLabels.map(label => ({
+      value: label.slug,
+      label: label.title
+    }));
+    
+    // Add default option if no labels exist
+    if (options.length === 0) {
+      options.push({
+        value: 'default',
+        label: __('Default', 's2j-alliance-manager')
+      });
+    }
+    
+    return options;
+  };
 
   const addNewModel = async () => {
     console.log('addNewModel called, current models:', contentModels.length);
@@ -124,7 +144,7 @@ export const ContentList: React.FC<ContentListProps> = ({
           disabled={isLoading}
           className="s2j-add-partner-btn"
         >
-          <span>{__('Add New Partner', 's2j-alliance-manager')}</span>
+          <span className="s2j-button-text">{__('Add New Partner', 's2j-alliance-manager')}</span>
         </button>
         {hasUnsavedChanges && (
           <button
@@ -132,7 +152,7 @@ export const ContentList: React.FC<ContentListProps> = ({
             disabled={isLoading}
             className="s2j-save-changes-btn"
           >
-            <span>{__('Save', 's2j-alliance-manager')}</span>
+            <span className="s2j-button-text">{__('Save', 's2j-alliance-manager')}</span>
           </button>
         )}
       </div>
@@ -163,10 +183,7 @@ export const ContentList: React.FC<ContentListProps> = ({
               <div className="s2j-model-field rank">
                 <SelectControl
                   value={model.rank}
-                  options={rankOptions.map(option => ({
-                    label: option.label,
-                    value: option.value
-                  }))}
+                  options={getRankOptions()}
                   onChange={(value: string) => updateModel(index, 'rank', value)}
                   label={__('Rank', 's2j-alliance-manager')}
                 />
@@ -210,7 +227,7 @@ export const ContentList: React.FC<ContentListProps> = ({
                   title={__('Move Up', 's2j-alliance-manager')}
                   className="s2j-move-up-btn"
                 >
-                  <span>▲ {__('Up', 's2j-alliance-manager')}</span>
+                  <span className="s2j-button-text">▲ {__('Up', 's2j-alliance-manager')}</span>
                 </Button>
                 <Button
                   size="small"
@@ -219,7 +236,7 @@ export const ContentList: React.FC<ContentListProps> = ({
                   title={__('Move Down', 's2j-alliance-manager')}
                   className="s2j-move-down-btn"
                 >
-                  <span>▼ {__('Down', 's2j-alliance-manager')}</span>
+                  <span className="s2j-button-text">▼ {__('Down', 's2j-alliance-manager')}</span>
                 </Button>
                 <Button
                   size="small"

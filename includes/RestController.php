@@ -63,6 +63,27 @@ class S2J_Alliance_Manager_RestController {
                 ),
             ),
         ));
+        
+        // Get rank labels
+        register_rest_route(self::NAMESPACE, '/rank-labels', array(
+            'methods' => 'GET',
+            'callback' => array($this, 'get_rank_labels'),
+            'permission_callback' => array($this, 'check_permissions'),
+        ));
+        
+        // Save rank labels
+        register_rest_route(self::NAMESPACE, '/rank-labels', array(
+            'methods' => 'POST',
+            'callback' => array($this, 'save_rank_labels'),
+            'permission_callback' => array($this, 'check_permissions'),
+            'args' => array(
+                'rank_labels' => array(
+                    'required' => true,
+                    'type' => 'array',
+                    'sanitize_callback' => array($this, 'sanitize_rank_labels'),
+                ),
+            ),
+        ));
     }
     
     /**
@@ -198,5 +219,107 @@ class S2J_Alliance_Manager_RestController {
         }
         
         return $model;
+    }
+    
+    /**
+     * Get rank labels
+     */
+    public function get_rank_labels() {
+        $args = array(
+            'post_type' => 's2j_am_rank_label',
+            'post_status' => 'publish',
+            'posts_per_page' => -1,
+            'orderby' => 'menu_order',
+            'order' => 'ASC',
+        );
+        
+        $posts = get_posts($args);
+        $rank_labels = array();
+        
+        foreach ($posts as $post) {
+            $rank_labels[] = array(
+                'id' => $post->ID,
+                'title' => $post->post_title,
+                'content' => $post->post_content,
+                'thumbnail_id' => get_post_thumbnail_id($post->ID),
+                'menu_order' => $post->menu_order,
+                'slug' => $post->post_name,
+            );
+        }
+        
+        return rest_ensure_response($rank_labels);
+    }
+    
+    /**
+     * Save rank labels
+     */
+    public function save_rank_labels($request) {
+        $rank_labels = $request->get_param('rank_labels');
+        
+        foreach ($rank_labels as $rank_label) {
+            $post_data = array(
+                'ID' => $rank_label['id'],
+                'post_title' => sanitize_text_field($rank_label['title']),
+                'post_content' => sanitize_textarea_field($rank_label['content']),
+                'post_name' => sanitize_title($rank_label['title']),
+                'menu_order' => intval($rank_label['menu_order']),
+                'post_type' => 's2j_am_rank_label',
+                'post_status' => 'publish',
+            );
+            
+            if ($rank_label['id'] === 0) {
+                // New post
+                unset($post_data['ID']);
+                $post_id = wp_insert_post($post_data);
+            } else {
+                // Update existing post
+                $post_id = wp_update_post($post_data);
+            }
+            
+            if ($post_id && !is_wp_error($post_id)) {
+                // Set thumbnail
+                if (isset($rank_label['thumbnail_id']) && $rank_label['thumbnail_id'] > 0) {
+                    set_post_thumbnail($post_id, intval($rank_label['thumbnail_id']));
+                }
+            }
+        }
+        
+        return rest_ensure_response(array(
+            'success' => true,
+            'message' => __('Rank labels saved successfully.', 's2j-alliance-manager')
+        ));
+    }
+    
+    /**
+     * Sanitize rank labels
+     */
+    public function sanitize_rank_labels($rank_labels) {
+        $sanitized = array();
+        
+        foreach ($rank_labels as $rank_label) {
+            $sanitized_label = array();
+            
+            // Sanitize ID
+            $sanitized_label['id'] = intval($rank_label['id'] ?? 0);
+            
+            // Sanitize title
+            $sanitized_label['title'] = sanitize_text_field($rank_label['title'] ?? '');
+            
+            // Sanitize content
+            $sanitized_label['content'] = sanitize_textarea_field($rank_label['content'] ?? '');
+            
+            // Sanitize thumbnail_id
+            $sanitized_label['thumbnail_id'] = intval($rank_label['thumbnail_id'] ?? 0);
+            
+            // Sanitize menu_order
+            $sanitized_label['menu_order'] = intval($rank_label['menu_order'] ?? 0);
+            
+            // Generate slug from title
+            $sanitized_label['slug'] = sanitize_title($sanitized_label['title']);
+            
+            $sanitized[] = $sanitized_label;
+        }
+        
+        return $sanitized;
     }
 }

@@ -4,7 +4,7 @@
  * Plugin URI: https://github.com/stein2nd/s2j-alliance-manager
  * Description: アライアンス関係にある協力会社のリンク付きバナー（ロゴ・動画含む）を管理し、Front page 等でブロック表示します。
  * Version: 1.0.0
- * Author: S2J
+ * Author: stein2nd
  * Author URI: https://s2j.co.jp
  * License: GPL v2 or later
  * License URI: https://www.gnu.org/licenses/gpl-2.0.html
@@ -76,6 +76,9 @@ class S2J_Alliance_Manager {
      * Initialize plugin
      */
     public function init() {
+        // Register custom post types
+        $this->register_custom_post_types();
+        
         // Initialize REST API
         new S2J_Alliance_Manager_RestController();
         
@@ -180,6 +183,9 @@ class S2J_Alliance_Manager {
             add_option('s2j_alliance_manager_settings', $default_options);
         }
         
+        // Add capabilities to administrator role
+        $this->add_capabilities();
+        
         // Flush rewrite rules
         flush_rewrite_rules();
     }
@@ -190,6 +196,59 @@ class S2J_Alliance_Manager {
     public function deactivate() {
         // Flush rewrite rules
         flush_rewrite_rules();
+    }
+
+    /**
+     * Add capabilities to administrator role
+     */
+    private function add_capabilities() {
+        $role = get_role('administrator');
+        if ($role) {
+            $role->add_cap('edit_s2j_am_rank_labels');
+        }
+    }
+
+    /**
+     * Register custom post types
+     */
+    private function register_custom_post_types() {
+        // Register rank label custom post type
+        register_post_type('s2j_am_rank_label', array(
+            'labels' => array(
+                'name' => __('Rank Labels', 's2j-alliance-manager'),
+                'singular_name' => __('Rank Label', 's2j-alliance-manager'),
+                'add_new' => __('Add New Rank Label', 's2j-alliance-manager'),
+                'add_new_item' => __('Add New Rank Label', 's2j-alliance-manager'),
+                'edit_item' => __('Edit Rank Label', 's2j-alliance-manager'),
+                'new_item' => __('New Rank Label', 's2j-alliance-manager'),
+                'view_item' => __('View Rank Label', 's2j-alliance-manager'),
+                'search_items' => __('Search Rank Labels', 's2j-alliance-manager'),
+                'not_found' => __('No rank labels found', 's2j-alliance-manager'),
+                'not_found_in_trash' => __('No rank labels found in trash', 's2j-alliance-manager'),
+            ),
+            'public' => false,
+            'publicly_queryable' => false,
+            'show_ui' => false,
+            'show_in_menu' => false,
+            'show_in_nav_menus' => false,
+            'show_in_admin_bar' => false,
+            'show_in_rest' => true,
+            'supports' => array('title', 'editor', 'thumbnail', 'page-attributes'),
+            'hierarchical' => false,
+            'has_archive' => false,
+            'rewrite' => false,
+            'capability_type' => 'post',
+            'capabilities' => array(
+                'edit_post' => 'edit_s2j_am_rank_labels',
+                'read_post' => 'edit_s2j_am_rank_labels',
+                'delete_post' => 'edit_s2j_am_rank_labels',
+                'edit_posts' => 'edit_s2j_am_rank_labels',
+                'edit_others_posts' => 'edit_s2j_am_rank_labels',
+                'publish_posts' => 'edit_s2j_am_rank_labels',
+                'read_private_posts' => 'edit_s2j_am_rank_labels',
+            ),
+            'map_meta_cap' => true,
+        ));
     }
 
     /**

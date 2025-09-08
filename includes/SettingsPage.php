@@ -114,6 +114,15 @@ class S2J_Alliance_Manager_SettingsPage {
                         <div class="s2j-admin-main">
                             <div class="s2j-admin-card">
                                 <div class="s2j-admin-card-header">
+                                    <h3><?php _e('Rank Management', 's2j-alliance-manager'); ?></h3>
+                                </div>
+                                <div id="s2j-rank-labels">
+                                    <!-- Rank labels will be rendered here by React -->
+                                </div>
+                            </div>
+                            
+                            <div class="s2j-admin-card">
+                                <div class="s2j-admin-card-header">
                                     <h3><?php _e('Alliance Partners', 's2j-alliance-manager'); ?></h3>
                                 </div>
                                 <div id="s2j-content-models">

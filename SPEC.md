@@ -11,7 +11,7 @@
 
 ---
 
-## 2. プラグイン概要
+## 1. プラグイン概要
 
 * 名称: S2J Alliance Manager
 * プラグイン・スラッグ: s2j-alliance-manager
@@ -26,9 +26,9 @@
     * 管理 UI は [Create Content Model](https://github.com/Automattic/create-content-model) を取込んで実装します。
     * basic版 / pro版 を視野に入れた設計とします (masonry 表示は pro 版にて提供)。
 
-## 3. プロジェクト構成
+## 2. プロジェクト構成
 
-### 3.1 フォルダ構成
+### 2.1 フォルダ構成
 
 ```
 s2j-alliance-manager/
@@ -42,60 +42,62 @@ s2j-alliance-manager/
 ├─ `s2j-alliance-manager.php` # プラグイン本体
 ├─ `uninstall.php` # プラグイン削除時の処理
 ├─ includes/ # PHP クラス群 (REST、Settings、Admin UI)
-│　├─ `SettingsPage.php` (設定画面)
-│　├─ `RestController.php` (REST API)
-│　├─ `AllianceManager.php` (Gutenberg ブロック)
-│　└─ ...
+│├─ `SettingsPage.php` (設定画面)
+│├─ `RestController.php` (REST API)
+│├─ `AllianceManager.php` (Gutenberg ブロック)
+│└─ ...
 ├─ src/ # TypeScript/React (Gutenberg ブロック、設定画面) /SCSS ソース
-│　├─ admin/ # 設定画面用
-│　│　├── `index.tsx` # 管理画面メインエントリーポイント
-│　│　├── components/
-│　│　│　├── `SettingsForm.tsx` # 初期設定保存フォーム
-│　│　│　├── `ContentList.tsx` # 一覧表 UI (Create Content Model実装)
-│　│　│　├── `MessageModal.tsx` # メッセージ編集モーダル
-│　│　│　└── `MediaUploader.tsx` # WPメディアアップローダ統合
-│　│　└── data/
-│　│　　　└── `constants.ts` # 定数定義 (表示形式、ランク、動作オプション)
-│　├─ gutenberg/ # Gutenberg ブロック用
-│　│　└─ `index.tsx`
-│　├─ classic/ # MetaBox 用
-│　│　└─ `index.ts`
-│　├─ styles/ # プラグイン用のスタイル定義
-│　│　├─ `admin.scss` (設定画面用)
-│　│　├─ `gutenberg.scss` (Gutenberg ブロック用)
-│　│　├─ `classic.scss` (MetaBox 用)
-│　│　├─ `variables.scss` (SCSS 変数定義)
-│　│　└─ ...
-│　└─ types/ # プラグイン用のグローバル・タイプ・定義
-│　　　├─ `index.ts` (ContentModel 型定義)
-│　　　└─ `wordpress.d.ts` (WordPress 型定義)
+│├─ admin/ # 設定画面用
+││├─ `index.tsx` # 管理画面メインエントリーポイント
+││├─ components/
+│││├─ `SettingsForm.tsx` # 初期設定保存フォーム
+│││├─ `ContentList.tsx` # 一覧表 UI (Create Content Model実装)
+│││├─ `RankLabelManager.tsx`  # ランクラベル管理 UI
+│││├─ `MessageModal.tsx` # メッセージ編集モーダル
+│││└─ `MediaUploader.tsx` # WPメディアアップローダ統合
+││└─ data/
+││　└─ `constants.ts` # 定数定義 (表示形式、ランク、動作オプション)
+│├─ gutenberg/ # Gutenberg ブロック用
+││└─ `index.tsx`
+│├─ classic/ # MetaBox 用
+││└─ `index.ts`
+│├─ styles/ # プラグイン用のスタイル定義
+││├─ `admin.scss` (設定画面用)
+││├─ `gutenberg.scss` (Gutenberg ブロック用)
+││├─ `classic.scss` (MetaBox 用)
+││├─ `variables.scss` (SCSS 変数定義)
+││└─ ...
+│└─ types/ # プラグイン用のグローバル・タイプ・定義
+│　├─ `index.ts` (ContentModel 型定義)
+│　└─ `wordpress.d.ts` (WordPress 型定義)
 ├─ dist/ # Vite ビルド成果物 (Git 管理外)、アイコン
-│　├─ js/ # プラグイン用のGutenberg ブロック、設定画面
-│　│　└─ ...
-│　└─ css/ # プラグイン用のスタイル定義
-│　　　└─ ...
+│├─ js/ # プラグイン用の Gutenberg ブロック、設定画面
+││└─ ...
+│└─ css/ # プラグイン用のスタイル定義
+│　└─ ...
 └─ languages/ # 翻訳ファイル (.pot、.po、.mo)
 ```
 
-### 3.2 主要ファイル
+### 2.2 主要ファイル
 
-* `s2j-alliance-manager.php` : プラグイン起点、クラスロード・初期化
-* `includes/SettingsPage.php` : 管理画面のHTML構造・メニュー登録
+* `s2j-alliance-manager.php` : プラグイン起点、クラスロード・初期化、カスタム投稿タイプ登録
+* `includes/SettingsPage.php` : 管理画面の HTML 構造・メニュー登録
 * `includes/RestController.php` : REST API エンドポイント定義・データ処理
 * `includes/AllianceManager.php` : Gutenberg ブロック登録・レンダリング
-* `src/admin/index.tsx` : 管理画面のメインエントリーポイント (React初期化・データ管理)
-* `src/admin/components/ContentList.tsx` : 一覧表UI (Create Content Model実装)
+* `src/admin/index.tsx` : 管理画面のメイン・エントリーポイント (React 初期化・データ管理・ランクラベル状態管理)
+* `src/admin/components/ContentList.tsx` : 一覧表 UI (Create Content Model 実装)
+* `src/admin/components/RankLabelManager.tsx` : ランクラベル管理 UI
 * `src/admin/components/SettingsForm.tsx` : 表示形式設定フォーム
 * `src/admin/components/MessageModal.tsx` : メッセージ編集モーダル
-* `src/admin/components/MediaUploader.tsx` : WordPressメディアアップローダ統合
+* `src/admin/components/MediaUploader.tsx` : WordPress メディア・アップローダ統合
 * `src/admin/data/constants.ts` : 定数定義 (表示形式、ランク、動作オプション)
 * `src/gutenberg/index.tsx` : Gutenberg ブロックの UI ロジック
 * `src/classic/index.ts` : Classic エディタ対応スクリプト
-* `src/types/index.ts` : TypeScript型定義 (ContentModel 等)
+* `src/types/index.ts` : TypeScript 型定義 (ContentModel、RankLabel 等)
 
 ---
 
-## 4. ビルド要件
+## 3. ビルド要件
 
 * Vite + TypeScript + SCSS
   * `vite.config.ts` を用いて IIFE 形式でバンドルします。
@@ -103,19 +105,19 @@ s2j-alliance-manager/
   * CSS も IIFE 出力し、エディタ用・フロント用を区別します。
 * 出力は `./dist` とします。
 
-### 4.1 依存関係モジュールのバージョン選択理由
+### 3.1 依存関係モジュールのバージョン選択理由
 
-#### 4.1.1 React モジュール
+#### 3.1.1 React モジュール
 * **React**: `^18.2.0`
 * **React-DOM**: `^18.2.0`
 * **理由**: WordPress 6.3以降で標準採用されているバージョンです。WordPress の Gutenberg エディタとの互換性を確保するため、最新版ではなく安定版を採用します。
 
-#### 4.1.2 Rollup モジュール
+#### 3.1.2 Rollup モジュール
 * **Rollup**: `^4.50.0`
 * **用途**: Vite の内部バンドラーとして使用します。IIFE 形式での出力と WordPress 環境での動作最適化を実現します。
 * **理由**: Vite 7.x系との互換性を確保するため、最新版ではなく安定版を採用します。WordPress 環境でのビルド安定性を重視します。
 
-#### 4.1.3 WordPress パッケージ群
+#### 3.1.3 WordPress パッケージ群
 * **@wordpress/api-fetch**: `^7.29.0` - REST API 通信とデータフェッチ機能
 * **@wordpress/block-editor**: `^15.2.0` - Gutenberg ブロックエディタの UI コンポーネント
 * **@wordpress/blocks**: `^15.2.0` - ブロック登録とレンダリング機能
@@ -127,41 +129,42 @@ s2j-alliance-manager/
 * **@wordpress/url**: `^4.29.0` - URL 処理とバリデーション機能
 * **理由**: WordPress 6.3系での安定動作を確保するため、各パッケージの互換性を重視します。最新版ではなく、WordPress 公式で推奨される安定版を採用します。
 
-### 4.2 `package.json` の `scripts`
+### 3.2 `package.json` の `scripts`
 
 * `npm run build:dev` → 開発用ビルド（minify 無効）
 * `npm run build:production` → 本番用ビルド（minify 有効）
 
-## 5. 技術的実装詳細
+## 4. 技術的実装詳細
 
-### 5.1 フロントエンド技術スタック
+### 4.1 フロントエンド技術スタック
 
 * **React 18.2**: 管理画面 UI の構築
 * **TypeScript 5.9**: 型安全性の確保
 * **SCSS**: スタイル管理とデザインシステム
 * **Vite 7.1**: 高速ビルドとモジュールバンドリング
 
-### 5.2 スタイル設計原則
+### 4.2 スタイル設計原則
 
 * **統一されたデザインシステム**: すべてのボタンと UI コンポーネントで、一貫したスタイルを目指します。
 * **レスポンシブ対応**: モバイル環境では縦積みレイアウトとします。
 * **アクセシビリティ**: 適切なコントラスト比とフォーカス状態を目指します。
 * **国際化対応**: すべての UI 要素を翻訳可能とします。
 
-### 5.3 コンポーネント設計
+### 4.3 コンポーネント設計
 
 * **ContentList**: アライアンス・パートナー一覧の管理 UI
+* **RankLabelManager**: ランクラベル管理 UI (インライン編集、ドラッグ & ドロップ対応)
 * **MediaUploader**: WordPress メディア・ライブラリとの統合
 * **MessageModal**: モーダル表示機能
 * **SettingsForm**: 表示設定フォーム
 
-### 5.4 パフォーマンス最適化
+### 4.4 パフォーマンス最適化
 
 * **IIFE 形式**: WordPress 環境での最適な読み込みを目指します。
 * **コード分割**: 管理画面、Gutenberg、Classic エディタ用を分離します。
 * **最小化**: 本番環境でのファイルサイズ最適化を目指します。
 
-## 6. 国際化
+## 5. 国際化
 
 * テキストはすべて `__()` または `_e()` を使用します。
 * 翻訳ファイルは `languages/` に配置します。
@@ -170,9 +173,9 @@ s2j-alliance-manager/
 
 ---
 
-## 7. 固有仕様
+## 6. 固有仕様
 
-### 7.1 管理画面
+### 6.1 管理画面
 
 * 下記 HTML 要素を内包する、専用管理画面を用意します。
   * 表示形式コンボボックス
@@ -183,14 +186,14 @@ s2j-alliance-manager/
 * `sanitize_textarea_field` でメッセージ整形します。
 * メディアは `attachment_url_to_postid` で確認し、存在しない場合は無効化します。
 
-#### 7.1.1 表示形式コンボボックス `display_style`
+#### 6.1.1 表示形式コンボボックス `display_style`
 
 * 選択肢は下記のとおりとします:
   * `grid-single` … 単一カラムのグリッド
   * `grid-multi` … 複数カラムのグリッド
   * `masonry` … masonry (石畳) 表示 (pro 版限定予定)
 
-#### 7.1.2 一覧表
+#### 6.1.2 一覧表
 
 * [Create Content Model](https://github.com/Automattic/create-content-model) で実装します。
   * **行番号表示**: 各レコードに `#1`, `#2`, `#3` の形式で行番号を表示。
@@ -201,7 +204,8 @@ s2j-alliance-manager/
   * **フィールド構成**:
     * `frontpage` (チェックボックス) … 掲出有無。
     * `rank` (コンボボックス) … ゴールド、シルバー等。
-      * slug 追加可 (slug の並び順を、序列の順番とする)。
+      * ランクラベルの登録/修正は、「ランクラベル管理」参照。
+      * 選択肢は「ランクラベル管理」で登録されたラベルの `title` から動的生成。
     * `logo` (メディアボタン) … ロゴ画像 (または動画) の追加/変更。
       * サムネイル表示。
     * `jump_url` (テキストボックス) … 遷移先 URL。
@@ -217,18 +221,50 @@ s2j-alliance-manager/
   2. Save ボタンクリック → 一括保存・通常状態に戻る。
 * **翻訳対応**: すべての表示文字列が `__()` 関数でラップ済み。
 * **スタイル管理**: インラインスタイルを排除し、SCSS ファイルで一元管理。
+* **リアルタイム連携**: ランクラベル管理でラベルを保存すると、即座に rank 選択肢が更新される。
 
-#### 7.1.3 メッセージ編集モーダル
+#### 6.1.3 メッセージ編集モーダル
 
 * `behavior: 'modal'` の場合に表示します。
   * `text` (テキストエリア) … 補足メッセージ
 
-### 7.2 Gutenberg ブロック対応
+#### 6.1.4 ランクラベル管理
+
+* ランクは、本プラグインの専用「カスタム投稿タイプ」として扱い、その CPT スラッグは `s2j_am_rank_label` とします。
+* ラベルは、`edit_s2j_am_rank_labels` 権限を設け、ユーザー自身で登録/修正できる形にします。
+* CPT 一覧画面は、`show_in_menu => false` により非表示とします。
+* 代わりとなる一覧画面を React UI で実装します。項目数が少ないので、インラインで直接編集可能にします (項目数が増えた段階で、モーダル画面で編集する様に変更)。
+  * `title` (ラベル名)
+  * `content` (説明)
+  * `thumbnail_id` (サムネイル画像 ID)
+  * `menu_order` (並び順)
+* ドラッグ & ドロップで並び替え、 `menu_order` を更新可能にします。
+* 変更内容は、メインコンテンツ (ContentList) とは別にローカル state 保持とします。
+  * 「初期取得データ」と変動が発生した行の背景色はハイライト表示し、「保存前である」ことを視覚化します。
+  * 「ランク保存」ボタンのクリックで一括保存します。
+  * 「キャンセル」ボタンのクリックで、ローカル state を「初期取得データ」にリセットします。
+* ラベルの多言語対応は、ユーザー自身で行える様、Polylang / WPML 対応とします。
+
+**実装詳細:**
+* **データフロー**: 親コンポーネント (AllianceManagerAdmin) でランクラベル・データを一元管理します。
+* **リアルタイム連携**: ランクラベル保存後、即座に ContentList の rank 選択肢が更新されます。
+* **状態管理**: 保留中の変更は視覚的にハイライト表示され、保存・キャンセル操作が可能です。
+* **権限管理**: 管理者権限に `edit_s2j_am_rank_labels` 権限を自動付与します。
+
+#### 6.1.5 データフローと状態管理
+
+* **親コンポーネント管理**: AllianceManagerAdmin クラスでランクラベル・データを一元管理
+* **リアルタイム同期**: ランクラベル保存後、ContentList の rank 選択肢が即座に更新
+* **状態の分離**: ランクラベル管理とメインコンテンツ管理は、独立した状態管理
+* **視覚的フィードバック**: 保留中の変更は、背景色のハイライトで視覚化
+* **データの整合性**: 親コンポーネント経由で、データの整合性を保証
+
+### 6.2 Gutenberg ブロック対応
 
 * REST API 経由でデータを取得します。
   * `frontpage:'YES'` のレコードを抽出します。
   * 取得データは三次元配列とします。
-    * `rank` slug で配列を分割します (序列の順番は、slug の並び順)。
+    * `rank` slug で配列を分割します (「ランクラベル管理」で登録されたラベルの並び順)。
     * 一覧表の並び順を維持します。
 * 取得した `display_style` に従って下記 HTML 要素を整形します。
   * ラベル「ランク」
@@ -236,13 +272,13 @@ s2j-alliance-manager/
     * `behavior: 'jump'` の場合は、「target='_blank' rel='noopener noreferrer'」で `jump_url` にジャンプ可能にします。
     * `behavior: 'modal'` の場合は、`logo` に `text` を添えて、モーダル表示します。
 
-### 7.3 Classic エディタ対応
+### 6.3 Classic エディタ対応
 
 * Gutenberg ブロック同様、MetaBox として追加します。
 
-## 8. REST API 仕様
+## 7. REST API 仕様
 
-### 8.1 エンドポイント
+### 7.1 エンドポイント
 
 * `GET /wp-json/s2j-alliance-manager/v1/settings`
   * 管理画面設定取得
@@ -253,14 +289,20 @@ s2j-alliance-manager/
 * `POST /wp-json/s2j-alliance-manager/v1/save-all`
   * 設定＋モデル一括保存
 
-### 8.2 セキュリティ
+* `GET /wp-json/s2j-alliance-manager/v1/rank-labels`
+  * ランクラベル一覧取得
+
+* `POST /wp-json/s2j-alliance-manager/v1/rank_labels`
+  * ランクラベル一括保存
+
+### 7.2 セキュリティ
 
 * nonce チェック必須
 * `current_user_can( 'manage_options' )` 権限がある場合のみ利用可
 
 ---
 
-## 9. pro 版拡張予定
+## 8. pro 版拡張予定
 
 * Masonry レイアウト
 * 並び順ドラッグ＆ドロップ対応

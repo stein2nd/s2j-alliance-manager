@@ -1,6 +1,6 @@
 # S2J Alliance Manager
 
-WordPressプラグイン「S2J Alliance Manager」は、アライアンス関係にある協力会社のリンク付きバナー（ロゴ・動画含む）を管理し、Front page 等でブロック表示するためのプラグインです。
+WordPress プラグイン「S2J Alliance Manager」は、アライアンス関係にある協力会社のリンク付きバナー (ロゴ・動画含む) を管理し、Front page 等でブロック表示するためのプラグインです。
 
 ## 特徴
 

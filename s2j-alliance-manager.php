@@ -2,7 +2,7 @@
 /**
  * Plugin Name: S2J Alliance Manager
  * Plugin URI: https://github.com/stein2nd/s2j-alliance-manager
- * Description: アライアンス関係にある協力会社のリンク付きバナー（ロゴ・動画含む）を管理し、Front page 等でブロック表示します。
+ * Description: Manage linked banners (including logos and videos) for partner companies in alliance relationships and display them in blocks on the front page and other locations.
  * Version: 1.0.0
  * Author: stein2nd
  * Author URI: https://s2j.co.jp
@@ -76,6 +76,11 @@ class S2J_Alliance_Manager {
      * Initialize plugin
      */
     public function init() {
+        // Enable debug logging for this plugin
+        if (defined('WP_DEBUG') && WP_DEBUG) {
+            error_log('S2J Alliance Manager: Plugin init started');
+        }
+        
         // Register custom post types
         $this->register_custom_post_types();
         
@@ -88,6 +93,10 @@ class S2J_Alliance_Manager {
         // Initialize admin settings page
         if (is_admin()) {
             new S2J_Alliance_Manager_SettingsPage();
+        }
+        
+        if (defined('WP_DEBUG') && WP_DEBUG) {
+            error_log('S2J Alliance Manager: Plugin init completed');
         }
     }
     
@@ -137,25 +146,8 @@ class S2J_Alliance_Manager {
      * Enqueue frontend scripts and styles
      */
     public function frontend_enqueue_scripts() {
-        // Gutenberg エディターが利用可能な場合のみスクリプトを読み込み
-        if (!function_exists('register_block_type')) {
-            return;
-        }
-
-        wp_enqueue_script(
-            's2j-alliance-manager-frontend',
-            S2J_ALLIANCE_MANAGER_PLUGIN_URL . 'dist/js/s2j-alliance-manager-gutenberg.js',
-            array(),
-            S2J_ALLIANCE_MANAGER_VERSION,
-            true
-        );
-
-        wp_enqueue_style(
-            's2j-alliance-manager-frontend',
-            S2J_ALLIANCE_MANAGER_PLUGIN_URL . 'dist/css/s2j-alliance-manager-gutenberg.css',
-            array(),
-            S2J_ALLIANCE_MANAGER_VERSION
-        );
+        // Block assets are automatically enqueued by register_block_type with block.json
+        // This method is kept for any additional frontend assets if needed
     }
     
     /**

@@ -16,12 +16,23 @@ if (!defined('ABSPATH')) {
 class S2J_Alliance_Manager_AllianceManager {
     
     /**
+     * Block registration status
+     */
+    private $block_registered = false;
+    
+    /**
      * Constructor
      */
     public function __construct() {
-        add_action('init', array($this, 'register_blocks'));
+        add_action('init', array($this, 'register_blocks'), 20);
         add_action('init', array($this, 'register_meta_boxes'));
-        add_action('wp_enqueue_scripts', array($this, 'enqueue_block_assets'));
+        add_action('enqueue_block_editor_assets', array($this, 'enqueue_block_editor_assets'));
+        add_action('wp_enqueue_scripts', array($this, 'enqueue_frontend_assets'));
+        
+        // Add admin notice for debugging
+        if (is_admin()) {
+            add_action('admin_notices', array($this, 'debug_admin_notice'));
+        }
     }
     
     /**
@@ -29,21 +40,57 @@ class S2J_Alliance_Manager_AllianceManager {
      */
     public function register_blocks() {
         if (!function_exists('register_block_type')) {
+            error_log('S2J Alliance Manager: register_block_type function not available');
             return;
         }
         
-        register_block_type('s2j-alliance-manager/alliance-banner', array(
-            'editor_script' => 's2j-alliance-manager-gutenberg',
-            'editor_style' => 's2j-alliance-manager-gutenberg',
-            'style' => 's2j-alliance-manager-frontend',
+        $block_json_path = S2J_ALLIANCE_MANAGER_PLUGIN_DIR . 'src/gutenberg/block.json';
+        
+        // Check if block.json exists
+        if (!file_exists($block_json_path)) {
+            error_log('S2J Alliance Manager: block.json not found at ' . $block_json_path);
+            return;
+        }
+        
+        // Register block using block.json
+        $result = register_block_type($block_json_path, array(
             'render_callback' => array($this, 'render_alliance_banner_block'),
-            'attributes' => array(
-                'displayStyle' => array(
-                    'type' => 'string',
-                    'default' => 'grid-single',
-                ),
-            ),
         ));
+        
+        if ($result) {
+            error_log('S2J Alliance Manager: Block registered successfully');
+            $this->block_registered = true;
+        } else {
+            error_log('S2J Alliance Manager: Failed to register block');
+            $this->block_registered = false;
+        }
+    }
+    
+    /**
+     * Debug admin notice
+     */
+    public function debug_admin_notice() {
+        $block_json_path = S2J_ALLIANCE_MANAGER_PLUGIN_DIR . 'src/gutenberg/block.json';
+        $block_json_exists = file_exists($block_json_path);
+        $js_exists = file_exists(S2J_ALLIANCE_MANAGER_PLUGIN_DIR . 'dist/js/s2j-alliance-manager-gutenberg.js');
+        $css_exists = file_exists(S2J_ALLIANCE_MANAGER_PLUGIN_DIR . 'dist/css/s2j-alliance-manager-gutenberg.css');
+        $block_registered = isset($this->block_registered) && $this->block_registered;
+        $js_url = S2J_ALLIANCE_MANAGER_PLUGIN_URL . 'dist/js/s2j-alliance-manager-gutenberg.js';
+        $css_url = S2J_ALLIANCE_MANAGER_PLUGIN_URL . 'dist/css/s2j-alliance-manager-gutenberg.css';
+        
+        echo '<div class="notice notice-info">';
+        echo '<p><strong>S2J Alliance Manager Debug Info:</strong></p>';
+        echo '<ul>';
+        echo '<li>Block JSON exists: ' . ($block_json_exists ? 'Yes' : 'No') . '</li>';
+        echo '<li>Gutenberg JS exists: ' . ($js_exists ? 'Yes' : 'No') . '</li>';
+        echo '<li>Gutenberg CSS exists: ' . ($css_exists ? 'Yes' : 'No') . '</li>';
+        echo '<li>Block registered: ' . ($block_registered ? 'Yes' : 'No') . '</li>';
+        echo '<li>WordPress version: ' . get_bloginfo('version') . '</li>';
+        echo '<li>Gutenberg available: ' . (function_exists('register_block_type') ? 'Yes' : 'No') . '</li>';
+        echo '<li>JS URL: <a href="' . esc_url($js_url) . '" target="_blank">' . esc_html($js_url) . '</a></li>';
+        echo '<li>CSS URL: <a href="' . esc_url($css_url) . '" target="_blank">' . esc_html($css_url) . '</a></li>';
+        echo '</ul>';
+        echo '</div>';
     }
     
     /**
@@ -96,9 +143,7 @@ class S2J_Alliance_Manager_AllianceManager {
                     <option value="grid-multi" <?php selected($display_style, 'grid-multi'); ?>>
                         <?php _e('Multi Column Grid', 's2j-alliance-manager'); ?>
                     </option>
-                    <option value="masonry" <?php selected($display_style, 'masonry'); ?>>
-                        <?php _e('Masonry Layout', 's2j-alliance-manager'); ?>
-                    </option>
+                    <!-- Masonry Layout will be available in pro version -->
                 </select>
             </p>
             <p>
@@ -111,29 +156,20 @@ class S2J_Alliance_Manager_AllianceManager {
     }
     
     /**
-     * Enqueue block assets
+     * Enqueue block editor assets
      */
-    public function enqueue_block_assets() {
-        if (is_admin()) {
-            wp_enqueue_script(
-                's2j-alliance-manager-gutenberg',
-                S2J_ALLIANCE_MANAGER_PLUGIN_URL . 'dist/js/gutenberg.js',
-                array('wp-blocks', 'wp-element', 'wp-editor', 'wp-components', 'wp-i18n'),
-                S2J_ALLIANCE_MANAGER_VERSION,
-                true
-            );
-            
-            wp_enqueue_style(
-                's2j-alliance-manager-gutenberg',
-                S2J_ALLIANCE_MANAGER_PLUGIN_URL . 'dist/css/gutenberg.css',
-                array('wp-edit-blocks'),
-                S2J_ALLIANCE_MANAGER_VERSION
-            );
-        }
-        
+    public function enqueue_block_editor_assets() {
+        // Block assets are automatically enqueued by register_block_type with block.json
+        // This method is kept for any additional assets if needed
+    }
+    
+    /**
+     * Enqueue frontend assets
+     */
+    public function enqueue_frontend_assets() {
         wp_enqueue_style(
             's2j-alliance-manager-frontend',
-            S2J_ALLIANCE_MANAGER_PLUGIN_URL . 'dist/css/gutenberg.css',
+            S2J_ALLIANCE_MANAGER_PLUGIN_URL . 'dist/css/s2j-alliance-manager-gutenberg.css',
             array(),
             S2J_ALLIANCE_MANAGER_VERSION
         );

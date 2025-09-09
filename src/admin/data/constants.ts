@@ -11,12 +11,13 @@ export const displayStyles: DisplayStyle[] = [
     value: 'grid-multi',
     label: __('Multi Column Grid', 's2j-alliance-manager'),
     description: __('Display alliance banners in a responsive multi-column grid', 's2j-alliance-manager')
-  },
-  {
-    value: 'masonry',
-    label: __('Masonry Layout', 's2j-alliance-manager'),
-    description: __('Display alliance banners in a masonry (Pinterest-style) layout', 's2j-alliance-manager')
   }
+  // Masonry Layout will be available in pro version
+  // {
+  //   value: 'masonry',
+  //   label: __('Masonry Layout', 's2j-alliance-manager'),
+  //   description: __('Display alliance banners in a masonry (Pinterest-style) layout', 's2j-alliance-manager')
+  // }
 ];
 
 export const rankOptions: RankOption[] = [

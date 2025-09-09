@@ -1,7 +1,7 @@
 {
   "name": "s2j-alliance-manager",
   "version": "1.0.0",
-  "description": "WordPress plugin for managing alliance partner banners and links",
+  "description": "Manage linked banners (including logos and videos) for partner companies in alliance relationships and display them in blocks on the front page and other locations.",
   "type": "module",
   "author": "stein2nd",
   "license": "GPL-2.0-or-later",

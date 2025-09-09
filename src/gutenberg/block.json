@@ -1,0 +1,30 @@
+{
+  "$schema": "https://schemas.wp.org/trunk/block.json",
+  "apiVersion": 3,
+  "name": "s2j-alliance-manager/alliance-banner",
+  "version": "1.0.0",
+  "title": "Alliance Banner",
+  "category": "widgets",
+  "icon": "groups",
+  "description": "Display alliance partner banners with customizable layouts.",
+  "keywords": [
+    "alliance",
+    "partners",
+    "banners",
+    "logos"
+  ],
+  "textdomain": "s2j-alliance-manager",
+  "editorScript": "file:../../dist/js/s2j-alliance-manager-gutenberg.js",
+  "editorStyle": "file:../../dist/css/s2j-alliance-manager-gutenberg.css",
+  "style": "file:../../dist/css/s2j-alliance-manager-gutenberg.css",
+  "supports": {
+    "align": ["wide", "full"],
+    "html": false
+  },
+  "attributes": {
+    "displayStyle": {
+      "type": "string",
+      "default": "grid-single"
+    }
+  }
+}

@@ -92,6 +92,7 @@ export default defineConfig({
             if (id === '@wordpress/components') return 'wp.components';
             if (id === '@wordpress/i18n') return 'wp.i18n';
             if (id === '@wordpress/editor') return 'wp.editor';
+            if (id === '@wordpress/block-editor') return 'wp.blockEditor';
             if (id === '@wordpress/core-data') return 'wp.coreData';
             return `wp.${module}`;
           }

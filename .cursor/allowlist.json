@@ -3,6 +3,6 @@
     "npm install"
   ],
   "allowed": [
-    "npm install --force"
+    "npm install --legacy-peer-deps"
   ]
 }

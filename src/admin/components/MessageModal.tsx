@@ -2,12 +2,22 @@ import React, { useState } from 'react';
 import { __ } from '@wordpress/i18n';
 import { Button, TextareaControl } from '@wordpress/components';
 
+/**
+ * React.FunctionComponent「メッセージ編集モーダル」インターフェイス
+ */
 interface MessageModalProps {
   message: string;
   onSave: (message: string) => void;
   onCancel: () => void;
 }
 
+/**
+ * React.FunctionComponent「メッセージ編集モーダル」
+ * `src/admin/components/ContentList.tsx` で呼ばれる。
+ * 
+ * @param param0 メッセージ編集モーダル
+ * @returns メッセージ編集モーダル
+ */
 export const MessageModal: React.FC<MessageModalProps> = ({
   message,
   onSave,
@@ -15,13 +25,22 @@ export const MessageModal: React.FC<MessageModalProps> = ({
 }) => {
   const [formMessage, setFormMessage] = useState(message);
 
-  const handleSave = () => {
-    onSave(formMessage);
-  };
-
+  /**
+   * メッセージをキャンセルします。
+   * 「modal-actions.secondary.onClick()」メソッドから呼ばれます。
+   */
   const handleCancel = () => {
     setFormMessage(message); // Reset to original value
+
     onCancel();
+  };
+
+  /**
+   * メッセージを保存します。
+   * 「modal-actions.primary.onClick()」メソッドから呼ばれます。
+   */
+  const handleSave = () => {
+    onSave(formMessage);
   };
 
   return (

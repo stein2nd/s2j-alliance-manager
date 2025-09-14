@@ -4,12 +4,22 @@ import { Button, TextControl, TextareaControl } from '@wordpress/components';
 import { RankLabel } from '../../types';
 import { MediaUploader } from './MediaUploader';
 
+/**
+ * React.FunctionComponent「ランクラベル管理 UI」インターフェイス
+ */
 interface RankLabelManagerProps {
   rankLabels: RankLabel[];
   onUpdate: (rankLabels: RankLabel[]) => Promise<void>;
   isLoading?: boolean;
 }
 
+/**
+ * React.FunctionComponent「ランクラベル管理 UI」
+ * `src/admin/index.tsx` で呼ばれる。
+ * 
+ * @param param0 ランクラベル
+ * @returns ランクラベル・マネージャー
+ */
 export const RankLabelManager: React.FC<RankLabelManagerProps> = ({
   rankLabels: initialRankLabels,
   onUpdate,
@@ -21,13 +31,17 @@ export const RankLabelManager: React.FC<RankLabelManagerProps> = ({
 
   console.log('RankLabelManager rendering with isLoading:', isLoading, 'rankLabels:', initialRankLabels.length);
 
-  // Initialize original order when rank labels change
+  // ランクラベルが変更された際に、original order を初期化します。
   useEffect(() => {
     if (initialRankLabels.length > 0 && originalOrder.length === 0) {
       setOriginalOrder(initialRankLabels.map((_, index) => index));
     }
   }, [initialRankLabels, originalOrder.length]);
 
+  /**
+   * ランクラベルを追加します。
+   * 「s2j-add-rank-label-btn.onClick()」メソッドから呼ばれます。
+   */
   const addNewLabel = () => {
     const newLabel: RankLabel = {
       id: 0,
@@ -42,38 +56,106 @@ export const RankLabelManager: React.FC<RankLabelManagerProps> = ({
     const updatedLabels = [...currentLabels, newLabel];
     
     setPendingLabels(updatedLabels);
+
     setHasUnsavedChanges(true);
+
     setOriginalOrder([...originalOrder, originalOrder.length]);
   };
 
+  /**
+   * 変更を保存します。
+   * 「s2j-save-rank-labels-btn.onClick()」メソッドから呼ばれます。
+   */
+  const saveChanges = async () => {
+    if (pendingLabels) {
+      try {
+        // ランクラベルを保存します。
+        const response = await fetch(
+          `${window.s2jAllianceManager.apiUrl}rank-labels`,
+          {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+              'X-WP-Nonce': window.s2jAllianceManager.nonce
+            },
+            body: JSON.stringify({rank_labels: pendingLabels})
+          }
+        );
+
+        if (response.ok) {
+          const result = await response.json();
+
+          if (result.success) {
+            // 親コンポーネントに、新規ランクラベルを反映します。
+            await onUpdate(pendingLabels);
+
+            setPendingLabels(null);
+
+            setHasUnsavedChanges(false);
+
+            setOriginalOrder(pendingLabels.map((_, index) => index));
+
+            // 通知を表示します。
+            showNotice('success', result.message || __('Rank labels saved successfully.', 's2j-alliance-manager'));
+          } else {
+            // 通知を表示します。
+            showNotice('error', result.message || __('Failed to save rank labels.', 's2j-alliance-manager'));
+          }
+        } else {
+          // 通知を表示します。
+          showNotice('error', __('Failed to save rank labels.', 's2j-alliance-manager'));
+        }
+      } catch (error) {
+        console.error('Error saving rank labels:', error);
+
+        // 通知を表示します。
+        showNotice('error', __('Failed to save rank labels.', 's2j-alliance-manager'));
+      }
+    }
+  };
+
+  /**
+   * 変更をキャンセルします。
+   * 「s2j-cancel-rank-labels-btn.onClick()」メソッドから呼ばれます。
+   */
+  const cancelChanges = () => {
+    setPendingLabels(null);
+
+    setHasUnsavedChanges(false);
+
+    setOriginalOrder(initialRankLabels.map((_, index) => index));
+  };
+
+  /**
+   * ランクラベルを更新します。
+   * 「s2j-label-field title.TextControl.onChange()」メソッド、「s2j-label-field content.TextareaControl.onChange()」メソッド、「s2j-label-field thumbnail.MediaUploader.onSelect()」メソッドから呼ばれます。
+   * 
+   * @param index 
+   * @param field 
+   * @param value 
+   */
   const updateLabel = (index: number, field: keyof RankLabel, value: any) => {
     const currentLabels = pendingLabels || initialRankLabels;
     const updated = [...currentLabels];
     updated[index] = { ...updated[index], [field]: value };
     
-    // Update slug when title changes
+    // title 変更時に slug を更新します。
     if (field === 'title') {
       updated[index].slug = value.toLowerCase().replace(/\s+/g, '-');
     }
     
     setPendingLabels(updated);
+
     setHasUnsavedChanges(true);
   };
 
-  const deleteLabel = (index: number) => {
-    if (window.confirm(__('Are you sure you want to delete this rank label?', 's2j-alliance-manager'))) {
-      const currentLabels = pendingLabels || initialRankLabels;
-      const updated = currentLabels.filter((_, i) => i !== index);
-      
-      setPendingLabels(updated);
-      setHasUnsavedChanges(true);
-      
-      // Update original order
-      const newOriginalOrder = originalOrder.filter((_, i) => i !== index);
-      setOriginalOrder(newOriginalOrder);
-    }
-  };
-
+  /**
+   * ランクラベルを移動します。
+   * 「s2j-move-up-btn.onClick()」メソッド、「s2j-move-down-btn.onClick()」メソッドから呼ばれます。
+   * 
+   * @param index 
+   * @param direction 
+   */
   const moveLabel = (index: number, direction: 'up' | 'down') => {
     const currentLabels = pendingLabels || initialRankLabels;
     const updated = [...currentLabels];
@@ -82,7 +164,7 @@ export const RankLabelManager: React.FC<RankLabelManagerProps> = ({
     if (newIndex >= 0 && newIndex < updated.length) {
       [updated[index], updated[newIndex]] = [updated[newIndex], updated[index]];
       
-      // Update menu_order
+      // `menu_order` を更新します。
       updated.forEach((label, idx) => {
         label.menu_order = idx;
       });
@@ -92,48 +174,33 @@ export const RankLabelManager: React.FC<RankLabelManagerProps> = ({
     }
   };
 
-  const saveChanges = async () => {
-    if (pendingLabels) {
-      try {
-        const response = await fetch(`${window.s2jAllianceManager.apiUrl}rank-labels`, {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-            'X-WP-Nonce': window.s2jAllianceManager.nonce
-          },
-          body: JSON.stringify({
-            rank_labels: pendingLabels
-          })
-        });
-
-        if (response.ok) {
-          const result = await response.json();
-          if (result.success) {
-            // Update parent component with new rank labels
-            await onUpdate(pendingLabels);
-            setPendingLabels(null);
-            setHasUnsavedChanges(false);
-            setOriginalOrder(pendingLabels.map((_, index) => index));
-            showNotice('success', result.message || __('Rank labels saved successfully.', 's2j-alliance-manager'));
-          } else {
-            showNotice('error', result.message || __('Failed to save rank labels.', 's2j-alliance-manager'));
-          }
-        } else {
-          showNotice('error', __('Failed to save rank labels.', 's2j-alliance-manager'));
-        }
-      } catch (error) {
-        console.error('Error saving rank labels:', error);
-        showNotice('error', __('Failed to save rank labels.', 's2j-alliance-manager'));
-      }
+  /**
+   * ランクラベルを削除します。
+   * 「s2j-delete-btn.onClick()」メソッドから呼ばれます。
+   * 
+   * @param index 
+   */
+  const deleteLabel = (index: number) => {
+    if (window.confirm(__('Are you sure you want to delete this rank label?', 's2j-alliance-manager'))) {
+      const currentLabels = pendingLabels || initialRankLabels;
+      const updated = currentLabels.filter((_, i) => i !== index);
+      
+      setPendingLabels(updated);
+      setHasUnsavedChanges(true);
+      
+      // original order を更新します。
+      const newOriginalOrder = originalOrder.filter((_, i) => i !== index);
+      setOriginalOrder(newOriginalOrder);
     }
   };
 
-  const cancelChanges = () => {
-    setPendingLabels(null);
-    setHasUnsavedChanges(false);
-    setOriginalOrder(initialRankLabels.map((_, index) => index));
-  };
-
+  /**
+   * 通知を表示します。
+   * 「saveChanges()」メソッドから呼ばれます。
+   * 
+   * @param type 
+   * @param message 
+   */
   const showNotice = (type: 'success' | 'error', message: string) => {
     const notice = document.createElement('div');
     notice.className = `notice notice-${type} is-dismissible`;
@@ -143,7 +210,7 @@ export const RankLabelManager: React.FC<RankLabelManagerProps> = ({
     if (container) {
       container.insertBefore(notice, container.firstChild);
       
-      // Auto-dismiss after 5 seconds
+      // 5秒後に自動で消えます。
       setTimeout(() => {
         if (notice.parentNode) {
           notice.parentNode.removeChild(notice);
@@ -152,7 +219,7 @@ export const RankLabelManager: React.FC<RankLabelManagerProps> = ({
     }
   };
 
-  // Display labels (pending changes or saved labels)
+  // 表示ラベル (変更保留中と保存済み)
   const displayLabels = pendingLabels || initialRankLabels;
   const displayLabelsLength = displayLabels.length;
 

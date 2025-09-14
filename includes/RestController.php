@@ -1,17 +1,17 @@
 <?php
 /**
- * REST Controller Class
+ * REST API コントローラー
  *
  * @package S2J_Alliance_Manager
  */
 
-// Prevent direct access
+// 直接アクセスされた場合は、終了します。
 if (!defined('ABSPATH')) {
     exit;
 }
 
 /**
- * REST Controller Class
+ * REST API コントローラー
  */
 class S2J_Alliance_Manager_RestController {
     
@@ -21,95 +21,138 @@ class S2J_Alliance_Manager_RestController {
     const NAMESPACE = 's2j-alliance-manager/v1';
     
     /**
-     * Constructor
+     * コンストラクター
      */
     public function __construct() {
+        // REST API ルートを登録します。
         add_action('rest_api_init', array($this, 'register_routes'));
     }
     
     /**
-     * Register REST routes
+     * REST API ルートを登録します。
+     * 「コンストラクター」から呼ばれます。
+     * 「register_routes」フックから呼ばれます。
+     *
+     * @return void
      */
     public function register_routes() {
-        // Get settings
-        register_rest_route(self::NAMESPACE, '/settings', array(
-            'methods' => 'GET',
-            'callback' => array($this, 'get_settings'),
-            'permission_callback' => array($this, 'check_permissions'),
-        ));
+        // REST API ルート (ベース URL: '/settings') の GET メソッドに、「get_settings」メソッドを登録し、権限チェックの上で、設定を取得します。
+        register_rest_route(
+            self::NAMESPACE, 
+            '/settings', 
+            array(
+                'methods' => 'GET',
+                'callback' => array($this, 'get_settings'),
+                'permission_callback' => array($this, 'check_permissions'),
+            )
+        );
         
-        // Get content models
-        register_rest_route(self::NAMESPACE, '/content-models', array(
-            'methods' => 'GET',
-            'callback' => array($this, 'get_content_models'),
-            'permission_callback' => array($this, 'check_permissions'),
-        ));
+        // REST API ルート (ベース URL: '/content-models') の GET メソッドに、「get_content_models」メソッドを登録し、権限チェックの上で、コンテンツモデルを取得します。
+        register_rest_route(
+            self::NAMESPACE, 
+            '/content-models', 
+            array(
+                'methods' => 'GET',
+                'callback' => array($this, 'get_content_models'),
+                'permission_callback' => array($this, 'check_permissions'),
+            )
+        );
         
-        // Save all (settings + content models)
-        register_rest_route(self::NAMESPACE, '/save-all', array(
-            'methods' => 'POST',
-            'callback' => array($this, 'save_all'),
-            'permission_callback' => array($this, 'check_permissions'),
-            'args' => array(
-                'settings' => array(
-                    'required' => true,
-                    'type' => 'object',
-                    'sanitize_callback' => array($this, 'sanitize_settings'),
+        // REST API ルート (ベース URL: '/save-all') の POST メソッドに、「save_all」メソッドを登録し、権限チェックの上で、設定とコンテンツモデルを保存します。
+        // 設定とコンテンツモデルをサニタイズします。
+        register_rest_route(
+            self::NAMESPACE, 
+            '/save-all', 
+            array(
+                'methods' => 'POST',
+                'callback' => array($this, 'save_all'),
+                'permission_callback' => array($this, 'check_permissions'),
+                'args' => array(
+                    'settings' => array(
+                        'required' => true,
+                        'type' => 'object',
+                        'sanitize_callback' => array($this, 'sanitize_settings'),
+                    ),
+                    'content_models' => array(
+                        'required' => true,
+                        'type' => 'array',
+                        'sanitize_callback' => array($this, 'sanitize_content_models'),
+                    ),
                 ),
-                'content_models' => array(
-                    'required' => true,
-                    'type' => 'array',
-                    'sanitize_callback' => array($this, 'sanitize_content_models'),
-                ),
-            ),
-        ));
+            )
+        );
         
-        // Get rank labels
-        register_rest_route(self::NAMESPACE, '/rank-labels', array(
-            'methods' => 'GET',
-            'callback' => array($this, 'get_rank_labels'),
-            'permission_callback' => array($this, 'check_permissions'),
-        ));
+        // REST API ルート (ベース URL: '/rank-labels') の GET メソッドに、「get_rank_labels」メソッドを登録し、権限チェックの上で、ランクラベルを取得します。
+        register_rest_route(
+            self::NAMESPACE, 
+            '/rank-labels', 
+            array(
+                'methods' => 'GET',
+                'callback' => array($this, 'get_rank_labels'),
+                'permission_callback' => array($this, 'check_permissions'),
+            )
+        );
         
-        // Save rank labels
-        register_rest_route(self::NAMESPACE, '/rank-labels', array(
-            'methods' => 'POST',
-            'callback' => array($this, 'save_rank_labels'),
-            'permission_callback' => array($this, 'check_permissions'),
-            'args' => array(
-                'rank_labels' => array(
-                    'required' => true,
-                    'type' => 'array',
-                    'sanitize_callback' => array($this, 'sanitize_rank_labels'),
+        // REST API ルート (ベース URL: '/rank-labels') の POST メソッドに、「save_rank_labels」メソッドを登録し、権限チェックの上で、ランクラベルを保存します。
+        // ランクラベルをサニタイズします。
+        register_rest_route(
+            self::NAMESPACE, 
+            '/rank-labels', 
+            array(
+                'methods' => 'POST',
+                'callback' => array($this, 'save_rank_labels'),
+                'permission_callback' => array($this, 'check_permissions'),
+                'args' => array(
+                    'rank_labels' => array(
+                        'required' => true,
+                        'type' => 'array',
+                        'sanitize_callback' => array($this, 'sanitize_rank_labels'),
+                    ),
                 ),
-            ),
-        ));
+            )
+        );
     }
     
     /**
-     * Check permissions
+     * 現在のユーザーが指定された権限を持っているか否かをチェックします。
+     * 「register_routes」フックから呼ばれます。
+     *
+     * @return bool $permissions 権限
      */
     public function check_permissions() {
         return current_user_can('manage_options');
     }
     
     /**
-     * Get settings
+     * REST API ルート (ベース URL: '/settings') の GET メソッドに登録され、設定を取得します。
+     * 「register_routes」フックから呼ばれます。
+     *
+     * @return array<string, string> $settings 設定
      */
     public function get_settings() {
-        $settings = get_option('s2j_alliance_manager_settings', array(
-            'display_style' => 'grid-single',
-            'content_models' => array()
-        ));
+        $settings = get_option(
+            's2j_alliance_manager_settings', 
+            array(
+                'display_style' => 'grid-single',
+                'content_models' => array()
+            )
+        );
         
         return rest_ensure_response($settings);
     }
     
     /**
-     * Get content models
+     * REST API ルート (ベース URL: '/content-models') の GET メソッドに登録され、コンテンツモデルを取得します。
+     * 「register_routes」フックから呼ばれます。
+     *
+     * @return array<string, int|string>[] $content_models コンテンツモデル
      */
     public function get_content_models() {
-        $settings = get_option('s2j_alliance_manager_settings', array());
+        $settings = get_option(
+            's2j_alliance_manager_settings', 
+            array()
+        );
+
         $content_models = isset($settings['content_models']) ? $settings['content_models'] : array();
         
         // Validate and clean up content models
@@ -125,10 +168,15 @@ class S2J_Alliance_Manager_RestController {
     }
     
     /**
-     * Save all data
+     * REST API ルート (ベース URL: '/save-all') の POST メソッドに登録され、設定とコンテンツモデルを保存します。
+     * 「register_routes」フックから呼ばれます。
+     *
+     * @param WP_REST_Request $request リクエスト
+     * @return array<string, bool|string> $result 保存結果
      */
     public function save_all($request) {
         $settings = $request->get_param('settings');
+
         $content_models = $request->get_param('content_models');
         
         $data = array(
@@ -153,7 +201,11 @@ class S2J_Alliance_Manager_RestController {
     }
     
     /**
-     * Sanitize settings
+     * 設定をサニタイズします。
+     * 「register_routes」フックから呼ばれます。
+     *
+     * @param array<string, string> $settings 設定
+     * @return array<string, string> $sanitized サニタイズされた設定
      */
     public function sanitize_settings($settings) {
         $sanitized = array();
@@ -170,7 +222,11 @@ class S2J_Alliance_Manager_RestController {
     }
     
     /**
-     * Sanitize content models
+     * コンテンツモデルをサニタイズします。
+     * 「register_routes」フックから呼ばれます。
+     *
+     * @param array<string, int|string>[] $content_models コンテンツモデル
+     * @return array<string, int|string>[] $sanitized サニタイズされたコンテンツモデル
      */
     public function sanitize_content_models($content_models) {
         $sanitized = array();
@@ -206,7 +262,11 @@ class S2J_Alliance_Manager_RestController {
     }
     
     /**
-     * Validate content model
+     * コンテンモデルを検証します。
+     * 「register_routes」フックから呼ばれます。
+     *
+     * @param array<string, int|string> $model コンテンツモデル
+     * @return array<string, int|string> $model コンテンツモデル
      */
     private function validate_content_model($model) {
         // Check if logo attachment exists
@@ -222,7 +282,10 @@ class S2J_Alliance_Manager_RestController {
     }
     
     /**
-     * Get rank labels
+     * REST API ルート (ベース URL: '/rank-labels') の GET メソッドに登録され、ランクラベルを取得します。
+     * 「register_routes」フックから呼ばれます。
+     *
+     * @return array<string, int|string>[] $rank_labels ランクラベル
      */
     public function get_rank_labels() {
         $args = array(
@@ -251,7 +314,11 @@ class S2J_Alliance_Manager_RestController {
     }
     
     /**
-     * Save rank labels
+     * REST API ルート (ベース URL: '/rank-labels') の POST メソッドに登録され、ランクラベルを保存します。
+     * 「register_routes」フックから呼ばれます。
+     *
+     * @param WP_REST_Request $request リクエスト
+     * @return array<string, bool|string> $result 保存結果
      */
     public function save_rank_labels($request) {
         $rank_labels = $request->get_param('rank_labels');
@@ -291,7 +358,11 @@ class S2J_Alliance_Manager_RestController {
     }
     
     /**
-     * Sanitize rank labels
+     * ランクラベルをサニタイズします。
+     * 「register_routes」フックから呼ばれます。
+     *
+     * @param array<string, int|string>[] $rank_labels ランクラベル
+     * @return array<string, int|string>[] $sanitized サニタイズされたランクラベル
      */
     public function sanitize_rank_labels($rank_labels) {
         $sanitized = array();

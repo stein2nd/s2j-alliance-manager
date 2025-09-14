@@ -14,9 +14,9 @@
     "logos"
   ],
   "textdomain": "s2j-alliance-manager",
-  "editorScript": "file:../../dist/js/s2j-alliance-manager-gutenberg.js",
-  "editorStyle": "file:../../dist/css/s2j-alliance-manager-gutenberg.css",
-  "style": "file:../../dist/css/s2j-alliance-manager-gutenberg.css",
+  "editorScript": "s2j-alliance-manager-gutenberg",
+  "editorStyle": "s2j-alliance-manager-gutenberg",
+  "style": "s2j-alliance-manager-gutenberg",
   "supports": {
     "align": ["wide", "full"],
     "html": false

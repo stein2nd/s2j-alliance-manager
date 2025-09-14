@@ -1,20 +1,33 @@
-import { registerBlockType } from '@wordpress/blocks';
 import { __ } from '@wordpress/i18n';
 import { useBlockProps, InspectorControls } from '@wordpress/block-editor';
 import { PanelBody, SelectControl, Placeholder } from '@wordpress/components';
+import { registerBlockType } from '@wordpress/blocks';
 import { displayStyles } from '../admin/data/constants';
 import '@/styles/gutenberg.scss';
 
+/**
+ * React.FunctionComponentブロックの属性「AllianceBanner：Attributes」インターフェイス
+ */
 interface AllianceBannerAttributes {
-  displayStyle: 'grid-single' | 'grid-multi' | 'masonry';
+  displayStyle: 'grid-single' | 'grid-multi';
 }
 
+/**
+ * React.FunctionComponentブロックの属性「AllianceBanner：Props」インターフェイス
+ */
 interface AllianceBannerProps {
   attributes: AllianceBannerAttributes;
   setAttributes: (attributes: Partial<AllianceBannerAttributes>) => void;
   isSelected: boolean;
 }
 
+/**
+ * React.FunctionComponent「Gutenberg ブロックの UI ロジック」
+ * 「registerBlockType()」メソッドから呼ばれます。
+ * 
+ * @param param0 ブロックの属性
+ * @returns ブロックの UI
+ */
 const AllianceBannerEdit: React.FC<AllianceBannerProps> = ({
   attributes,
   setAttributes,
@@ -61,41 +74,15 @@ const AllianceBannerEdit: React.FC<AllianceBannerProps> = ({
   );
 };
 
-const AllianceBannerSave: React.FC<{ attributes: AllianceBannerAttributes }> = ({ attributes }) => {
-  const blockProps = useBlockProps({
-    className: 'wp-block-s2j-alliance-manager-alliance-banner'
-  });
-
-  return (
-    <div {...blockProps}>
-      <div className="s2j-alliance-banner" data-display-style={attributes.displayStyle}>
-        {/* Content will be rendered server-side */}
-      </div>
-    </div>
-  );
-};
-
-registerBlockType('s2j-alliance-manager/alliance-banner', {
-  title: __('Alliance Banner', 's2j-alliance-manager'),
-  description: __('Display alliance partner banners with customizable layouts.', 's2j-alliance-manager'),
-  icon: 'groups',
-  category: 'widgets',
-  keywords: [
-    __('alliance', 's2j-alliance-manager'),
-    __('partners', 's2j-alliance-manager'),
-    __('banners', 's2j-alliance-manager'),
-    __('logos', 's2j-alliance-manager')
-  ],
-  attributes: {
-    displayStyle: {
-      type: 'string',
-      default: 'grid-single'
-    }
-  },
-  edit: AllianceBannerEdit,
-  save: AllianceBannerSave,
-  supports: {
-    align: ['wide', 'full'],
-    html: false
+// ブロックを登録します (サーバーサイドレンダリングを使用するため、saveはnull)。
+// 「registerBlockType」メソッドから呼ばれます。
+registerBlockType(
+  's2j-alliance-manager/alliance-banner',
+  {
+    edit: AllianceBannerEdit,
+    save: () => null
   }
-});
+);
+
+// 編集コンポーネントをエクスポートし、`block.json` で使用できるようにします。
+export default AllianceBannerEdit;

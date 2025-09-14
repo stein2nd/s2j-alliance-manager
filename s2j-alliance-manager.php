@@ -18,12 +18,12 @@
  * @package S2J_Alliance_Manager
  */
 
-// Prevent direct access
+// 直接アクセスされた場合は、終了します。
 if (!defined('ABSPATH')) {
     exit;
 }
 
-// Define plugin constants
+// プラグイン定数を定義します。
 define('S2J_ALLIANCE_MANAGER_VERSION', '1.0.0');
 define('S2J_ALLIANCE_MANAGER_PLUGIN_FILE', __FILE__);
 define('S2J_ALLIANCE_MANAGER_PLUGIN_DIR', plugin_dir_path(__FILE__));
@@ -31,17 +31,28 @@ define('S2J_ALLIANCE_MANAGER_PLUGIN_URL', plugin_dir_url(__FILE__));
 define('S2J_ALLIANCE_MANAGER_PLUGIN_BASENAME', plugin_basename(__FILE__));
 
 /**
- * Main plugin class
+ * Singleton パターンで実装した、プラグインのメインクラス
+ * 
+ * @version 1.0.0
+ * @since 1.0.0
+ * @package S2J_Alliance_Manager
  */
 class S2J_Alliance_Manager {
     
     /**
-     * Single instance of the class
+     * クラスの単一インスタンス
      */
     private static $instance = null;
     
     /**
-     * Get single instance
+     * Alliance Manager インスタンス
+     */
+    private $alliance_manager = null;
+    
+    /**
+     * 単一インスタンスを取得します。
+     *
+     * @return $instance S2J_Alliance_Manager_AllianceManager インスタンス
      */
     public static function get_instance() {
         if (null === self::$instance) {
@@ -51,67 +62,103 @@ class S2J_Alliance_Manager {
     }
     
     /**
-     * Constructor
+     * コンストラクター
      */
     private function __construct() {
+        // フックを初期化します。
         $this->init_hooks();
+
+        // プラグインの依存関係をロードします。
         $this->load_dependencies();
     }
     
     /**
-     * Initialize hooks
+     * プラグインの依存関係をロードします。
+     * 「コンストラクター」から呼ばれます。
+     *
+     * @return void
+     */
+    private function load_dependencies() {
+        // 設定ページ
+        require_once S2J_ALLIANCE_MANAGER_PLUGIN_DIR . 'includes/SettingsPage.php';
+
+        // REST API コントローラー
+        require_once S2J_ALLIANCE_MANAGER_PLUGIN_DIR . 'includes/RestController.php';
+
+        // Alliance Manager
+        require_once S2J_ALLIANCE_MANAGER_PLUGIN_DIR . 'includes/AllianceManager.php';
+    }
+
+    /**
+     * フックを初期化します。
+     * 「コンストラクター」から呼ばれます。
+     *
+     * @return void
      */
     private function init_hooks() {
+        // プラグインを初期化します。
         add_action('init', array($this, 'init'));
+
+        // 管理用アセット (s2j-alliance-manager-admin.js, s2j-alliance-manager-admin.css) を、キューに追加します。
         add_action('admin_enqueue_scripts', array($this, 'admin_enqueue_scripts'));
+
+        // フロントエンド用スクリプトとフロントエンド用スタイルをキューに追加します。
         add_action('wp_enqueue_scripts', array($this, 'frontend_enqueue_scripts'));
+
+        // プラグインの翻訳済み文字列をロードします。
         add_action('plugins_loaded', array($this, 'load_textdomain'));
         
-        // Activation and deactivation hooks
+        // プラグインの起動フックを設定します。
         register_activation_hook(__FILE__, array($this, 'activate'));
+
+        // プラグインの無効化フックを設定します。
         register_deactivation_hook(__FILE__, array($this, 'deactivate'));
     }
         
     /**
-     * Initialize plugin
+     * プラグインを初期化します。
+     * 「init」フックから呼ばれます。
+     *
+     * @return void
      */
     public function init() {
-        // Enable debug logging for this plugin
-        if (defined('WP_DEBUG') && WP_DEBUG) {
-            error_log('S2J Alliance Manager: Plugin init started');
+        // 重複初期化を防ぐ
+        if ($this->alliance_manager !== null) {
+            return;
         }
         
-        // Register custom post types
+        // カスタム投稿タイプを登録します。
         $this->register_custom_post_types();
         
-        // Initialize REST API
+        // REST API コントローラー を初期化します。
         new S2J_Alliance_Manager_RestController();
         
-        // Initialize Gutenberg blocks
-        new S2J_Alliance_Manager_AllianceManager();
+        // 追加機能のため、AllianceManager を初期化します。
+        $this->alliance_manager = new S2J_Alliance_Manager_AllianceManager();
         
-        // Initialize admin settings page
+        // 設定ページを初期化します。
         if (is_admin()) {
             new S2J_Alliance_Manager_SettingsPage();
-        }
-        
-        if (defined('WP_DEBUG') && WP_DEBUG) {
-            error_log('S2J Alliance Manager: Plugin init completed');
         }
     }
     
     /**
-     * Enqueue admin scripts and styles
+     * 管理用アセット (s2j-alliance-manager-admin.js, s2j-alliance-manager-admin.css) を、キューに追加します。
+     * 「admin_enqueue_scripts」フックから呼ばれます。
+     *
+     * @param mixed $hook
+     * @return void
      */
     public function admin_enqueue_scripts($hook) {
-        // Only load on our admin page
+        // 管理ページでのみ読み込みます。
         if (strpos($hook, 's2j-alliance-manager') === false) {
             return;
         }
         
-        // Enqueue WordPress media scripts for media uploader
+        // メディアアップローダー用に、WordPress メディアスクリプトをキューに追加します。
         wp_enqueue_media();
         
+        // 管理用スクリプトをキューに追加します。
         wp_enqueue_script(
             's2j-alliance-manager-admin',
             S2J_ALLIANCE_MANAGER_PLUGIN_URL . 'dist/js/s2j-alliance-manager-admin.js',
@@ -120,6 +167,7 @@ class S2J_Alliance_Manager {
             true
         );
         
+        // 管理用スタイルをキューに追加します。
         wp_enqueue_style(
             's2j-alliance-manager-admin',
             S2J_ALLIANCE_MANAGER_PLUGIN_URL . 'dist/css/s2j-alliance-manager-admin.css',
@@ -127,31 +175,41 @@ class S2J_Alliance_Manager {
             S2J_ALLIANCE_MANAGER_VERSION
         );
         
-        // Localize script
-        wp_localize_script('s2j-alliance-manager-admin', 's2jAllianceManager', array(
-            'apiUrl' => rest_url('s2j-alliance-manager/v1/'),
-            'nonce' => wp_create_nonce('wp_rest'),
-            'strings' => array(
-                'save' => __('Save', 's2j-alliance-manager'),
-                'cancel' => __('Cancel', 's2j-alliance-manager'),
-                'delete' => __('Delete', 's2j-alliance-manager'),
-                'edit' => __('Edit', 's2j-alliance-manager'),
-                'addNew' => __('Add New', 's2j-alliance-manager'),
-                'confirmDelete' => __('Are you sure you want to delete this item?', 's2j-alliance-manager'),
+        // 管理用スクリプトをローカライズします。
+        wp_localize_script(
+            's2j-alliance-manager-admin', 
+            's2jAllianceManager', 
+            array(
+                'apiUrl' => rest_url('s2j-alliance-manager/v1/'),
+                'nonce' => wp_create_nonce('wp_rest'),
+                'strings' => array(
+                    'save' => __('Save', 's2j-alliance-manager'),
+                    'cancel' => __('Cancel', 's2j-alliance-manager'),
+                    'delete' => __('Delete', 's2j-alliance-manager'),
+                    'edit' => __('Edit', 's2j-alliance-manager'),
+                    'addNew' => __('Add New', 's2j-alliance-manager'),
+                    'confirmDelete' => __('Are you sure you want to delete this item?', 's2j-alliance-manager'),
+                )
             )
-        ));
+        );
     }
     
     /**
-     * Enqueue frontend scripts and styles
+     * フロントエンド用スクリプトとフロントエンド用スタイルをキューに追加します。
+     * 「wp_enqueue_scripts」フックから呼ばれます。
+     *
+     * @return void
      */
     public function frontend_enqueue_scripts() {
-        // Block assets are automatically enqueued by register_block_type with block.json
-        // This method is kept for any additional frontend assets if needed
+        // ブロック・アセットは、register_block_type と block.json によって自動的にキューに追加されます。
+        // このメソッドは、必要に応じて追加のフロントエンド・アセット用に用意されています。
     }
     
     /**
-     * Load plugin textdomain
+     * プラグインの翻訳済み文字列をロードします。
+     * 「plugins_loaded」フックから呼ばれます。
+     *
+     * @return void
      */
     public function load_textdomain() {
         load_plugin_textdomain(
@@ -160,12 +218,26 @@ class S2J_Alliance_Manager {
             dirname(S2J_ALLIANCE_MANAGER_PLUGIN_BASENAME) . '/languages'
         );
     }
-    
+        
     /**
-     * Plugin activation
+     * プラグインの無効化フック
+     * 「register_deactivation_hook()」メソッドから呼ばれます。
+     *
+     * @return void
+     */
+    public function deactivate() {
+        // リライトルールを削除した後、リライトルールを再作成します。
+        flush_rewrite_rules();
+    }
+
+    /**
+     * プラグインの起動フック。
+     * 「register_activation_hook()」メソッドから呼ばれます。
+     *
+     * @return void
      */
     public function activate() {
-        // Set default options
+        // デフォルトのオプションを設定し、新規オプションとして追加します。
         $default_options = array(
             'display_style' => 'grid-single',
             'content_models' => array()
@@ -175,36 +247,37 @@ class S2J_Alliance_Manager {
             add_option('s2j_alliance_manager_settings', $default_options);
         }
         
-        // Add capabilities to administrator role
+        // 管理者ロールに機能を追加します。
         $this->add_capabilities();
         
-        // Flush rewrite rules
-        flush_rewrite_rules();
-    }
-    
-    /**
-     * Plugin deactivation
-     */
-    public function deactivate() {
-        // Flush rewrite rules
+        // リライトルールを削除した後、リライトルールを再作成します。
         flush_rewrite_rules();
     }
 
     /**
-     * Add capabilities to administrator role
+     * 管理者ロールに機能を追加します。
+     * 「activate()」メソッドから呼ばれます。
+     *
+     * @return void
      */
     private function add_capabilities() {
+        // ロールオブジェクト「管理者」を取得します。
         $role = get_role('administrator');
+
+        // ロールオブジェクト「管理者」に権限を追加します。
         if ($role) {
             $role->add_cap('edit_s2j_am_rank_labels');
         }
     }
 
     /**
-     * Register custom post types
+     * カスタム投稿タイプを登録します。
+     * 「init()」メソッドから呼ばれます。
+     *
+     * @return void
      */
     private function register_custom_post_types() {
-        // Register rank label custom post type
+        // カスタム投稿タイプ「ランクラベル」を登録します。
         register_post_type('s2j_am_rank_label', array(
             'labels' => array(
                 'name' => __('Rank Labels', 's2j-alliance-manager'),
@@ -242,16 +315,7 @@ class S2J_Alliance_Manager {
             'map_meta_cap' => true,
         ));
     }
-
-    /**
-     * Load plugin dependencies
-     */
-    private function load_dependencies() {
-        require_once S2J_ALLIANCE_MANAGER_PLUGIN_DIR . 'includes/SettingsPage.php';
-        require_once S2J_ALLIANCE_MANAGER_PLUGIN_DIR . 'includes/RestController.php';
-        require_once S2J_ALLIANCE_MANAGER_PLUGIN_DIR . 'includes/AllianceManager.php';
-    }
 }
 
-// Initialize the plugin
+// プラグインを初期化します
 S2J_Alliance_Manager::get_instance();

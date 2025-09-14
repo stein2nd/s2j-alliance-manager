@@ -1,30 +1,37 @@
 <?php
 /**
- * Settings Page Class
+ * 設定ページ
  *
  * @package S2J_Alliance_Manager
  */
 
-// Prevent direct access
+// 直接アクセスされた場合は、終了します。
 if (!defined('ABSPATH')) {
     exit;
 }
 
 /**
- * Settings Page Class
+ * 設定ページ
  */
 class S2J_Alliance_Manager_SettingsPage {
     
     /**
-     * Constructor
+     * コンストラクター
      */
     public function __construct() {
+        // サブメニューページ「S2J Alliance Manager」を追加します。
         add_action('admin_menu', array($this, 'add_admin_menu'));
+
+        // 管理用設定とそのデータを登録します。
         add_action('admin_init', array($this, 'admin_init'));
     }
     
     /**
-     * Add admin menu
+     * サブメニューページ「S2J Alliance Manager」を追加します。
+     * 「コンストラクター」から呼ばれます。
+     * 「add_admin_menu」フックから呼ばれます。
+     *
+     * @return void
      */
     public function add_admin_menu() {
         add_options_page(
@@ -37,7 +44,11 @@ class S2J_Alliance_Manager_SettingsPage {
     }
     
     /**
-     * Admin init
+     * 管理用設定とそのデータを登録します。
+     * 「コンストラクター」から呼ばれます。
+     * 「admin_init」フックから呼ばれます。
+     *
+     * @return void
      */
     public function admin_init() {
         register_setting(
@@ -48,44 +59,47 @@ class S2J_Alliance_Manager_SettingsPage {
     }
     
     /**
-     * Sanitize settings
+     * 設定をサニタイズします。
+     *
+     * @param array<string, string> $input 設定
+     * @return array<string, string> $sanitized サニタイズされた設定
      */
     public function sanitize_settings($input) {
         $sanitized = array();
         
-        // Sanitize display style
+        // 表示スタイルをサニタイズします。
         if (isset($input['display_style'])) {
-            $allowed_styles = array('grid-single', 'grid-multi', 'masonry');
+            $allowed_styles = array('grid-single', 'grid-multi');
             $sanitized['display_style'] = in_array($input['display_style'], $allowed_styles) 
                 ? $input['display_style'] 
                 : 'grid-single';
         }
         
-        // Sanitize content models
+        // コンテンツモデルをサニタイズします。
         if (isset($input['content_models']) && is_array($input['content_models'])) {
             $sanitized['content_models'] = array();
             foreach ($input['content_models'] as $model) {
                 $sanitized_model = array();
                 
-                // Sanitize frontpage
+                // frontpage をサニタイズします。
                 $sanitized_model['frontpage'] = isset($model['frontpage']) ? 'YES' : 'NO';
                 
-                // Sanitize rank
+                // rank をサニタイズします。
                 $sanitized_model['rank'] = sanitize_title($model['rank'] ?? '');
                 
-                // Sanitize logo (attachment ID)
+                // logo (attachment ID) をサニタイズします。
                 $sanitized_model['logo'] = intval($model['logo'] ?? 0);
                 
-                // Sanitize jump_url
+                // jump_url をサニタイズします。
                 $sanitized_model['jump_url'] = esc_url_raw($model['jump_url'] ?? '');
                 
-                // Sanitize behavior
+                // behavior をサニタイズします。
                 $allowed_behaviors = array('jump', 'modal');
                 $sanitized_model['behavior'] = in_array($model['behavior'] ?? '', $allowed_behaviors) 
                     ? $model['behavior'] 
                     : 'jump';
                 
-                // Sanitize message
+                // message をサニタイズします。
                 $sanitized_model['message'] = sanitize_textarea_field($model['message'] ?? '');
                 
                 $sanitized['content_models'][] = $sanitized_model;
@@ -96,7 +110,11 @@ class S2J_Alliance_Manager_SettingsPage {
     }
     
     /**
-     * Admin page
+     * サブメニューページ「S2J Alliance Manager」のコンテンツを表示します。
+     * 「admin_page」フックから呼ばれます。
+     * React によって、「ランクラベル」「コンテンツモデル」「表示設定」がレンダリングされます。
+     *
+     * @return void
      */
     public function admin_page() {
         ?>

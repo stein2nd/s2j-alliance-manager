@@ -1,6 +1,9 @@
 import { DisplayStyle, RankOption, BehaviorOption } from '../../types';
 import { __ } from '@wordpress/i18n';
 
+/**
+ * オプション「表示スタイル」
+ */
 export const displayStyles: DisplayStyle[] = [
   {
     value: 'grid-single',
@@ -20,6 +23,9 @@ export const displayStyles: DisplayStyle[] = [
   // }
 ];
 
+/**
+ * オプション「ランク」
+ */
 export const rankOptions: RankOption[] = [
   { value: 'gold', label: __('Gold', 's2j-alliance-manager') },
   { value: 'silver', label: __('Silver', 's2j-alliance-manager') },
@@ -28,6 +34,9 @@ export const rankOptions: RankOption[] = [
   { value: 'default', label: __('Default', 's2j-alliance-manager') }
 ];
 
+/**
+ * オプション「挙動」
+ */
 export const behaviorOptions: BehaviorOption[] = [
   {
     value: 'jump',

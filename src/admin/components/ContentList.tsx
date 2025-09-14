@@ -6,6 +6,9 @@ import { behaviorOptions } from '../data/constants';
 import { MediaUploader } from './MediaUploader';
 import { MessageModal } from './MessageModal';
 
+/**
+ * React.FunctionComponent「一覧表 UI」インターフェイス
+ */
 interface ContentListProps {
   contentModels: ContentModel[];
   onUpdate: (models: ContentModel[]) => Promise<void>;
@@ -13,6 +16,13 @@ interface ContentListProps {
   isLoading?: boolean;
 }
 
+/**
+ * React.FunctionComponent「一覧表 UI」
+ * `src/admin/index.tsx` で呼ばれる。
+ * 
+ * @param param0 コンテンツモデル
+ * @returns 一覧表 UI
+ */
 export const ContentList: React.FC<ContentListProps> = ({
   contentModels,
   onUpdate,
@@ -31,7 +41,117 @@ export const ContentList: React.FC<ContentListProps> = ({
     }
   }, [contentModels, originalOrder.length]);
 
-  // Generate rank options from rank labels
+  /**
+   * 新しいモデルを追加します。
+   * 「s2j-add-partner-btn.onClick()」メソッドから呼ばれます。
+   */
+  const addNewModel = async () => {
+    console.log('addNewModel called, current models:', contentModels.length);
+
+    const newModel: ContentModel = {
+      frontpage: 'NO',
+      rank: 'default',
+      logo: 0,
+      jump_url: '',
+      behavior: 'jump',
+      message: ''
+    };
+    const currentModels = pendingModels || contentModels;
+    const updatedModels = [...currentModels, newModel];
+
+    console.log('Updated models:', updatedModels.length);
+    
+    // 追加は常に保留状態にする
+    setPendingModels(updatedModels);
+    setHasUnsavedChanges(true);
+
+    // 新しいモデルの元の順序を追加
+    setOriginalOrder([...originalOrder, originalOrder.length]);
+  };
+
+  /**
+   * 変更を保存します。
+   * 「s2j-save-changes-btn.onClick()」メソッドから呼ばれます。
+   */
+  const saveChanges = async () => {
+    if (pendingModels) {
+      await onUpdate(pendingModels);
+
+      setPendingModels(null);
+      setHasUnsavedChanges(false);
+
+      // 保存後、元の順序をリセット（新しい順序が元の順序になる）
+      setOriginalOrder(pendingModels.map((_, index) => index));
+    }
+  };
+
+  /**
+   * モデルを更新します。
+   * 「s2j-model-field frontpage.CheckboxControl.onChange()」メソッド、「s2j-model-field rank.SelectControl.onChange()」メソッド、「s2j-model-field logo.MediaUploader.onSelect()」メソッド、「s2j-model-field jump-url.TextControl.onChange()」メソッド、「s2j-model-field behavior.SelectControl.onChange()」メソッドから呼ばれます。
+   * 
+   * @param index インデックス
+   * @param field フィールド
+   * @param value 値
+   */
+  const updateModel = async (index: number, field: keyof ContentModel, value: any) => {
+    const currentModels = pendingModels || contentModels;
+    const updated = [...currentModels];
+
+    updated[index] = { ...updated[index], [field]: value };
+    
+    // 更新は常に保留状態にする
+    setPendingModels(updated);
+
+    setHasUnsavedChanges(true);
+  };
+
+  /**
+   * モデルを移動します。
+   * 「s2j-move-up-btn.onClick()」メソッド、「s2j-move-down-btn.onClick()」メソッドから呼ばれます。
+   * 
+   * @param index インデックス
+   * @param direction 方向
+   */
+  const moveModel = (index: number, direction: 'up' | 'down') => {
+    const currentModels = pendingModels || contentModels;
+    const updated = [...currentModels];
+    const newIndex = direction === 'up' ? index - 1 : index + 1;
+    
+    if (newIndex >= 0 && newIndex < updated.length) {
+      [updated[index], updated[newIndex]] = [updated[newIndex], updated[index]];
+      setPendingModels(updated);
+      setHasUnsavedChanges(true);
+    }
+  };
+
+  /**
+   * モデルを削除します。
+   * 「s2j-delete-btn.onClick()」メソッドから呼ばれます。
+   * 
+   * @param index インデックス
+   */
+  const deleteModel = async (index: number) => {
+    if (window.confirm(__('Are you sure you want to delete this item?', 's2j-alliance-manager'))) {
+      const currentModels = pendingModels || contentModels;
+      const updated = currentModels.filter((_, i) => i !== index);
+      
+      // 削除は常に保留状態にする
+      setPendingModels(updated);
+      setHasUnsavedChanges(true);
+      
+      // 元の順序も更新（削除されたインデックス以降を1つずつ前にずらす）
+      const newOriginalOrder = originalOrder.filter((_, i) => i !== index);
+
+      setOriginalOrder(newOriginalOrder);
+    }
+  };
+
+  /**
+   * ランクオプションを生成します。
+   * 「s2j-model-field rank.SelectControl.onChange()」メソッドから呼ばれます。
+   * 
+   * @returns ランクオプション
+   */
   const getRankOptions = () => {
     const options = rankLabels.map(label => ({
       value: label.slug,
@@ -49,85 +169,36 @@ export const ContentList: React.FC<ContentListProps> = ({
     return options;
   };
 
-  const addNewModel = async () => {
-    console.log('addNewModel called, current models:', contentModels.length);
-    const newModel: ContentModel = {
-      frontpage: 'NO',
-      rank: 'default',
-      logo: 0,
-      jump_url: '',
-      behavior: 'jump',
-      message: ''
-    };
-    const currentModels = pendingModels || contentModels;
-    const updatedModels = [...currentModels, newModel];
-    console.log('Updated models:', updatedModels.length);
-    
-    // 追加は常に保留状態にする
-    setPendingModels(updatedModels);
-    setHasUnsavedChanges(true);
-    // 新しいモデルの元の順序を追加
-    setOriginalOrder([...originalOrder, originalOrder.length]);
-  };
-
-  const updateModel = async (index: number, field: keyof ContentModel, value: any) => {
-    const currentModels = pendingModels || contentModels;
-    const updated = [...currentModels];
-    updated[index] = { ...updated[index], [field]: value };
-    
-    // 更新は常に保留状態にする
-    setPendingModels(updated);
-    setHasUnsavedChanges(true);
-  };
-
-  const deleteModel = async (index: number) => {
-    if (window.confirm(__('Are you sure you want to delete this item?', 's2j-alliance-manager'))) {
-      const currentModels = pendingModels || contentModels;
-      const updated = currentModels.filter((_, i) => i !== index);
-      
-      // 削除は常に保留状態にする
-      setPendingModels(updated);
-      setHasUnsavedChanges(true);
-      
-      // 元の順序も更新（削除されたインデックス以降を1つずつ前にずらす）
-      const newOriginalOrder = originalOrder.filter((_, i) => i !== index);
-      setOriginalOrder(newOriginalOrder);
-    }
-  };
-
-  const moveModel = (index: number, direction: 'up' | 'down') => {
-    const currentModels = pendingModels || contentModels;
-    const updated = [...currentModels];
-    const newIndex = direction === 'up' ? index - 1 : index + 1;
-    
-    if (newIndex >= 0 && newIndex < updated.length) {
-      [updated[index], updated[newIndex]] = [updated[newIndex], updated[index]];
-      setPendingModels(updated);
-      setHasUnsavedChanges(true);
-    }
-  };
-
+  /**
+   * メッセージ・モーダルを開きます。
+   * 「s2j-message-btn.onClick()」メソッドから呼ばれます。
+   * 
+   * @param index インデックス
+   */
   const openMessageModal = (index: number) => {
     setShowMessageModal(index);
   };
 
-  const closeMessageModal = () => {
-    setShowMessageModal(null);
-  };
-
+  /**
+   * メッセージを更新します。
+   * 「s2j-content-models.MessageModal.onSave()」メソッドから呼ばれます。
+   * 
+   * @param index インデックス
+   * @param message メッセージ
+   */
   const updateMessage = async (index: number, message: string) => {
     await updateModel(index, 'message', message);
+
+    // メッセージ・モーダルを閉じます。
     closeMessageModal();
   };
 
-  const saveChanges = async () => {
-    if (pendingModels) {
-      await onUpdate(pendingModels);
-      setPendingModels(null);
-      setHasUnsavedChanges(false);
-      // 保存後、元の順序をリセット（新しい順序が元の順序になる）
-      setOriginalOrder(pendingModels.map((_, index) => index));
-    }
+  /**
+   * メッセージ・モーダルを閉じます。
+   * 「updateMessage()」メソッドから呼ばれます。
+   */
+  const closeMessageModal = () => {
+    setShowMessageModal(null);
   };
 
   console.log('ContentList rendering with models:', contentModels.length, 'isLoading:', isLoading);

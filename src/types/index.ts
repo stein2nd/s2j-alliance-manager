@@ -1,10 +1,16 @@
-// S2J Alliance Manager - Type Definitions
+// 型定義
 
+/**
+ * 「設定」インターフェイス
+ */
 export interface AllianceSettings {
-  display_style: 'grid-single' | 'grid-multi' | 'masonry';
+  display_style: 'grid-single' | 'grid-multi';
   content_models: ContentModel[];
 }
 
+/**
+ * 「コンテンツモデル」インターフェイス
+ */
 export interface ContentModel {
   frontpage: 'YES' | 'NO';
   rank: string;
@@ -14,6 +20,9 @@ export interface ContentModel {
   message: string;
 }
 
+/**
+ * 「アライアンス・パートナー」インターフェイス
+ */
 export interface AlliancePartner {
   id: string;
   frontpage: boolean;
@@ -28,12 +37,18 @@ export interface AlliancePartner {
   message: string;
 }
 
+/**
+ * 「API レスポンス」インターフェイス
+ */
 export interface ApiResponse<T> {
   success: boolean;
   data?: T;
   message?: string;
 }
 
+/**
+ * 「WordPress メディア」インターフェイス
+ */
 export interface WordPressMedia {
   id: number;
   url: string;
@@ -47,23 +62,35 @@ export interface WordPressMedia {
   height: number;
 }
 
+/**
+ * オプション「表示スタイル」インターフェイス
+ */
 export interface DisplayStyle {
-  value: 'grid-single' | 'grid-multi' | 'masonry';
+  value: 'grid-single' | 'grid-multi';
   label: string;
   description: string;
 }
 
+/**
+ * オプション「ランク」インターフェイス
+ */
 export interface RankOption {
   value: string;
   label: string;
 }
 
+/**
+ * オプション「挙動」インターフェイス
+ */
 export interface BehaviorOption {
   value: 'jump' | 'modal';
   label: string;
   description: string;
 }
 
+/**
+ * 「ランクラベル」インターフェイス
+ */
 export interface RankLabel {
   id: number;
   title: string;
@@ -73,7 +100,9 @@ export interface RankLabel {
   slug: string;
 }
 
-// WordPress specific types
+/**
+ * WordPress ウィンドウ
+ */
 declare global {
   interface Window {
     s2jAllianceManager: {

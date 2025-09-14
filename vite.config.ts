@@ -1,8 +1,9 @@
 import { defineConfig } from 'vite';
 import { resolve } from 'path';
 import { rmSync } from 'fs';
+import { viteStaticCopy } from 'vite-plugin-static-copy';
 
-// FLUSH_DIST環境変数がtrueの場合、distディレクトリを削除
+// FLUSH_DIST 環境変数が true の場合、dist ディレクトリを削除
 if (process.env.FLUSH_DIST === 'true') {
   rmSync(
       'dist',
@@ -13,7 +14,7 @@ if (process.env.FLUSH_DIST === 'true') {
   );
 }
 
-// ビルド対象の設定を取得（npmスクリプト名から推測）
+// ビルド対象の設定を取得（npm スクリプト名から推測）
 const getBuildTarget = () => {
   const npmScript = process.env.npm_lifecycle_event;
   if (npmScript?.includes('admin')) return 'admin';
@@ -37,7 +38,8 @@ const getBuildConfig = (target: string) => {
           return {
               entry: resolve(__dirname, 'src/gutenberg/index.tsx'),
               name: 'S2JAllianceManagerGutenberg',
-              scss: resolve(__dirname, 'src/styles/gutenberg.scss')
+              scss: resolve(__dirname, 'src/styles/gutenberg.scss'),
+              blocks: ['alliance-banner'] // block.json ファイルからブロックタイプを取得
           };
       case 'classic':
           return {
@@ -139,6 +141,16 @@ export default defineConfig({
     reportCompressedSize: false, // 圧縮サイズレポートを無効化
     chunkSizeWarningLimit: 1000, // チャンクサイズ警告の閾値を1MBに設定
   },
+  plugins: [
+    ...(buildTarget === 'gutenberg' && buildConfig.blocks ? [
+      viteStaticCopy({
+        targets: buildConfig.blocks.map((block: string) => ({
+          src: `src/gutenberg/${block}/block.json`,
+          dest: `blocks/${block}`  // dist/blocks ディレクトリにコピー
+        }))
+      })
+    ] : [])
+  ],
   css: {
     preprocessorOptions: {
       scss: {

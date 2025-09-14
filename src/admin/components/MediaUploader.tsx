@@ -3,6 +3,9 @@ import { __ } from '@wordpress/i18n';
 import { Button } from '@wordpress/components';
 import { WordPressMedia } from '../../types';
 
+/**
+ * React.FunctionComponent「メディア・アップローダー」インターフェイス
+ */
 interface MediaUploaderProps {
   attachmentId: number;
   onSelect: (attachmentId: number) => void;
@@ -10,6 +13,13 @@ interface MediaUploaderProps {
   allowedTypes?: string[];
 }
 
+/**
+ * React.FunctionComponent「メディア・アップローダー」
+ * `src/admin/components/ContentList.tsx` で呼ばれる。
+ * 
+ * @param param0 メディア・アップローダー
+ * @returns メディア・アップローダー
+ */
 export const MediaUploader: React.FC<MediaUploaderProps> = ({
   attachmentId,
   onSelect,
@@ -21,18 +31,27 @@ export const MediaUploader: React.FC<MediaUploaderProps> = ({
 
   useEffect(() => {
     if (attachmentId > 0) {
+      // メディアを読み込みます。
       loadMedia(attachmentId);
     } else {
       setMedia(null);
     }
   }, [attachmentId]);
 
+  /**
+   * メディアを読み込みます。
+   * 「useEffect」から呼ばれます。
+   * 
+   * @param id 添付ファイルの ID
+   */
   const loadMedia = async (id: number) => {
     setIsLoading(true);
     try {
       const response = await fetch(`/wp-json/wp/v2/media/${id}`);
+
       if (response.ok) {
         const mediaData = await response.json();
+
         setMedia({
           id: mediaData.id,
           url: mediaData.source_url,
@@ -53,12 +72,19 @@ export const MediaUploader: React.FC<MediaUploaderProps> = ({
     }
   };
 
+  /**
+   * メディア・ライブラリを開きます。
+   * 「s2j-media-select-btn.onClick()」メソッドから呼ばれます。
+   * 
+   * @returns 
+   */
   const openMediaLibrary = () => {
     if (!window.wp?.media) {
       console.error('WordPress media library not available');
       return;
     }
 
+    // メディア・ライブラリを開きます。
     const frame = window.wp.media({
       title: label || __('Select Media', 's2j-alliance-manager'),
       button: {
@@ -72,12 +98,18 @@ export const MediaUploader: React.FC<MediaUploaderProps> = ({
 
     frame.on('select', () => {
       const attachment = frame.state().get('selection').first().toJSON();
+
+      // メディアを選択します。
       onSelect(attachment.id);
     });
 
     frame.open();
   };
 
+  /**
+   * メディアを削除します。
+   * 「s2j-media-remove-btn.onClick()」メソッドから呼ばれます。
+   */
   const removeMedia = () => {
     onSelect(0);
   };

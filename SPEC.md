@@ -31,51 +31,60 @@
 ### 2.1 フォルダ構成
 
 ```
-s2j-alliance-manager/
-├─ `package.json` # ビルド設定
-├─ `SPEC.md` # プラグイン固有仕様
-├─ `vite.config.ts`
-├─ `tsconfig.json`
-├─ `eslint.config.js` # ESLint設定
-├─ `LICENSE`
-├─ `readme.md`
-├─ `s2j-alliance-manager.php` # プラグイン本体
-├─ `uninstall.php` # プラグイン削除時の処理
-├─ includes/ # PHP クラス群 (REST、Settings、Admin UI)
+wp-content/plugins/s2j-alliance-manager/
+├── `readme.md`
+├── `LICENSE`
+├── `SPEC.md` # プラグイン固有仕様
+├── `vite.config.ts`
+├── `tsconfig.json`
+├── `eslint.config.js` # ESLint設定
+├── `s2j-alliance-manager.php` # プラグイン本体
+├── `uninstall.php` # プラグイン削除時の処理
+├── `package.json` # ビルド設定
+├── node_modules/
+├┬─ languages/ # 翻訳ファイル (.pot、.po、.mo)
+│└─ s2j-alliance-manager.pot
+├┬─ includes/ # PHP クラス群 (REST、Settings、Admin UI)
 │├─ `SettingsPage.php` (設定画面)
 │├─ `RestController.php` (REST API)
-│├─ `AllianceManager.php` (Gutenberg ブロック)
-│└─ ...
-├─ src/ # TypeScript/React (Gutenberg ブロック、設定画面) /SCSS ソース
-│├─ admin/ # 設定画面用
+│└─ `AllianceManager.php` (Gutenberg ブロック)
+├┬─ src/ # TypeScript/React (Gutenberg ブロック、設定画面) /SCSS ソース
+│├┬─ admin/ # 設定画面用
 ││├─ `index.tsx` # 管理画面メインエントリーポイント
-││├─ components/
-│││├─ `SettingsForm.tsx` # 初期設定保存フォーム
+││├┬─ components/
+│││├─ `SettingsForm.tsx` # 設定保存フォーム
 │││├─ `ContentList.tsx` # 一覧表 UI (Create Content Model実装)
 │││├─ `RankLabelManager.tsx`  # ランクラベル管理 UI
-│││├─ `MessageModal.tsx` # メッセージ編集モーダル
-│││└─ `MediaUploader.tsx` # WPメディアアップローダ統合
-││└─ data/
+│││├─ `MediaUploader.tsx` # WordPress メディアアップローダー統合
+│││└─ `MessageModal.tsx` # メッセージ編集モーダル
+││└┬─ data/
 ││　└─ `constants.ts` # 定数定義 (表示形式、ランク、動作オプション)
-│├─ gutenberg/ # Gutenberg ブロック用
-││└─ `index.tsx`
-│├─ classic/ # MetaBox 用
+│├┬─ gutenberg/ # Gutenberg ブロック用
+││├─ `index.tsx`
+││└┬─ alliance-banner
+││　└─ `block.json` # ブロック定義
+│├┬─ classic/ # MetaBox 用
 ││└─ `index.ts`
-│├─ styles/ # プラグイン用のスタイル定義
+│├┬─ styles/ # プラグイン用のスタイル定義
 ││├─ `admin.scss` (設定画面用)
 ││├─ `gutenberg.scss` (Gutenberg ブロック用)
 ││├─ `classic.scss` (MetaBox 用)
-││├─ `variables.scss` (SCSS 変数定義)
-││└─ ...
-│└─ types/ # プラグイン用のグローバル・タイプ・定義
+││└─ `variables.scss` (SCSS 変数定義)
+│└┬─ types/ # プラグイン用のグローバル・タイプ・定義
 │　├─ `index.ts` (ContentModel 型定義)
 │　└─ `wordpress.d.ts` (WordPress 型定義)
-├─ dist/ # Vite ビルド成果物 (Git 管理外)、アイコン
-│├─ js/ # プラグイン用の Gutenberg ブロック、設定画面
-││└─ ...
-│└─ css/ # プラグイン用のスタイル定義
-│　└─ ...
-└─ languages/ # 翻訳ファイル (.pot、.po、.mo)
+└┬─ dist/ # Vite ビルド成果物 (Git 管理外)、アイコン
+　├┬─ blocks
+　│└┬─ alliance-banner
+　│　└─ `block.json` # ブロック定義
+　├┬─ css/ # プラグイン用のスタイル定義
+　│├─ s2j-alliance-manager-admin.css
+　│├─ s2j-alliance-manager-gutenberg.css
+　│└─ s2j-alliance-manager-classic.css
+　└┬─ js/ # プラグイン用の Gutenberg ブロック、設定画面
+　　├─ s2j-alliance-manager-admin.js
+　　├─ s2j-alliance-manager-gutenberg.js
+　　└─ s2j-alliance-manager-classic.js
 ```
 
 ### 2.2 主要ファイル
@@ -164,6 +173,13 @@ s2j-alliance-manager/
 * **コード分割**: 管理画面、Gutenberg、Classic エディタ用を分離します。
 * **最小化**: 本番環境でのファイルサイズ最適化を目指します。
 
+### 4.5 デバッグ機能
+
+* **ヘルプタブ統合**: WordPress 標準のヘルプシステムを活用
+* **条件付き表示**: Alliance Manager 専用管理画面でのみ表示
+* **視覚的デザイン**: カード形式、カラーコーディング、絵文字使用
+* **レスポンシブ対応**: 管理画面の幅に応じた表示調整
+
 ## 5. 国際化
 
 * テキストはすべて `__()` または `_e()` を使用します。
@@ -245,19 +261,12 @@ s2j-alliance-manager/
   * 「キャンセル」ボタンのクリックで、ローカル state を「初期取得データ」にリセットします。
 * ラベルの多言語対応は、ユーザー自身で行える様、Polylang / WPML 対応とします。
 
-**実装詳細:**
-* **データフロー**: 親コンポーネント (AllianceManagerAdmin) でランクラベル・データを一元管理します。
-* **リアルタイム連携**: ランクラベル保存後、即座に ContentList の rank 選択肢が更新されます。
-* **状態管理**: 保留中の変更は視覚的にハイライト表示され、保存・キャンセル操作が可能です。
-* **権限管理**: 管理者権限に `edit_s2j_am_rank_labels` 権限を自動付与します。
-
 #### 6.1.5 データフローと状態管理
 
-* **親コンポーネント管理**: AllianceManagerAdmin クラスでランクラベル・データを一元管理
-* **リアルタイム同期**: ランクラベル保存後、ContentList の rank 選択肢が即座に更新
-* **状態の分離**: ランクラベル管理とメインコンテンツ管理は、独立した状態管理
-* **視覚的フィードバック**: 保留中の変更は、背景色のハイライトで視覚化
-* **データの整合性**: 親コンポーネント経由で、データの整合性を保証
+* **データフロー**: 親コンポーネント (AllianceManagerAdmin) でランクラベル・データを一元管理し、データの整合性を保証します。
+* **リアルタイム連携**: ランクラベル保存後、即座に ContentList の rank 選択肢が更新されます。
+* **状態管理**: ランクラベル管理とメインコンテンツ管理は、独立した状態管理とし、保留中の変更は視覚的にハイライト表示され、保存・キャンセル操作が可能です。
+* **権限管理**: 管理者権限に `edit_s2j_am_rank_labels` 権限を自動付与します。
 
 ### 6.2 Gutenberg ブロック対応
 

@@ -97,8 +97,29 @@ class S2J_Alliance_Manager_AllianceManager {
      * @return void
      */
     private function register_block_assets() {
-        // JavaScript と CSS は block.json の設定により自動的に処理されるため、ここでは登録しません。
-        // これにより、ブロックが使用される時のみアセットが読み込まれます。
+        $js_path = S2J_ALLIANCE_MANAGER_PLUGIN_DIR . 'dist/js/s2j-alliance-manager-gutenberg.js';
+        $css_path = S2J_ALLIANCE_MANAGER_PLUGIN_DIR . 'dist/css/s2j-alliance-manager-gutenberg.css';
+        
+        if (file_exists($js_path)) {
+            // スクリプトを登録します（block.jsonで参照されるため必要）
+            wp_register_script(
+                's2j-alliance-manager-gutenberg',
+                S2J_ALLIANCE_MANAGER_PLUGIN_URL . 'dist/js/s2j-alliance-manager-gutenberg.js',
+                array('wp-blocks', 'wp-element', 'wp-block-editor', 'wp-components', 'wp-i18n'),
+                S2J_ALLIANCE_MANAGER_VERSION,
+                true
+            );
+        }
+        
+        if (file_exists($css_path)) {
+            // スタイルを登録します（block.jsonで参照されるため必要）
+            wp_register_style(
+                's2j-alliance-manager-gutenberg',
+                S2J_ALLIANCE_MANAGER_PLUGIN_URL . 'dist/css/s2j-alliance-manager-gutenberg.css',
+                array('wp-edit-blocks'),
+                S2J_ALLIANCE_MANAGER_VERSION
+            );
+        }
     }
 
     /**
@@ -115,6 +136,24 @@ class S2J_Alliance_Manager_AllianceManager {
         // コンテンツデータを取得します。
         $alliance_data = $this->get_alliance_data();
         
+        // デバッグ用ログ（一時的）
+        if (defined('WP_DEBUG') && WP_DEBUG) {
+            error_log('S2J Alliance Manager: Alliance data: ' . print_r($alliance_data, true));
+            
+            // 設定データも確認
+            $settings = get_option('s2j_alliance_manager_settings', array());
+            error_log('S2J Alliance Manager: Settings: ' . print_r($settings, true));
+            
+            // ランクラベルも確認
+            $rank_labels = get_posts(array(
+                'post_type' => 's2j_am_rank_label',
+                'post_status' => 'publish',
+                'numberposts' => -1,
+                'orderby' => 'menu_order',
+                'order' => 'ASC'
+            ));
+            error_log('S2J Alliance Manager: Rank labels: ' . print_r($rank_labels, true));
+        }
         
         if (empty($alliance_data)) {
             return '<p>' . __('No alliance partners found.', 's2j-alliance-manager') . '</p>';
@@ -168,23 +207,37 @@ class S2J_Alliance_Manager_AllianceManager {
         </div>
         <?php // アライアンスパートナー向けメッセージ用モーダル・スクリプト ?>
         <script>
-        jQuery(document).ready(function($) {
-            $('.s2j-alliance-partner-modal').on('click', function() {
-                var message = $(this).data('message');
-                $('#s2j-alliance-modal .s2j-alliance-modal-message').html(message);
-                $('#s2j-alliance-modal').show();
-            });
-            
-            $('.s2j-alliance-modal-close').on('click', function() {
-                $('#s2j-alliance-modal').hide();
-            });
-            
-            $(document).on('click', function(e) {
-                if ($(e.target).hasClass('s2j-alliance-modal')) {
-                    $('#s2j-alliance-modal').hide();
+        (function() {
+            function initAllianceModal() {
+                // jQueryが利用可能かチェック
+                if (typeof jQuery === 'undefined') {
+                    // jQueryが利用できない場合は、setTimeoutで再試行
+                    setTimeout(initAllianceModal, 100);
+                    return;
                 }
-            });
-        });
+                
+                jQuery(document).ready(function($) {
+                    $('.s2j-alliance-partner-modal').on('click', function() {
+                        var message = $(this).data('message');
+                        $('#s2j-alliance-modal .s2j-alliance-modal-message').html(message);
+                        $('#s2j-alliance-modal').show();
+                    });
+                    
+                    $('.s2j-alliance-modal-close').on('click', function() {
+                        $('#s2j-alliance-modal').hide();
+                    });
+                    
+                    $(document).on('click', function(e) {
+                        if ($(e.target).hasClass('s2j-alliance-modal')) {
+                            $('#s2j-alliance-modal').hide();
+                        }
+                    });
+                });
+            }
+            
+            // 初期化を開始
+            initAllianceModal();
+        })();
         </script>
         <?php
         return ob_get_clean();
@@ -222,7 +275,16 @@ class S2J_Alliance_Manager_AllianceManager {
             $matching_items = array_filter(
                 $content_models,
                 function($item) use ($rank_title) {
-                    return isset($item['rank']) && $item['rank'] === $rank_title && isset($item['frontpage']) && $item['frontpage'] === 'YES';
+                    // 大文字小文字を区別しない比較と、default の特別処理
+                    $item_rank = isset($item['rank']) ? strtolower($item['rank']) : '';
+                    $rank_title_lower = strtolower($rank_title);
+                    
+                    // default は最初のランク (Silver) にマッチさせる
+                    if ($item_rank === 'default' && $rank_title_lower === 'silver') {
+                        return isset($item['frontpage']) && $item['frontpage'] === 'YES';
+                    }
+                    
+                    return $item_rank === $rank_title_lower && isset($item['frontpage']) && $item['frontpage'] === 'YES';
                 }
             );
             
@@ -339,8 +401,12 @@ class S2J_Alliance_Manager_AllianceManager {
      * @return void
      */
     public function enqueue_frontend_assets() {
-        // フロントエンドでのみスタイルをキューに追加（管理画面では block.json が自動的に処理）
+        // フロントエンドでのみスタイルとjQueryをキューに追加（管理画面では block.json が自動的に処理）
         if (!is_admin()) {
+            // jQueryを確実に読み込む
+            wp_enqueue_script('jquery');
+            
+            // フロントエンド用スタイルを読み込む
             wp_enqueue_style(
                 's2j-alliance-manager-gutenberg',
                 S2J_ALLIANCE_MANAGER_PLUGIN_URL . 'dist/css/s2j-alliance-manager-gutenberg.css',

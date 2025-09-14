@@ -28,10 +28,10 @@
 
 ## 2. プロジェクト構成
 
-### 2.1 フォルダ構成
+### 2.1 フォルダ構成・ファイル構成
 
 ```
-wp-content/plugins/s2j-alliance-manager/
+`s2j-alliance-manager`/
 ├── `readme.md`
 ├── `LICENSE`
 ├── `SPEC.md` # プラグイン固有仕様
@@ -43,7 +43,7 @@ wp-content/plugins/s2j-alliance-manager/
 ├── `package.json` # ビルド設定
 ├── node_modules/
 ├┬─ languages/ # 翻訳ファイル (.pot、.po、.mo)
-│└─ s2j-alliance-manager.pot
+│└─ `s2j-alliance-manager.pot`
 ├┬─ includes/ # PHP クラス群 (REST、Settings、Admin UI)
 │├─ `SettingsPage.php` (設定画面)
 │├─ `RestController.php` (REST API)

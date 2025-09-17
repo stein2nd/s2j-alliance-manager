@@ -23,7 +23,7 @@
   * MetaBox により、Classic エディタに対応します。
     * Gutenberg ブロックでの処理内容を基本的に再現します。
   * 管理画面でバナー画像(または動画)・リンク先 URL・グループ等を保存します。
-    * 管理 UI は [Create Content Model](https://github.com/Automattic/create-content-model) を取込んで実装します。
+    * 管理 UI は独自の React コンポーネントで実装します (設計において、[Create Content Model](https://github.com/Automattic/create-content-model) の機能を参考とします。
     * basic版 / pro版 を視野に入れた設計とします (masonry 表示は pro 版にて提供)。
 
 ## 2. プロジェクト構成
@@ -53,7 +53,7 @@
 ││├─ `index.tsx` # 管理画面メインエントリーポイント
 ││├┬─ components/
 │││├─ `SettingsForm.tsx` # 設定保存フォーム
-│││├─ `ContentList.tsx` # 一覧表 UI (Create Content Model実装)
+│││├─ `ContentList.tsx` # 一覧表 UI (独自実装)
 │││├─ `RankLabelManager.tsx`  # ランクラベル管理 UI
 │││├─ `MediaUploader.tsx` # WordPress メディアアップローダー統合
 │││└─ `MessageModal.tsx` # メッセージ編集モーダル
@@ -94,7 +94,7 @@
 * `includes/RestController.php` : REST API エンドポイント定義・データ処理
 * `includes/AllianceManager.php` : Gutenberg ブロック登録・レンダリング
 * `src/admin/index.tsx` : 管理画面のメイン・エントリーポイント (React 初期化・データ管理・ランクラベル状態管理)
-* `src/admin/components/ContentList.tsx` : 一覧表 UI (Create Content Model 実装)
+* `src/admin/components/ContentList.tsx` : 一覧表 UI (Create Content Model 不使用)
 * `src/admin/components/RankLabelManager.tsx` : ランクラベル管理 UI
 * `src/admin/components/SettingsForm.tsx` : 表示形式設定フォーム
 * `src/admin/components/MessageModal.tsx` : メッセージ編集モーダル
@@ -162,7 +162,7 @@
 ### 4.3 コンポーネント設計
 
 * **ContentList**: アライアンス・パートナー一覧の管理 UI
-* **RankLabelManager**: ランクラベル管理 UI (インライン編集、ドラッグ & ドロップ対応)
+* **RankLabelManager**: ランクラベル管理 UI (インライン編集、Up/Down ボタンによる並び替え)
 * **MediaUploader**: WordPress メディア・ライブラリとの統合
 * **MessageModal**: モーダル表示機能
 * **SettingsForm**: 表示設定フォーム
@@ -211,11 +211,12 @@
 
 #### 6.1.2 一覧表
 
-* [Create Content Model](https://github.com/Automattic/create-content-model) で実装します。
+* 独自の React コンポーネントで実装します。
+  * 行番号表示、保留状態の視覚化、一括保存機能を含む管理 UI を提供します。
   * **行番号表示**: 各レコードに `#1`, `#2`, `#3` の形式で行番号を表示。
-  * **保留状態の視覚化**: 変更がある場合は、全行の背景がクリーム色に変化。左端にインジケーター表示。
-  * **Save ボタン**: 何らかの変更がある場合に表示。一括保存機能。
+    * 保留状態では元の順序番号を表示し、変更の視覚化を行います。
   * **レイアウト**: メインコンテンツ (ContentList) を左側、サイドバー (Display Settings) を右側に配置。
+    * レスポンシブデザインに対応し、モバイル環境では縦積みレイアウトとします。
   * **ボタンスタイル**: すべてのボタンラベルを span 要素でラップし、SCSS で統一管理。
   * **フィールド構成**:
     * `frontpage` (チェックボックス) … 掲出有無。
@@ -254,7 +255,8 @@
   * `content` (説明)
   * `thumbnail_id` (サムネイル画像 ID)
   * `menu_order` (並び順)
-* ドラッグ & ドロップで並び替え、 `menu_order` を更新可能にします。
+* 並び替えは「Up」「Down」ボタンで行い、 `menu_order` を更新可能にします。
+  * 将来的にドラッグ & ドロップ機能の追加を検討します。
 * 変更内容は、メインコンテンツ (ContentList) とは別にローカル state 保持とします。
   * 「初期取得データ」と変動が発生した行の背景色はハイライト表示し、「保存前である」ことを視覚化します。
   * 「ランク保存」ボタンのクリックで一括保存します。

@@ -36,7 +36,7 @@
     "react-dom": "^18.2.0"
   },
   "overrides": {
-    "rollup": "^4.50.1"
+    "rollup": "^4.50.2"
   },
   "devDependencies": {
     "@types/jquery": "^3.5.33",
@@ -57,7 +57,7 @@
     "eslint": "^9.34.0",
     "eslint-plugin-react": "^7.37.5",
     "eslint-plugin-react-hooks": "^5.2.0",
-    "rollup": "^4.50.1",
+    "rollup": "^4.50.2",
     "sass": "^1.92.1",
     "stylelint": "^16.23.1",
     "stylelint-config-standard-scss": "^15.0.1",

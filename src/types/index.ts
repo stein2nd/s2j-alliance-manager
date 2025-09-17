@@ -5,6 +5,7 @@
  */
 export interface AllianceSettings {
   display_style: 'grid-single' | 'grid-multi';
+  alignment?: 'left' | 'center' | 'right';
   content_models: ContentModel[];
 }
 
@@ -86,6 +87,14 @@ export interface BehaviorOption {
   value: 'jump' | 'modal';
   label: string;
   description: string;
+}
+
+/**
+ * オプション「配置」インターフェイス
+ */
+export interface AlignmentOption {
+  value: 'left' | 'center' | 'right';
+  label: string;
 }
 
 /**

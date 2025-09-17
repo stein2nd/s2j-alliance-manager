@@ -1,4 +1,4 @@
-import { DisplayStyle, RankOption, BehaviorOption } from '../../types';
+import { DisplayStyle, RankOption, BehaviorOption, AlignmentOption } from '../../types';
 import { __ } from '@wordpress/i18n';
 
 /**
@@ -48,4 +48,13 @@ export const behaviorOptions: BehaviorOption[] = [
     label: __('Show Modal', 's2j-alliance-manager'),
     description: __('Clicking the logo will show a modal with the specified message', 's2j-alliance-manager')
   }
+];
+
+/**
+ * オプション「配置」
+ */
+export const alignmentOptions: AlignmentOption[] = [
+  { value: 'left', label: __('Left', 's2j-alliance-manager') },
+  { value: 'center', label: __('Center', 's2j-alliance-manager') },
+  { value: 'right', label: __('Right', 's2j-alliance-manager') }
 ];

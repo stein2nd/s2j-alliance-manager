@@ -2,18 +2,19 @@ import { __ } from '@wordpress/i18n';
 import { useBlockProps, InspectorControls } from '@wordpress/block-editor';
 import { PanelBody, SelectControl, Placeholder } from '@wordpress/components';
 import { registerBlockType } from '@wordpress/blocks';
-import { displayStyles } from '../admin/data/constants';
+import { displayStyles, alignmentOptions } from '../admin/data/constants';
 import '@/styles/gutenberg.scss';
 
 /**
- * React.FunctionComponentブロックの属性「AllianceBanner：Attributes」インターフェイス
+ * React.FunctionComponent ブロックの属性「AllianceBanner：Attributes」インターフェイス
  */
 interface AllianceBannerAttributes {
   displayStyle: 'grid-single' | 'grid-multi';
+  alignment?: 'left' | 'center' | 'right';
 }
 
 /**
- * React.FunctionComponentブロックの属性「AllianceBanner：Props」インターフェイス
+ * React.FunctionComponent ブロックの属性「AllianceBanner：Props」インターフェイス
  */
 interface AllianceBannerProps {
   attributes: AllianceBannerAttributes;
@@ -37,7 +38,7 @@ const AllianceBannerEdit: React.FC<AllianceBannerProps> = ({
     className: 'wp-block-s2j-alliance-manager-alliance-banner'
   });
 
-  const { displayStyle } = attributes;
+  const { displayStyle, alignment } = attributes;
 
   return (
     <>
@@ -52,6 +53,17 @@ const AllianceBannerEdit: React.FC<AllianceBannerProps> = ({
             }))}
             onChange={(value: string) => setAttributes({ displayStyle: value as AllianceBannerAttributes['displayStyle'] })}
             help={__('Choose how alliance banners are displayed.', 's2j-alliance-manager')}
+          />
+          <SelectControl
+            label={__('Alignment', 's2j-alliance-manager')}
+            value={alignment || 'center'}
+            options={alignmentOptions.map(option => ({
+              label: option.label,
+              value: option.value
+            }))}
+            onChange={(value: string) => setAttributes({ alignment: value as AllianceBannerAttributes['alignment'] })}
+            help={__('Choose alignment for Single Column Grid display.', 's2j-alliance-manager')}
+            disabled={displayStyle !== 'grid-single'}
           />
         </PanelBody>
       </InspectorControls>

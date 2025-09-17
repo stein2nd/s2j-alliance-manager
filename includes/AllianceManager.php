@@ -101,7 +101,7 @@ class S2J_Alliance_Manager_AllianceManager {
         $css_path = S2J_ALLIANCE_MANAGER_PLUGIN_DIR . 'dist/css/s2j-alliance-manager-gutenberg.css';
         
         if (file_exists($js_path)) {
-            // スクリプトを登録します（block.jsonで参照されるため必要）
+            // スクリプトを登録します（block.json で参照されるため必要）
             wp_register_script(
                 's2j-alliance-manager-gutenberg',
                 S2J_ALLIANCE_MANAGER_PLUGIN_URL . 'dist/js/s2j-alliance-manager-gutenberg.js',
@@ -132,6 +132,7 @@ class S2J_Alliance_Manager_AllianceManager {
      */
     public function render_alliance_banner_block($attributes) {
         $display_style = $attributes['displayStyle'] ?? 'grid-single';
+        $alignment = $attributes['alignment'] ?? 'center';
         
         // コンテンツデータを取得します。
         $alliance_data = $this->get_alliance_data();
@@ -160,8 +161,14 @@ class S2J_Alliance_Manager_AllianceManager {
         }
         
         ob_start();
+        
+        // クラス名の構築
+        $banner_class = 's2j-alliance-banner s2j-alliance-banner--' . esc_attr($display_style);
+        if ($display_style === 'grid-single') {
+            $banner_class .= ' s2j-alliance-banner--align-' . esc_attr($alignment);
+        }
         ?>
-        <div class="s2j-alliance-banner s2j-alliance-banner--<?php echo esc_attr($display_style); ?>">
+        <div class="<?php echo $banner_class; ?>">
             <?php foreach ($alliance_data as $rank => $partners): ?>
                 <div class="s2j-alliance-rank">
                     <h3 class="s2j-alliance-rank-title"><?php echo esc_html($rank); ?></h3>
@@ -175,20 +182,25 @@ class S2J_Alliance_Manager_AllianceManager {
                                     </div>
                                 <?php else: ?>
                                     <?php // 通常のパートナーレコード ?>
-                                    <?php if ($partner['behavior'] === 'jump' && !empty($partner['jump_url'])): ?>
+                                    <?php 
+                                    $trimmed_jump_url = trim($partner['jump_url']);
+                                    if ($partner['behavior'] === 'jump' && !empty($trimmed_jump_url)): ?>
                                         <?php // リンクの場合 ?>
-                                        <a href="<?php echo esc_url($partner['jump_url']); ?>" 
+                                        <a href="<?php echo esc_url($trimmed_jump_url); ?>" 
                                            target="_blank" 
                                            rel="noopener noreferrer"
                                            class="s2j-alliance-partner-link">
                                             <?php echo $this->render_partner_logo($partner); ?>
                                         </a>
-                                    <?php else: ?>
+                                    <?php elseif ($partner['behavior'] === 'modal'): ?>
                                         <?php // モーダルの場合 ?>
                                         <div class="s2j-alliance-partner-modal" 
                                              data-message="<?php echo esc_attr($partner['message']); ?>">
                                             <?php echo $this->render_partner_logo($partner); ?>
                                         </div>
+                                    <?php else: ?>
+                                        <?php // jump_url が空の場合、何もラップしない ?>
+                                        <?php echo $this->render_partner_logo($partner); ?>
                                     <?php endif; ?>
                                 <?php endif; ?>
                             </div>
@@ -209,9 +221,9 @@ class S2J_Alliance_Manager_AllianceManager {
         <script>
         (function() {
             function initAllianceModal() {
-                // jQueryが利用可能かチェック
+                // jQuery が利用可能かチェック
                 if (typeof jQuery === 'undefined') {
-                    // jQueryが利用できない場合は、setTimeoutで再試行
+                    // jQuery が利用できない場合は、setTimeout で再試行
                     setTimeout(initAllianceModal, 100);
                     return;
                 }
@@ -401,9 +413,9 @@ class S2J_Alliance_Manager_AllianceManager {
      * @return void
      */
     public function enqueue_frontend_assets() {
-        // フロントエンドでのみスタイルとjQueryをキューに追加（管理画面では block.json が自動的に処理）
+        // フロントエンドでのみスタイルと jQuery をキューに追加（管理画面では block.json が自動的に処理）
         if (!is_admin()) {
-            // jQueryを確実に読み込む
+            // jQuery を確実に読み込む
             wp_enqueue_script('jquery');
             
             // フロントエンド用スタイルを読み込む
@@ -425,7 +437,7 @@ class S2J_Alliance_Manager_AllianceManager {
      */
     public function add_debug_help_tab() {
 
-        // Alliance Manager専用の管理画面かどうかを判定します。
+        // Alliance Manager 専用の管理画面かどうかを判定します。
         if (!$this->is_alliance_manager_admin_page()) {
             return;
         }
@@ -449,7 +461,7 @@ class S2J_Alliance_Manager_AllianceManager {
     }
 
     /**
-     * Alliance Manager専用の管理画面かどうかを判定します。
+     * Alliance Manager 専用の管理画面かどうかを判定します。
      * 「add_debug_help_tab()」メソッドから呼ばれます。
      * 
      * @return bool
@@ -511,7 +523,7 @@ class S2J_Alliance_Manager_AllianceManager {
         $debug_title = '🔧 ' . __('S2J Alliance Manager Debug Information', 's2j-alliance-manager');
         $debug_description = __("Displays the plugin's operational status and system information.", 's2j-alliance-manager');
 
-        // WordPress環境情報
+        // WordPress 環境情報
         $wordpress_environment_title = '🌐 ' . __('WordPress Environment', 's2j-alliance-manager');
         $wordpress_version_label = __('WordPress Version', 's2j-alliance-manager');
         $wordpress_version_value = get_bloginfo('version');

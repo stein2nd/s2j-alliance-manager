@@ -5,12 +5,64 @@
 .s2j-alliance-banner {
   margin: $spacing-lg 0;
   
-  // Display Styles
+  // 表示スタイル
   &--grid-single {
     .s2j-alliance-partners {
       display: grid;
       grid-template-columns: 1fr;
       gap: $spacing-md;
+    }
+    
+    // 配置オプション
+    &--align-left {
+      .s2j-alliance-partners {
+        justify-items: start;
+      }
+      
+      .s2j-alliance-partner {
+        text-align: left;
+        
+        .s2j-alliance-partner-logo,
+        .s2j-alliance-partner-link,
+        .s2j-alliance-partner-modal {
+          display: block;
+          text-align: left;
+        }
+      }
+    }
+    
+    &--align-center {
+      .s2j-alliance-partners {
+        justify-items: center;
+      }
+      
+      .s2j-alliance-partner {
+        text-align: center;
+        
+        .s2j-alliance-partner-logo,
+        .s2j-alliance-partner-link,
+        .s2j-alliance-partner-modal {
+          display: block;
+          text-align: center;
+        }
+      }
+    }
+    
+    &--align-right {
+      .s2j-alliance-partners {
+        justify-items: end;
+      }
+      
+      .s2j-alliance-partner {
+        text-align: right;
+        
+        .s2j-alliance-partner-logo,
+        .s2j-alliance-partner-link,
+        .s2j-alliance-partner-modal {
+          display: block;
+          text-align: right;
+        }
+      }
     }
   }
   
@@ -116,7 +168,7 @@
   }
 }
 
-// Modal Styles
+// モーダル・スタイル
 .s2j-alliance-modal {
   position: fixed;
   top: 0;
@@ -172,7 +224,7 @@
   }
 }
 
-// Gutenberg Editor Styles
+// Gutenberg エディター・スタイル
 .wp-block-s2j-alliance-manager-alliance-banner {
   .s2j-alliance-banner {
     border: 2px dashed $border-color;
@@ -190,7 +242,7 @@
   }
 }
 
-// Responsive Design
+// レスポンシブ・デザイン
 @media (max-width: $breakpoint-sm) {
   .s2j-alliance-modal {
     padding: $spacing-sm;

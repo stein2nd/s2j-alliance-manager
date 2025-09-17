@@ -25,6 +25,10 @@
     "displayStyle": {
       "type": "string",
       "default": "grid-single"
+    },
+    "alignment": {
+      "type": "string",
+      "default": "center"
     }
   }
 }

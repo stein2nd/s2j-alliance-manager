@@ -112,7 +112,7 @@ class S2J_Alliance_Manager_AllianceManager {
         }
         
         if (file_exists($css_path)) {
-            // スタイルを登録します（block.jsonで参照されるため必要）
+            // スタイルを登録します（block.json で参照されるため必要）
             wp_register_style(
                 's2j-alliance-manager-gutenberg',
                 S2J_ALLIANCE_MANAGER_PLUGIN_URL . 'dist/css/s2j-alliance-manager-gutenberg.css',
@@ -508,208 +508,166 @@ class S2J_Alliance_Manager_AllianceManager {
         $css_registered = wp_style_is('s2j-alliance-manager-gutenberg', 'registered');
         $css_enqueued = wp_style_is('s2j-alliance-manager-gutenberg', 'enqueued');
 
-        $html = <<<HTML01
-        <div class="s2j-debug-info" style="font-family: -apple-system, BlinkMacSystemFont, \'Segoe UI\', Roboto, Oxygen-Sans, Ubuntu, Cantarell, \'Helvetica Neue\', sans-serif;">
-            <div style="background: #f1f1f1; padding: 15px; margin: -10px -10px 20px -10px; border-left: 4px solid #0073aa;">
-        HTML01;
-
-        $html .= '<h2 style="margin: 0; color: #23282d; font-size: 18px;">🔧' . __('S2J Alliance Manager Debug Information', 's2j-alliance-manager') . '</h2>';
-        $html .= '<p style="margin: 5px 0 0 0; color: #666; font-size: 14px;">' . __("Displays the plugin's operational status and system information.", 's2j-alliance-manager') . '</p>';
-
-        $html .= <<<HTML01A
-            </div>
-            <div style="background: #fff; border: 1px solid #ccd0d4; border-radius: 4px; margin-bottom: 20px; overflow: hidden;">
-                <div style="background: #f9f9f9; padding: 12px 15px; border-bottom: 1px solid #ccd0d4;">
-        HTML01A;
-
-        $html .= '<h3 style="margin: 0; font-size: 16px; color: #23282d;">🌐 ' . __('WordPress Environment', 's2j-alliance-manager') . '</h3>';
-
-        $html .= <<<HTML01B
-                </div>
-                <div style="padding: 15px;">
-                    <div style="display: flex; justify-content: space-between; align-items: center; padding: 8px 0; border-bottom: 1px solid #f0f0f1;">
-        HTML01B;
-
-        $html .= '<span style="font-weight: 600; color: #23282d;">' . __('WordPress Version', 's2j-alliance-manager') . '</span>';
-
-        $html .= <<<HTML01C
-                        <span style="background: #e7f3ff; color: #0073aa; padding: 4px 8px; border-radius: 3px; font-size: 13px;">
-        HTML01C;
+        $debug_title = '🔧 ' . __('S2J Alliance Manager Debug Information', 's2j-alliance-manager');
+        $debug_description = __("Displays the plugin's operational status and system information.", 's2j-alliance-manager');
 
         // WordPress環境情報
-        $html .= '' . get_bloginfo('version') . '</span>';
+        $wordpress_environment_title = '🌐 ' . __('WordPress Environment', 's2j-alliance-manager');
+        $wordpress_version_label = __('WordPress Version', 's2j-alliance-manager');
+        $wordpress_version_value = get_bloginfo('version');
 
-        $html .= <<<HTML02
-                    </div>
-                    <div style="display: flex; justify-content: space-between; align-items: center; padding: 8px 0;">
-        HTML02;
-
-        $html .= '<span style="font-weight: 600; color: #23282d;">' . __('Gutenberg Available', 's2j-alliance-manager') . '</span>';
-        $html .= '<span style="background: ' . (function_exists('register_block_type') ? '#d4edda' : '#f8d7da') . '; color: ' . (function_exists('register_block_type') ? '#155724' : '#721c24') . '; padding: 4px 8px; border-radius: 3px; font-size: 13px;">' . (function_exists('register_block_type') ? '✅ Yes' : '❌ No') . '</span>';
-
-        $html .= <<<HTML03
-                    </div>
-                </div>
-            </div>
-            <div style="background: #fff; border: 1px solid #ccd0d4; border-radius: 4px; margin-bottom: 20px; overflow: hidden;">
-                <div style="background: #f9f9f9; padding: 12px 15px; border-bottom: 1px solid #ccd0d4;">
-        HTML03;
-
-        $html .= '<h3 style="margin: 0; font-size: 16px; color: #23282d;">🧩 ' . __('Block Information', 's2j-alliance-manager') . '</h3>';
-
-        $html .= <<<HTML03A
-                </div>
-                <div style="padding: 15px;">
-                    <div style="display: flex; justify-content: space-between; align-items: center; padding: 8px 0; border-bottom: 1px solid #f0f0f1;">
-        HTML03A;
-
-        $html .= '<span style="font-weight: 600; color: #23282d;">' . __('Block Registered', 's2j-alliance-manager') . '</span>';
+        $gutenberg_available_label = __('Gutenberg Available', 's2j-alliance-manager');
+        $gutenberg_status_class = function_exists('register_block_type') ? 's2j-debug-value--success' : 's2j-debug-value--error';
+        $gutenberg_status_text = function_exists('register_block_type') ? __('✅ Yes', 's2j-alliance-manager') : __('❌ No', 's2j-alliance-manager');
 
         // ブロック情報
-        $html .= '<span style="background: ' . ($block_registered ? '#d4edda' : '#f8d7da') . '; color: ' . ($block_registered ? '#155724' : '#721c24') . '; padding: 4px 8px; border-radius: 3px; font-size: 13px;">' . ($block_registered ? '✅ Yes' : '❌ No') . '</span>';
+        $block_information_title = '🧩 ' . __('Block Information', 's2j-alliance-manager');
+        $block_registered_label = __('Block Registered', 's2j-alliance-manager');
+        $block_registered_class = $block_registered ? 's2j-debug-value--success' : 's2j-debug-value--error';
+        $block_registered_text = $block_registered ? __('✅ Yes', 's2j-alliance-manager') : __('❌ No', 's2j-alliance-manager');
 
-        $html .= <<<HTML04
+        // ブロックマニフェスト情報
+        $block_manifest_label = __('Block Manifest', 's2j-alliance-manager');
+        $block_manifest_class = $blocks_manifest_exists ? 's2j-debug-value--success' : 's2j-debug-value--error';
+        $block_manifest_text = $blocks_manifest_exists ? __('✅ Exists', 's2j-alliance-manager') : __('❌ Missing', 's2j-alliance-manager');
+        $manifest_url_label = __('Manifest URL', 's2j-alliance-manager');
+        $manifest_url_value = esc_url($blocks_manifest_url);
+        $manifest_url_display_text = esc_html($blocks_manifest_url);
+
+        // JavaScript 情報
+        $js_assets_title = '📜 ' . __('JavaScript Assets', 's2j-alliance-manager');
+        $js_file_exists_label = __('File Exists', 's2j-alliance-manager');
+        $js_file_exists_class = $js_exists ? 's2j-debug-value--success' : 's2j-debug-value--error';
+        $js_file_exists_text = $js_exists ? __('✅ Yes', 's2j-alliance-manager') : __('❌ No', 's2j-alliance-manager');
+
+        $js_registered_label = __('Registered', 's2j-alliance-manager');
+        $js_registered_class = $js_registered ? 's2j-debug-value--success' : 's2j-debug-value--error';
+        $js_registered_text = $js_registered ? __('✅ Yes', 's2j-alliance-manager') : __('❌ No', 's2j-alliance-manager');
+
+        $js_enqueued_label = __('Enqueued', 's2j-alliance-manager');
+        $js_enqueued_class = $js_enqueued ? 's2j-debug-value--success' : 's2j-debug-value--info';
+        $js_enqueued_text = $js_enqueued ? __('✅ Yes', 's2j-alliance-manager') : __('ℹ️ No (Normal)', 's2j-alliance-manager');
+
+        $js_file_url_label = __('File URL', 's2j-alliance-manager');
+        $js_file_url_value = esc_url($js_url);
+        $js_file_url_display_text = esc_html($js_url);
+
+        // CSS 情報
+        $css_assets_title = '🎨 ' . __('CSS Assets', 's2j-alliance-manager');
+        $css_file_exists_label = __('File Exists', 's2j-alliance-manager');
+        $css_file_exists_class = $css_exists ? 's2j-debug-value--success' : 's2j-debug-value--error';
+        $css_file_exists_text = $css_exists ? __('✅ Yes', 's2j-alliance-manager') : __('❌ No', 's2j-alliance-manager');
+
+        $css_registered_label = __('Registered', 's2j-alliance-manager');
+        $css_registered_class = $css_registered ? 's2j-debug-value--success' : 's2j-debug-value--error';
+        $css_registered_text = $css_registered ? __('✅ Yes', 's2j-alliance-manager') : __('❌ No', 's2j-alliance-manager');
+
+        $css_enqueued_label = __('Enqueued', 's2j-alliance-manager');
+        $css_enqueued_class = $css_enqueued ? 's2j-debug-value--success' : 's2j-debug-value--info';
+        $css_enqueued_text = $css_enqueued ? __('✅ Yes', 's2j-alliance-manager') : __('ℹ️ No (Normal)', 's2j-alliance-manager');
+        $css_file_url_label = __('File URL', 's2j-alliance-manager');
+        $css_file_url_value = esc_url($css_url);
+        $css_file_url_display_text = esc_html($css_url);
+
+        $debug_tip_message = '💡 <strong>' . __('Tip:', 's2j-alliance-manager') . '</strong>' . __('When the block is used, JavaScript and CSS are automatically loaded.', 's2j-alliance-manager');
+
+        $html = <<<HTML01
+        <div class="s2j-debug-info">
+            <div class="s2j-debug-header">
+                <h2>{$debug_title}</h2>
+                <p>{$debug_description}</p>
+            </div>
+            <div class="s2j-debug-section">
+                <div class="s2j-debug-section-header">
+                    <h3>{$wordpress_environment_title}</h3>
+                </div>
+                <div class="s2j-debug-section-content">
+                    <div class="s2j-debug-row">
+                        <span class="s2j-debug-label">{$wordpress_version_label}</span>
+                        <span class="s2j-debug-value s2j-debug-value--info">{$wordpress_version_value}</span>
                     </div>
-                    <div style="display: flex; justify-content: space-between; align-items: center; padding: 8px 0; border-bottom: 1px solid #f0f0f1;">
-        HTML04;
-
-        $html .= '<span style="font-weight: 600; color: #23282d;">' . __('Block Manifest', 's2j-alliance-manager') . '</span>';
-
-        $html .= '<span style="background: ' . ($blocks_manifest_exists ? '#d4edda' : '#f8d7da') . '; color: ' . ($blocks_manifest_exists ? '#155724' : '#721c24') . '; padding: 4px 8px; border-radius: 3px; font-size: 13px;">' . ($blocks_manifest_exists ? '✅ Exists' : '❌ Missing') . '</span>';
-
-        $html .= <<<HTML05
+                    <div class="s2j-debug-row">
+                        <span class="s2j-debug-label">{$gutenberg_available_label}</span>
+                        <span class="s2j-debug-value {$gutenberg_status_class}">{$gutenberg_status_text}</span>
                     </div>
-                    <div style="padding: 8px 0;">
-        HTML05;
-
-        $html .= '<div style="font-weight: 600; color: #23282d; margin-bottom: 5px;">' . __('Manifest URL', 's2j-alliance-manager') . '</div>';
-
-        $html .= <<<HTML05A
-                        <div style="background: #f8f9fa; padding: 8px; border-radius: 3px; font-family: monospace; font-size: 12px; word-break: break-all;">
-        HTML05A;
-
-        $html .= '<a href="' . esc_url($blocks_manifest_url) . '" target="_blank" style="color: #0073aa; text-decoration: none;">' . esc_html($blocks_manifest_url) . '</a>';
-
-        $html .= <<<HTML06
+                </div>
+            </div>
+            <div class="s2j-debug-section">
+                <div class="s2j-debug-section-header">
+                    <h3>{$block_information_title}</h3>
+                </div>
+                <div class="s2j-debug-section-content">
+                    <div class="s2j-debug-row">
+                        <span class="s2j-debug-label">{$block_registered_label}</span>
+                        <span class="s2j-debug-value {$block_registered_class}">{$block_registered_text}</span>
+                    </div>
+                    <div class="s2j-debug-row">
+                        <span class="s2j-debug-label">{$block_manifest_label}</span>
+                        <span class="s2j-debug-value {$block_manifest_class}">{$block_manifest_text}</span>
+                    </div>
+                    <div class="s2j-debug-url-section">
+                        <div class="s2j-debug-label">{$manifest_url_label}</div>
+                        <div class="s2j-debug-url-container">
+                            <a href="{$manifest_url_value}" target="_blank" class="s2j-debug-url-link">{$manifest_url_display_text}</a>
                         </div>
                     </div>
                 </div>
             </div>
-            <div style="background: #fff; border: 1px solid #ccd0d4; border-radius: 4px; margin-bottom: 20px; overflow: hidden;">
-                <div style="background: #f9f9f9; padding: 12px 15px; border-bottom: 1px solid #ccd0d4;">
-        HTML06;
-
-        $html .= '<h3 style="margin: 0; font-size: 16px; color: #23282d;">📜' . __('JavaScript Assets', 's2j-alliance-manager') . '</h3>';
-
-        $html .= <<<HTML06A
+            <div class="s2j-debug-section">
+                <div class="s2j-debug-section-header">
+                    <h3>{$js_assets_title}</h3>
                 </div>
-                <div style="padding: 15px;">
-                    <div style="display: flex; justify-content: space-between; align-items: center; padding: 8px 0; border-bottom: 1px solid #f0f0f1;">
-        HTML06A;
-
-        $html .= '<span style="font-weight: 600; color: #23282d;">' . __('File Exists', 's2j-alliance-manager') . '</span>';
-
-        // JavaScript情報
-        $html .= '<span style="background: ' . ($js_exists ? '#d4edda' : '#f8d7da') . '; color: ' . ($js_exists ? '#155724' : '#721c24') . '; padding: 4px 8px; border-radius: 3px; font-size: 13px;">' . ($js_exists ? '✅ Yes' : '❌ No') . '</span>';
-
-        $html .= <<<HTML07
+                <div class="s2j-debug-section-content">
+                    <div class="s2j-debug-row">
+                        <span class="s2j-debug-label">{$js_file_exists_label}</span>
+                        <span class="s2j-debug-value {$js_file_exists_class}">{$js_file_exists_text}</span>
                     </div>
-                    <div style="display: flex; justify-content: space-between; align-items: center; padding: 8px 0; border-bottom: 1px solid #f0f0f1;">
-        HTML07;
-
-        $html .= '<span style="font-weight: 600; color: #23282d;">' . __('Registered', 's2j-alliance-manager') . '</span>';
-
-        $html .= '<span style="background: ' . ($js_registered ? '#d4edda' : '#f8d7da') . '; color: ' . ($js_registered ? '#155724' : '#721c24') . '; padding: 4px 8px; border-radius: 3px; font-size: 13px;">' . ($js_registered ? '✅ Yes' : '❌ No') . '</span>';
-
-        $html .= <<<HTML08
+                    <div class="s2j-debug-row">
+                        <span class="s2j-debug-label">{$js_registered_label}</span>
+                        <span class="s2j-debug-value {$js_registered_class}">{$js_registered_text}</span>
                     </div>
-                    <div style="display: flex; justify-content: space-between; align-items: center; padding: 8px 0; border-bottom: 1px solid #f0f0f1;">
-        HTML08;
-
-        $html .= '<span style="font-weight: 600; color: #23282d;">' . __('Enqueued', 's2j-alliance-manager') . '</span>';
-
-        $html .= '<span style="background: ' . ($js_enqueued ? '#d4edda' : '#e7f3ff') . '; color: ' . ($js_enqueued ? '#155724' : '#0073aa') . '; padding: 4px 8px; border-radius: 3px; font-size: 13px;">' . ($js_enqueued ? '✅ Yes' : 'ℹ️ No (Normal)') . '</span>';
-
-        $html .= <<<HTML09
+                    <div class="s2j-debug-row">
+                        <span class="s2j-debug-label">{$js_enqueued_label}</span>
+                        <span class="s2j-debug-value {$js_enqueued_class}">{$js_enqueued_text}</span>
                     </div>
-                    <div style="padding: 8px 0;">
-        HTML09;
-
-        $html .= '<div style="font-weight: 600; color: #23282d; margin-bottom: 5px;">' . __('File URL', 's2j-alliance-manager') . '</div>';
-
-        $html .= <<<HTML09A
-                        <div style="background: #f8f9fa; padding: 8px; border-radius: 3px; font-family: monospace; font-size: 12px; word-break: break-all;">
-        HTML09A;
-
-        $html .= '<a href="' . esc_url($js_url) . '" target="_blank" style="color: #0073aa; text-decoration: none;">' . esc_html($js_url) . '</a>';
-
-        $html .= <<<HTML09
+                    <div class="s2j-debug-url-section">
+                        <div class="s2j-debug-label">{$js_file_url_label}</div>
+                        <div class="s2j-debug-url-container">
+                            <a href="{$js_file_url_value}" target="_blank" class="s2j-debug-url-link">{$js_file_url_display_text}</a>
                         </div>
                     </div>
                 </div>
             </div>
-            <div style="background: #fff; border: 1px solid #ccd0d4; border-radius: 4px; margin-bottom: 20px; overflow: hidden;">
-                <div style="background: #f9f9f9; padding: 12px 15px; border-bottom: 1px solid #ccd0d4;">
-        HTML09;
-
-        $html .= '<h3 style="margin: 0; font-size: 16px; color: #23282d;">🎨' . __('CSS Assets', 's2j-alliance-manager') . '</h3>';
-
-        $html .= <<<HTML09A
+            <div class="s2j-debug-section">
+                <div class="s2j-debug-section-header">
+                    <h3>{$css_assets_title}</h3>
                 </div>
-                <div style="padding: 15px;">
-                    <div style="display: flex; justify-content: space-between; align-items: center; padding: 8px 0; border-bottom: 1px solid #f0f0f1;">
-        HTML09A;
-
-        $html .= '<span style="font-weight: 600; color: #23282d;">' . __('File Exists', 's2j-alliance-manager') . '</span>';
-
-        // CSS情報
-        $html .= '<span style="background: ' . ($css_exists ? '#d4edda' : '#f8d7da') . '; color: ' . ($css_exists ? '#155724' : '#721c24') . '; padding: 4px 8px; border-radius: 3px; font-size: 13px;">' . ($css_exists ? '✅ Yes' : '❌ No') . '</span>';
-
-        $html .= <<<HTML10
+                <div class="s2j-debug-section-content">
+                    <div class="s2j-debug-row">
+                        <span class="s2j-debug-label">{$css_file_exists_label}</span>
+                        <span class="s2j-debug-value {$css_file_exists_class}">{$css_file_exists_text}</span>
                     </div>
-                    <div style="display: flex; justify-content: space-between; align-items: center; padding: 8px 0; border-bottom: 1px solid #f0f0f1;">
-        HTML10;
-
-        $html .= '<span style="font-weight: 600; color: #23282d;">' . __('Registered', 's2j-alliance-manager') . '</span>';
-
-        $html .= '<span style="background: ' . ($css_registered ? '#d4edda' : '#f8d7da') . '; color: ' . ($css_registered ? '#155724' : '#721c24') . '; padding: 4px 8px; border-radius: 3px; font-size: 13px;">' . ($css_registered ? '✅ Yes' : '❌ No') . '</span>';
-
-        $html .= <<<HTML11
+                    <div class="s2j-debug-row">
+                        <span class="s2j-debug-label">{$css_registered_label}</span>
+                        <span class="s2j-debug-value {$css_registered_class}">{$css_registered_text}</span>
                     </div>
-                    <div style="display: flex; justify-content: space-between; align-items: center; padding: 8px 0; border-bottom: 1px solid #f0f0f1;">
-        HTML11;
-
-        $html .= '<span style="font-weight: 600; color: #23282d;">' . __('Enqueued', 's2j-alliance-manager') . '</span>';
-
-        $html .= '<span style="background: ' . ($css_enqueued ? '#d4edda' : '#e7f3ff') . '; color: ' . ($css_enqueued ? '#155724' : '#0073aa') . '; padding: 4px 8px; border-radius: 3px; font-size: 13px;">' . ($css_enqueued ? '✅ Yes' : 'ℹ️ No (Normal)') . '</span>';
-
-        $html .= <<<HTML12
+                    <div class="s2j-debug-row">
+                        <span class="s2j-debug-label">{$css_enqueued_label}</span>
+                        <span class="s2j-debug-value {$css_enqueued_class}">{$css_enqueued_text}</span>
                     </div>
-                    <div style="padding: 8px 0;">
-        HTML12;
-
-        $html .= '<div style="font-weight: 600; color: #23282d; margin-bottom: 5px;">' . __('File URL', 's2j-alliance-manager') . '</div>';
-
-        $html .= <<<HTML12A
-                        <div style="background: #f8f9fa; padding: 8px; border-radius: 3px; font-family: monospace; font-size: 12px; word-break: break-all;">
-        HTML12A;
-
-        $html .= '<a href="' . esc_url($css_url) . '" target="_blank" style="color: #0073aa; text-decoration: none;">' . esc_html($css_url) . '</a>';
-
-        $html .= <<<HTML12
+                    <div class="s2j-debug-url-section">
+                        <div class="s2j-debug-label">{$css_file_url_label}</div>
+                        <div class="s2j-debug-url-container">
+                            <a href="{$css_file_url_value}" target="_blank" class="s2j-debug-url-link">{$css_file_url_display_text}</a>
                         </div>
                     </div>
                 </div>
             </div>
-            <div style="background: #f8f9fa; padding: 15px; margin: 20px -10px -10px -10px; border-top: 1px solid #ccd0d4; text-align: center;">
-        HTML12;
-
-        $html .= '<p style="margin: 0; color: #666; font-size: 13px;">💡 <strong>' . __('Tip:', 's2j-alliance-manager') . '</strong>' . __('When the block is used, JavaScript and CSS are automatically loaded.', 's2j-alliance-manager') . '</p>';
-        
-        $html .= <<<HTML12A
-                    </div>
+            <div class="s2j-debug-footer">
+                <p>{$debug_tip_message}</p>
+            </div>
         </div>
-        HTML12A;
+        HTML01;
 
         return $html;
     }

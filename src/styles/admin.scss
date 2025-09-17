@@ -763,6 +763,133 @@
   }
 }
 
+// Debug Information Styles
+.s2j-debug-info {
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen-Sans, Ubuntu, Cantarell, 'Helvetica Neue', sans-serif;
+  
+  .s2j-debug-header {
+    background: #f1f1f1;
+    padding: 15px;
+    margin: -10px -10px 20px -10px;
+    border-left: 4px solid #0073aa;
+    
+    h2 {
+      margin: 0;
+      color: #23282d;
+      font-size: 18px;
+    }
+    
+    p {
+      margin: 5px 0 0 0;
+      color: #666;
+      font-size: 14px;
+    }
+  }
+  
+  .s2j-debug-section {
+    background: $white;
+    border: 1px solid #ccd0d4;
+    border-radius: 4px;
+    margin-bottom: 20px;
+    overflow: hidden;
+    
+    &-header {
+      background: #f9f9f9;
+      padding: 12px 15px;
+      border-bottom: 1px solid #ccd0d4;
+      
+      h3 {
+        margin: 0;
+        font-size: 16px;
+        color: #23282d;
+      }
+    }
+    
+    &-content {
+      padding: 15px;
+      
+      .s2j-debug-row {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 8px 0;
+        border-bottom: 1px solid #f0f0f1;
+        
+        &:last-child {
+          border-bottom: none;
+        }
+        
+        .s2j-debug-label {
+          font-weight: 600;
+          color: #23282d;
+        }
+        
+        .s2j-debug-value {
+          background: #e7f3ff;
+          color: #0073aa;
+          padding: 4px 8px;
+          border-radius: 3px;
+          font-size: 13px;
+          
+          &--success {
+            background: #d4edda;
+            color: #155724;
+          }
+          
+          &--error {
+            background: #f8d7da;
+            color: #721c24;
+          }
+          
+          &--info {
+            background: #e7f3ff;
+            color: #0073aa;
+          }
+        }
+      }
+      
+      .s2j-debug-url-section {
+        padding: 8px 0;
+        
+        .s2j-debug-label {
+          font-weight: 600;
+          color: #23282d;
+          margin-bottom: 5px;
+        }
+        
+        .s2j-debug-url-container {
+          background: #f8f9fa;
+          padding: 8px;
+          border-radius: 3px;
+          font-family: monospace;
+          font-size: 12px;
+          word-break: break-all;
+        }
+      }
+    }
+  }
+  
+  .s2j-debug-footer {
+    background: #f8f9fa;
+    padding: 15px;
+    margin: 20px -10px -10px -10px;
+    border-top: 1px solid #ccd0d4;
+    text-align: center;
+    
+    p {
+      margin: 0;
+      color: #666;
+      font-size: 13px;
+    }
+  }
+}
+
+// Debug URL Link - Independent selector to avoid compound selector issues
+.s2j-debug-url-link {
+  color: #0073aa;
+  text-decoration: none;
+}
+
 // Responsive Design
 @media (max-width: $breakpoint-md) {
   .s2j-rank-label {

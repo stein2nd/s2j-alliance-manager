@@ -6,6 +6,7 @@
 export interface AllianceSettings {
   display_style: 'grid-single' | 'grid-multi';
   alignment?: 'left' | 'center' | 'right';
+  ffmpeg_path?: string;
   content_models: ContentModel[];
 }
 
@@ -107,6 +108,23 @@ export interface RankLabel {
   thumbnail_id: number;
   menu_order: number;
   slug: string;
+}
+
+/**
+ * 「FFmpeg 設定」インターフェイス
+ */
+export interface FFmpegSettings {
+  ffmpeg_path: string;
+  ffmpeg_available: boolean;
+}
+
+/**
+ * 「FFmpeg テスト結果」インターフェイス
+ */
+export interface FFmpegTestResult {
+  success: boolean;
+  available: boolean;
+  message: string;
 }
 
 /**

@@ -38,7 +38,7 @@ class S2J_Alliance_Manager_AllianceManager {
         // フロントエンド用アセット (s2j-alliance-manager-gutenberg.css) をキューに追加します。
         add_action('wp_enqueue_scripts', array($this, 'enqueue_frontend_assets'));
         
-        // デバッグ用のヘルプタブを表示します（Alliance Manager専用管理画面でのみ）。
+        // デバッグ用のヘルプタブを表示します（Alliance Manager 専用管理画面でのみ）。
         if (is_admin()) {
             add_action('admin_head', array($this, 'add_debug_help_tab'));
         }
@@ -563,6 +563,20 @@ class S2J_Alliance_Manager_AllianceManager {
         $debug_title = '🔧 ' . __('S2J Alliance Manager Debug Information', 's2j-alliance-manager');
         $debug_description = __("Displays the plugin's operational status and system information.", 's2j-alliance-manager');
 
+        // FFmpeg 情報
+        $ffmpeg_settings = get_option('s2j_alliance_manager_settings', array());
+        $ffmpeg_path = $ffmpeg_settings['ffmpeg_path'] ?? '';
+        $settings_page = new S2J_Alliance_Manager_SettingsPage();
+        $ffmpeg_available = $settings_page->test_ffmpeg_availability($ffmpeg_path);
+
+        $ffmpeg_library_title = '🎬 ' . __('FFmpeg Library', 's2j-alliance-manager');
+        $ffmpeg_available_label = __('FFmpeg Available', 's2j-alliance-manager');
+        $ffmpeg_available_class = $ffmpeg_available ? 's2j-debug-value--success' : 's2j-debug-value--error';
+        $ffmpeg_available_text = $ffmpeg_available ? __('Yes', 's2j-alliance-manager') : __('To be confirmed', 's2j-alliance-manager');
+
+        $ffmpeg_path_label = __('FFmpeg path', 's2j-alliance-manager');
+        $ffmpeg_path_value = esc_html($ffmpeg_path ?: __('Not set', 's2j-alliance-manager'));
+
         // WordPress 環境情報
         $wordpress_environment_title = '🌐 ' . __('WordPress Environment', 's2j-alliance-manager');
         $wordpress_version_label = __('WordPress Version', 's2j-alliance-manager');
@@ -628,6 +642,23 @@ class S2J_Alliance_Manager_AllianceManager {
             <div class="s2j-debug-header">
                 <h2>{$debug_title}</h2>
                 <p>{$debug_description}</p>
+            </div>
+            <div class="s2j-debug-section">
+                <div class="s2j-debug-section-header">
+                    <h3>{$ffmpeg_library_title}</h3>
+                </div>
+                <div class="s2j-debug-section-content">
+                    <div class="s2j-debug-row">
+                        <span class="s2j-debug-label">{$ffmpeg_available_label}</span>
+                        <span class="s2j-debug-value {$ffmpeg_available_class}">{$ffmpeg_available_text}</span>
+                    </div>
+                    <div class="s2j-debug-url-section">
+                        <span class="s2j-debug-label">{$ffmpeg_path_label}</span>
+                        <div class="s2j-debug-url-container">
+                            <span>{$ffmpeg_path_value}</span>
+                        </div>
+                    </div>
+                </div>
             </div>
             <div class="s2j-debug-section">
                 <div class="s2j-debug-section-header">

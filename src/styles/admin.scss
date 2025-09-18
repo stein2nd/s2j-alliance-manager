@@ -8,6 +8,133 @@
   display: inline-block;
 }
 
+// Debug Information Styles
+.s2j-debug-info {
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen-Sans, Ubuntu, Cantarell, 'Helvetica Neue', sans-serif;
+
+  .s2j-debug-header {
+    background: #f1f1f1;
+    padding: 15px;
+    margin: -10px -10px 20px -10px;
+    border-left: 4px solid #0073aa;
+
+    h2 {
+      margin: 0;
+      color: #23282d;
+      font-size: 18px;
+    }
+
+    p {
+      margin: 5px 0 0 0;
+      color: #666;
+      font-size: 14px;
+    }
+  }
+
+  .s2j-debug-section {
+    background: $white;
+    border: 1px solid #ccd0d4;
+    border-radius: 4px;
+    margin-bottom: 20px;
+    overflow: hidden;
+
+    &-header {
+      background: #f9f9f9;
+      padding: 12px 15px;
+      border-bottom: 1px solid #ccd0d4;
+
+      h3 {
+        margin: 0;
+        font-size: 16px;
+        color: #23282d;
+      }
+    }
+
+    &-content {
+      padding: 15px;
+
+      .s2j-debug-row {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 8px 0;
+        border-bottom: 1px solid #f0f0f1;
+
+        &:last-child {
+          border-bottom: none;
+        }
+
+        .s2j-debug-label {
+          font-weight: 600;
+          color: #23282d;
+        }
+
+        .s2j-debug-value {
+          background: #e7f3ff;
+          color: #0073aa;
+          padding: 4px 8px;
+          border-radius: 3px;
+          font-size: 13px;
+
+          &--success {
+            background: #d4edda;
+            color: #155724;
+          }
+
+          &--error {
+            background: #f8d7da;
+            color: #721c24;
+          }
+
+          &--info {
+            background: #e7f3ff;
+            color: #0073aa;
+          }
+        }
+      }
+
+      .s2j-debug-url-section {
+        padding: 8px 0;
+
+        .s2j-debug-label {
+          font-weight: 600;
+          color: #23282d;
+          margin-bottom: 5px;
+        }
+
+        .s2j-debug-url-container {
+          background: #f8f9fa;
+          padding: 8px;
+          border-radius: 3px;
+          font-family: monospace;
+          font-size: 12px;
+          word-break: break-all;
+        }
+      }
+    }
+  }
+
+  .s2j-debug-footer {
+    background: #f8f9fa;
+    padding: 15px;
+    margin: 20px -10px -10px -10px;
+    border-top: 1px solid #ccd0d4;
+    text-align: center;
+
+    p {
+      margin: 0;
+      color: #666;
+      font-size: 13px;
+    }
+  }
+}
+
+// Debug URL Link - Independent selector to avoid compound selector issues
+.s2j-debug-url-link {
+  color: #0073aa;
+  text-decoration: none;
+}
+
 .s2j-admin-container {
   max-width: 1200px;
   margin: 0 auto;
@@ -83,30 +210,165 @@
   }
 }
 
-// Display Settings Form
-.s2j-display-settings {
-  .form-field {
-    margin-bottom: $spacing-md;
+// FFmpeg Library Manager スタイル
+.s2j-ffmpeg-library-manager {
+  .s2j-ffmpeg-library-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: $spacing-lg;
 
-    label {
-      display: block;
-      margin-bottom: $spacing-xs;
-      font-weight: 600;
+    h3 {
+      margin: 0;
+      font-size: 18px;
       color: $text-color;
     }
 
-    select {
-      width: 100%;
-      padding: $spacing-sm;
+    .s2j-form-actions {
+      padding-top: $spacing-md;
+      border-top: 1px solid $border-color;
+      display: flex;
+      gap: $spacing-sm;
+
+      button {
+        padding: $spacing-sm $spacing-md;
+        border: 1px solid $primary-color;
+        border-radius: $border-radius-sm;
+        background: $primary-color;
+        color: $white;
+        cursor: pointer;
+        font-size: 14px;
+        font-weight: 600;
+        transition: all 0.2s ease;
+
+        &:hover:not(:disabled) {
+          background: color.adjust($primary-color, $lightness: -10%);
+          border-color: color.adjust($primary-color, $lightness: -10%);
+          transform: translateY(-1px);
+          box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        &:disabled {
+          background: $text-light;
+          border-color: $text-light;
+          cursor: not-allowed;
+          opacity: 0.6;
+        }
+      }
+
+      .s2j-btn.s2j-btn--secondary {
+        background: $primary-color;
+        border-color: $primary-color;
+        color: $white;
+
+        &:hover:not(:disabled) {
+          background: color.adjust($primary-color, $lightness: -10%);
+          border-color: color.adjust($primary-color, $lightness: -10%);
+        }
+      }
+    }
+  }
+
+  .s2j-form-group {
+    margin-bottom: $spacing-md;
+  }
+
+  .s2j-form-label {
+    display: block;
+    margin-bottom: $spacing-xs;
+    font-weight: 600;
+    color: $text-color;
+  }
+
+  .s2j-input-group {
+    display: flex;
+    gap: $spacing-sm;
+    align-items: flex-start;
+
+    .s2j-form-input {
+      flex: 1;
+      padding: $spacing-xs $spacing-sm;
       border: 1px solid $border-color;
       border-radius: $border-radius-sm;
-      background: $white;
+      font-size: 14px;
 
       &:focus {
-        border-color: $primary-color;
         outline: none;
-        box-shadow: 0 0 0 1px $primary-color;
+        border-color: $primary-color;
+        box-shadow: 0 0 0 2px rgba($primary-color, 0.2);
       }
+    }
+
+    .s2j-btn {
+      white-space: nowrap;
+    }
+
+    button {
+      padding: $spacing-sm $spacing-md;
+      border: 1px solid $primary-color;
+      border-radius: $border-radius-sm;
+      background: $primary-color;
+      color: $white;
+      cursor: pointer;
+      font-size: 14px;
+      font-weight: 600;
+      transition: all 0.2s ease;
+
+      &:hover:not(:disabled) {
+        background: color.adjust($primary-color, $lightness: -10%);
+        border-color: color.adjust($primary-color, $lightness: -10%);
+        transform: translateY(-1px);
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+      }
+
+      &:disabled {
+        background: $text-light;
+        border-color: $text-light;
+        cursor: not-allowed;
+        opacity: 0.6;
+      }
+    }
+
+    .s2j-btn.s2j-btn--primary {
+      background: $primary-color;
+      border-color: $primary-color;
+      color: $white;
+
+      &:hover:not(:disabled) {
+        background: color.adjust($primary-color, $lightness: -10%);
+        border-color: color.adjust($primary-color, $lightness: -10%);
+      }
+    }
+  }
+
+  .s2j-form-description {
+    margin-top: $spacing-xs;
+    font-size: 12px;
+    color: $text-light;
+  }
+
+  .s2j-test-result {
+    margin-top: $spacing-sm;
+    padding: $spacing-sm;
+    border-radius: $border-radius-sm;
+    display: flex;
+    align-items: center;
+    gap: $spacing-xs;
+
+    &--success {
+      background-color: rgba($success-color, 0.1);
+      border: 1px solid rgba($success-color, 0.3);
+      color: $success-color;
+    }
+
+    &--error {
+      background-color: rgba($error-color, 0.1);
+      border: 1px solid rgba($error-color, 0.3);
+      color: $error-color;
+    }
+
+    .s2j-test-result-icon {
+      font-weight: bold;
     }
   }
 }
@@ -433,17 +695,6 @@
   }
 }
 
-.s2j-empty-state {
-  padding: $spacing-xl;
-  text-align: center;
-  color: $text-light;
-
-  p {
-    margin: 0;
-    font-style: italic;
-  }
-}
-
 .s2j-content-model {
   position: relative;
   display: grid;
@@ -635,68 +886,6 @@
   }
 }
 
-// Message Modal
-.s2j-message-modal {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background: rgba(0, 0, 0, 0.5);
-  z-index: $z-index-modal;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-
-  &-content {
-    background: $white;
-    border-radius: $border-radius-md;
-    padding: $spacing-lg;
-    max-width: 500px;
-    width: 90%;
-    max-height: 80vh;
-    overflow-y: auto;
-
-    h3 {
-      margin: 0 0 $spacing-md 0;
-      color: $text-color;
-    }
-
-    .form-field {
-      margin-bottom: $spacing-md;
-
-      label {
-        display: block;
-        margin-bottom: $spacing-xs;
-        font-weight: 600;
-        color: $text-color;
-      }
-
-      textarea {
-        width: 100%;
-        min-height: 100px;
-        padding: $spacing-sm;
-        border: 1px solid $border-color;
-        border-radius: $border-radius-sm;
-        resize: vertical;
-
-        &:focus {
-          border-color: $primary-color;
-          outline: none;
-          box-shadow: 0 0 0 1px $primary-color;
-        }
-      }
-    }
-
-    .modal-actions {
-      display: flex;
-      gap: $spacing-sm;
-      justify-content: flex-end;
-      margin-top: $spacing-lg;
-    }
-  }
-}
-
 // Media Uploader
 .s2j-media-uploader {
   .s2j-media-preview {
@@ -759,134 +948,171 @@
         border-color: color.adjust($error-color, $lightness: -10%);
       }
     }
+
+    // FFmpeg 関連のボタンスタイル
+    .s2j-generate-poster-btn,
+    .s2j-upload-poster-btn {
+      background-color: $primary-color;
+      color: $white;
+      border: none;
+      border-radius: $border-radius-sm;
+      padding: $spacing-xs $spacing-sm;
+      font-size: 12px;
+      cursor: pointer;
+      transition: background-color 0.2s ease;
+
+      &:hover:not(:disabled) {
+        background-color: color.adjust($primary-color, $lightness: -10%);
+      }
+
+      &:disabled {
+        opacity: 0.6;
+        cursor: not-allowed;
+      }
+    }
+
+    .s2j-upload-poster-btn {
+      background-color: $secondary-color;
+
+      &:hover:not(:disabled) {
+        background-color: color.adjust($secondary-color, $lightness: -10%);
+      }
+    }
+  }
+
+  // FFmpeg 関連の通知スタイル
+  .s2j-poster-notice {
+    margin-top: $spacing-xs;
+    padding: $spacing-xs $spacing-sm;
+    background-color: rgba($warning-color, 0.1);
+    border: 1px solid rgba($warning-color, 0.3);
+    border-radius: $border-radius-sm;
+    font-size: 12px;
+    color: $warning-color;
+
+    p {
+      margin: 0;
+    }
+  }
+
+  .s2j-ffmpeg-notice {
+    margin-top: $spacing-xs;
+    padding: $spacing-xs $spacing-sm;
+    background-color: rgba($secondary-color, 0.1);
+    border: 1px solid rgba($secondary-color, 0.3);
+    border-radius: $border-radius-sm;
+
+    small {
+      color: $secondary-color;
+      font-size: 11px;
+    }
+  }
+
+  .s2j-poster-preview {
+    border: 2px solid $primary-color;
+    border-radius: $border-radius-sm;
   }
 }
 
-// Debug Information Styles
-.s2j-debug-info {
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen-Sans, Ubuntu, Cantarell, 'Helvetica Neue', sans-serif;
+// Message Modal
+.s2j-message-modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.5);
+  z-index: $z-index-modal;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 
-  .s2j-debug-header {
-    background: #f1f1f1;
-    padding: 15px;
-    margin: -10px -10px 20px -10px;
-    border-left: 4px solid #0073aa;
-
-    h2 {
-      margin: 0;
-      color: #23282d;
-      font-size: 18px;
-    }
-
-    p {
-      margin: 5px 0 0 0;
-      color: #666;
-      font-size: 14px;
-    }
-  }
-
-  .s2j-debug-section {
+  &-content {
     background: $white;
-    border: 1px solid #ccd0d4;
-    border-radius: 4px;
-    margin-bottom: 20px;
-    overflow: hidden;
+    border-radius: $border-radius-md;
+    padding: $spacing-lg;
+    max-width: 500px;
+    width: 90%;
+    max-height: 80vh;
+    overflow-y: auto;
 
-    &-header {
-      background: #f9f9f9;
-      padding: 12px 15px;
-      border-bottom: 1px solid #ccd0d4;
+    h3 {
+      margin: 0 0 $spacing-md 0;
+      color: $text-color;
+    }
 
-      h3 {
-        margin: 0;
-        font-size: 16px;
-        color: #23282d;
+    .form-field {
+      margin-bottom: $spacing-md;
+
+      label {
+        display: block;
+        margin-bottom: $spacing-xs;
+        font-weight: 600;
+        color: $text-color;
+      }
+
+      textarea {
+        width: 100%;
+        min-height: 100px;
+        padding: $spacing-sm;
+        border: 1px solid $border-color;
+        border-radius: $border-radius-sm;
+        resize: vertical;
+
+        &:focus {
+          border-color: $primary-color;
+          outline: none;
+          box-shadow: 0 0 0 1px $primary-color;
+        }
       }
     }
 
-    &-content {
-      padding: 15px;
-
-      .s2j-debug-row {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        padding: 8px 0;
-        border-bottom: 1px solid #f0f0f1;
-
-        &:last-child {
-          border-bottom: none;
-        }
-
-        .s2j-debug-label {
-          font-weight: 600;
-          color: #23282d;
-        }
-
-        .s2j-debug-value {
-          background: #e7f3ff;
-          color: #0073aa;
-          padding: 4px 8px;
-          border-radius: 3px;
-          font-size: 13px;
-
-          &--success {
-            background: #d4edda;
-            color: #155724;
-          }
-
-          &--error {
-            background: #f8d7da;
-            color: #721c24;
-          }
-
-          &--info {
-            background: #e7f3ff;
-            color: #0073aa;
-          }
-        }
-      }
-
-      .s2j-debug-url-section {
-        padding: 8px 0;
-
-        .s2j-debug-label {
-          font-weight: 600;
-          color: #23282d;
-          margin-bottom: 5px;
-        }
-
-        .s2j-debug-url-container {
-          background: #f8f9fa;
-          padding: 8px;
-          border-radius: 3px;
-          font-family: monospace;
-          font-size: 12px;
-          word-break: break-all;
-        }
-      }
-    }
-  }
-
-  .s2j-debug-footer {
-    background: #f8f9fa;
-    padding: 15px;
-    margin: 20px -10px -10px -10px;
-    border-top: 1px solid #ccd0d4;
-    text-align: center;
-
-    p {
-      margin: 0;
-      color: #666;
-      font-size: 13px;
+    .modal-actions {
+      display: flex;
+      gap: $spacing-sm;
+      justify-content: flex-end;
+      margin-top: $spacing-lg;
     }
   }
 }
 
-// Debug URL Link - Independent selector to avoid compound selector issues
-.s2j-debug-url-link {
-  color: #0073aa;
-  text-decoration: none;
+// Display Settings Form
+.s2j-display-settings {
+  .form-field {
+    margin-bottom: $spacing-md;
+
+    label {
+      display: block;
+      margin-bottom: $spacing-xs;
+      font-weight: 600;
+      color: $text-color;
+    }
+
+    select {
+      width: 100%;
+      padding: $spacing-sm;
+      border: 1px solid $border-color;
+      border-radius: $border-radius-sm;
+      background: $white;
+
+      &:focus {
+        border-color: $primary-color;
+        outline: none;
+        box-shadow: 0 0 0 1px $primary-color;
+      }
+    }
+  }
+}
+
+.s2j-empty-state {
+  padding: $spacing-xl;
+  text-align: center;
+  color: $text-light;
+
+  p {
+    margin: 0;
+    font-style: italic;
+  }
 }
 
 // Responsive Design

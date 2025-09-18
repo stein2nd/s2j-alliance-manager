@@ -73,6 +73,11 @@ class S2J_Alliance_Manager_SettingsPage {
             $sanitized['display_style'] = in_array($input['display_style'], $allowed_styles) ? $input['display_style'] : 'grid-single';
         }
 
+        // FFmpeg パスをサニタイズします。
+        if (isset($input['ffmpeg_path'])) {
+            $sanitized['ffmpeg_path'] = sanitize_text_field($input['ffmpeg_path']);
+        }
+
         // コンテンツモデルをサニタイズします。
         if (isset($input['content_models']) && is_array($input['content_models'])) {
             $sanitized['content_models'] = array();
@@ -106,6 +111,37 @@ class S2J_Alliance_Manager_SettingsPage {
     }
 
     /**
+     * FFmpeg が利用可能かテストします。
+     *
+     * @param string $ffmpeg_path FFmpeg のパス
+     * @return bool FFmpeg が利用可能な場合 true
+     */
+    public function test_ffmpeg_availability($ffmpeg_path = '') {
+        if (empty($ffmpeg_path)) {
+            $ffmpeg_path = 'ffmpeg';
+        }
+
+        // FFmpeg のバージョンを取得して利用可能性をテスト
+        $command = escapeshellarg($ffmpeg_path) . ' -version 2>&1';
+        $output = shell_exec($command);
+        
+        return !empty($output) && strpos($output, 'ffmpeg version') !== false;
+    }
+
+    /**
+     * FFmpeg の設定を取得します。
+     *
+     * @return array FFmpeg 設定
+     */
+    public function get_ffmpeg_settings() {
+        $settings = get_option('s2j_alliance_manager_settings', array());
+        return array(
+            'ffmpeg_path' => $settings['ffmpeg_path'] ?? '',
+            'ffmpeg_available' => $this->test_ffmpeg_availability($settings['ffmpeg_path'] ?? '')
+        );
+    }
+
+    /**
      * サブメニューページ「S2J Alliance Manager」のコンテンツを表示します。
      * 「admin_page」フックから呼ばれます。
      * React によって、「ランクラベル」「コンテンツモデル」「表示設定」がレンダリングされます。
@@ -123,9 +159,16 @@ class S2J_Alliance_Manager_SettingsPage {
                         <h2><?php _e('Alliance Partner Management', 's2j-alliance-manager'); ?></h2>
                         <p><?php _e('Manage your alliance partner banners and links.', 's2j-alliance-manager'); ?></p>
                     </div>
-
                     <div class="s2j-admin-content">
                         <div class="s2j-admin-main">
+                            <div class="s2j-admin-card">
+                                <div class="s2j-admin-card-header">
+                                    <h3><?php _e('FFmpeg Library', 's2j-alliance-manager'); ?></h3>
+                                </div>
+                                <div id="s2j-ffmpeg-library-manager">
+                                    <!-- FFmpeg Library Manager will be rendered here by React -->
+                                </div>
+                            </div>
                             <div class="s2j-admin-card">
                                 <div class="s2j-admin-card-header">
                                     <h3><?php _e('Rank Management', 's2j-alliance-manager'); ?></h3>
@@ -134,7 +177,6 @@ class S2J_Alliance_Manager_SettingsPage {
                                     <!-- Rank labels will be rendered here by React -->
                                 </div>
                             </div>
-
                             <div class="s2j-admin-card">
                                 <div class="s2j-admin-card-header">
                                     <h3><?php _e('Alliance Partners', 's2j-alliance-manager'); ?></h3>
@@ -144,7 +186,6 @@ class S2J_Alliance_Manager_SettingsPage {
                                 </div>
                             </div>
                         </div>
-
                         <div class="s2j-admin-sidebar">
                             <div class="s2j-admin-card">
                                 <h3><?php _e('Display Settings', 's2j-alliance-manager'); ?></h3>

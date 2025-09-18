@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { __ } from '@wordpress/i18n';
 import { Button, CheckboxControl, SelectControl, TextControl } from '@wordpress/components';
-import { ContentModel, RankLabel } from '../../types';
+import { ContentModel, RankLabel, FFmpegSettings } from '../../types';
 import { behaviorOptions } from '../data/constants';
 import { MediaUploader } from './MediaUploader';
 import { MessageModal } from './MessageModal';
@@ -13,6 +13,7 @@ interface ContentListProps {
   contentModels: ContentModel[];
   onUpdate: (models: ContentModel[]) => Promise<void>;
   rankLabels: RankLabel[];
+  ffmpegSettings?: FFmpegSettings;
   isLoading?: boolean;
 }
 
@@ -27,6 +28,7 @@ export const ContentList: React.FC<ContentListProps> = ({
   contentModels,
   onUpdate,
   rankLabels,
+  ffmpegSettings,
   isLoading = false
 }) => {
   const [showMessageModal, setShowMessageModal] = useState<number | null>(null);
@@ -230,9 +232,7 @@ export const ContentList: React.FC<ContentListProps> = ({
         ) : (
           displayModels.map((model, index) => {
             // 保留中の変更がある場合は元の順序を表示、なければ現在のインデックス+1を表示
-            const rowNumber = hasUnsavedChanges && originalOrder.length > index 
-              ? originalOrder[index] + 1 
-              : index + 1;
+            const rowNumber = hasUnsavedChanges && originalOrder.length > index ? originalOrder[index] + 1 : index + 1;
 
             return (
             <div key={`model-${index}-${model.logo}`} className={`s2j-content-model ${hasUnsavedChanges ? 's2j-pending-changes' : ''}`}>
@@ -258,6 +258,8 @@ export const ContentList: React.FC<ContentListProps> = ({
                 <MediaUploader
                   attachmentId={model.logo}
                   onSelect={(attachmentId) => updateModel(index, 'logo', attachmentId)}
+                  onPosterGenerated={(posterId) => updateModel(index, 'logo', posterId)}
+                  ffmpegSettings={ffmpegSettings}
                   label={__('Logo', 's2j-alliance-manager')}
                 />
               </div>

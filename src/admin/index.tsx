@@ -3,7 +3,8 @@ import { __ } from '@wordpress/i18n';
 import { SettingsForm } from './components/SettingsForm';
 import { ContentList } from './components/ContentList';
 import { RankLabelManager } from './components/RankLabelManager';
-import { AllianceSettings, ContentModel, RankLabel } from '../types';
+import { FFmpegLibraryManager } from './components/FFmpegLibraryManager';
+import { AllianceSettings, ContentModel, RankLabel, FFmpegSettings } from '../types';
 import '@/styles/admin.scss';
 
 /**
@@ -16,6 +17,10 @@ class AllianceManagerAdmin {
     content_models: []
   };
   private rankLabels: RankLabel[] = [];
+  private ffmpegSettings: FFmpegSettings = {
+    ffmpeg_path: '',
+    ffmpeg_available: false
+  };
   private isInitialized = false;
   private isLoading = false;
 
@@ -37,6 +42,9 @@ class AllianceManagerAdmin {
 
     // ランクラベルを読み込みます。
     await this.loadRankLabels();
+
+    // FFmpeg 設定を読み込みます。
+    await this.loadFFmpegSettings();
 
     // 初期化状態を設定します。
     this.isInitialized = true;
@@ -97,6 +105,31 @@ class AllianceManagerAdmin {
   }
 
   /**
+   * FFmpeg 設定を読み込みます。
+   * 「init()」メソッドから呼ばれます。
+   */
+  private async loadFFmpegSettings() {
+    try {
+      // FFmpeg 設定を取得します。
+      const response = await fetch(
+        `${window.s2jAllianceManager.apiUrl}ffmpeg/settings`,
+        {
+          headers: {'X-WP-Nonce': window.s2jAllianceManager.nonce}
+        }
+      );
+
+      if (response.ok) {
+        const data = await response.json();
+        this.ffmpegSettings = data;
+      } else {
+        console.error('Failed to load FFmpeg settings:', response.status, response.statusText);
+      }
+    } catch (error) {
+      console.error('Error loading FFmpeg settings:', error);
+    }
+  }
+
+  /**
    * 管理用 UI をレンダリングします。
    * 「init()」メソッドから呼ばれます。
    * プロパティ「updateRankLabels」「updateContentModels」から呼ばれます。
@@ -153,6 +186,7 @@ class AllianceManagerAdmin {
             contentModels={this.settings.content_models}
             onUpdate={this.updateContentModels}
             rankLabels={this.rankLabels}
+            ffmpegSettings={this.ffmpegSettings}
             isLoading={this.isLoading}
           />,
           contentModelsContainer
@@ -162,6 +196,27 @@ class AllianceManagerAdmin {
       }
     } else {
       console.log('ContentList not rendered - container:', !!contentModelsContainer, 'initialized:', this.isInitialized);
+    }
+
+    // FFmpeg Library Manager のコンテナを取得します。
+    const ffmpegManagerContainer = document.getElementById('s2j-ffmpeg-library-manager');
+    
+    if (ffmpegManagerContainer && this.isInitialized) {
+      try {
+        // FFmpegLibraryManager に、FFmpeg Library Manager のコンテナをレンダリングします。
+        render(
+          <FFmpegLibraryManager
+            settings={this.ffmpegSettings}
+            onSave={this.updateFFmpegSettings}
+            isLoading={this.isLoading}
+          />,
+          ffmpegManagerContainer
+        );
+      } catch (error) {
+        console.error('Error rendering FFmpegLibraryManager:', error);
+      }
+    } else {
+      console.log('FFmpegLibraryManager not rendered - container:', !!ffmpegManagerContainer, 'initialized:', this.isInitialized);
     }
   }
 
@@ -199,7 +254,10 @@ class AllianceManagerAdmin {
             'X-WP-Nonce': window.s2jAllianceManager.nonce
           },
           body: JSON.stringify({
-            settings: {display_style: this.settings.display_style},
+            settings: {
+              display_style: this.settings.display_style,
+              ffmpeg_path: this.settings.ffmpeg_path || ''
+            },
             content_models: this.settings.content_models
           })
         }
@@ -305,6 +363,25 @@ class AllianceManagerAdmin {
     this.settings.content_models = contentModels;
 
     await this.saveData();
+
+    // 管理用 UI をレンダリングします。
+    this.renderAdmin();
+  };
+
+  /**
+   * FFmpegLibraryManager が update した際に、FFmpeg 設定を更新します。
+   * 「renderAdmin()」メソッドから呼ばれます。
+   * 
+   * @param ffmpegPath 
+   */
+  private updateFFmpegSettings = async (ffmpegPath: string) => {
+    this.settings.ffmpeg_path = ffmpegPath;
+    this.ffmpegSettings.ffmpeg_path = ffmpegPath;
+
+    await this.saveData();
+
+    // FFmpeg 設定を再読み込みします。
+    await this.loadFFmpegSettings();
 
     // 管理用 UI をレンダリングします。
     this.renderAdmin();

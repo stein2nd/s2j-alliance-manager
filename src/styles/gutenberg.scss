@@ -4,24 +4,17 @@
 
 .s2j-alliance-banner {
   margin: $spacing-lg 0;
-  
-  // 表示スタイル
-  &--grid-single {
+
+  &.s2j-alliance-banner--grid-single.s2j-alliance-banner--align-left {
     .s2j-alliance-partners {
       display: grid;
       grid-template-columns: 1fr;
       gap: $spacing-md;
-    }
-    
-    // 配置オプション
-    &--align-left {
-      .s2j-alliance-partners {
-        justify-items: start;
-      }
-      
+      justify-items: start;
+
       .s2j-alliance-partner {
         text-align: left;
-        
+
         .s2j-alliance-partner-logo,
         .s2j-alliance-partner-link,
         .s2j-alliance-partner-modal {
@@ -30,15 +23,18 @@
         }
       }
     }
-    
-    &--align-center {
-      .s2j-alliance-partners {
-        justify-items: center;
-      }
-      
+  }
+
+  &.s2j-alliance-banner--grid-single.s2j-alliance-banner--align-center {
+    .s2j-alliance-partners {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: $spacing-md;
+      justify-items: center;
+
       .s2j-alliance-partner {
         text-align: center;
-        
+
         .s2j-alliance-partner-logo,
         .s2j-alliance-partner-link,
         .s2j-alliance-partner-modal {
@@ -47,15 +43,18 @@
         }
       }
     }
-    
-    &--align-right {
-      .s2j-alliance-partners {
-        justify-items: end;
-      }
-      
+  }
+
+  &.s2j-alliance-banner--grid-single.s2j-alliance-banner--align-right {
+    .s2j-alliance-partners {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: $spacing-md;
+      justify-items: end;
+
       .s2j-alliance-partner {
         text-align: right;
-        
+
         .s2j-alliance-partner-logo,
         .s2j-alliance-partner-link,
         .s2j-alliance-partner-modal {
@@ -65,32 +64,32 @@
       }
     }
   }
-  
-  &--grid-multi {
+
+  &.s2j-alliance-banner--grid-multi {
     .s2j-alliance-partners {
       display: grid;
       grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
       gap: $spacing-md;
-      
+
       @media (max-width: $breakpoint-sm) {
         grid-template-columns: 1fr;
       }
     }
   }
-  
-  &--masonry {
+
+  &.s2j-alliance-banner--masonry {
     .s2j-alliance-partners {
       column-count: 3;
       column-gap: $spacing-md;
-      
+
       @media (max-width: $breakpoint-lg) {
         column-count: 2;
       }
-      
+
       @media (max-width: $breakpoint-sm) {
         column-count: 1;
       }
-      
+
       .s2j-alliance-partner {
         break-inside: avoid;
         margin-bottom: $spacing-md;

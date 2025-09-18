@@ -164,7 +164,7 @@ export const MediaUploader: React.FC<MediaUploaderProps> = ({
           </div>
         </div>
       )}
-      
+
       <div className="s2j-media-actions">
         <Button
           size="small"

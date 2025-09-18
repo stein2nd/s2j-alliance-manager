@@ -15,12 +15,12 @@
 
 .s2j-admin-header {
   margin-bottom: $spacing-xl;
-  
+
   h2 {
     margin: 0 0 $spacing-sm 0;
     color: $text-color;
   }
-  
+
   p {
     margin: 0;
     color: $text-light;
@@ -33,7 +33,7 @@
   gap: $spacing-lg;
   max-width: 100%;
   overflow: hidden;
-  
+
   @media (max-width: $breakpoint-lg) {
     grid-template-columns: 1fr;
   }
@@ -47,7 +47,7 @@
     padding: $spacing-lg;
     box-shadow: $shadow-sm;
   }
-  
+
   h3 {
     margin: 0 0 $spacing-md 0;
     font-size: 16px;
@@ -57,7 +57,7 @@
 
 .s2j-admin-main {
   min-width: 0; // Grid item の横幅制御を改善
-  
+
   .s2j-admin-card {
     background: $white;
     border: 1px solid $border-color;
@@ -66,14 +66,14 @@
     width: 100%;
     max-width: 100%;
     overflow: hidden;
-    
+
     &-header {
       display: flex;
       justify-content: space-between;
       align-items: center;
       padding: $spacing-lg;
       border-bottom: 1px solid $border-color;
-      
+
       h3 {
         margin: 0;
         font-size: 18px;
@@ -87,21 +87,21 @@
 .s2j-display-settings {
   .form-field {
     margin-bottom: $spacing-md;
-    
+
     label {
       display: block;
       margin-bottom: $spacing-xs;
       font-weight: 600;
       color: $text-color;
     }
-    
+
     select {
       width: 100%;
       padding: $spacing-sm;
       border: 1px solid $border-color;
       border-radius: $border-radius-sm;
       background: $white;
-      
+
       &:focus {
         border-color: $primary-color;
         outline: none;
@@ -118,17 +118,17 @@
     justify-content: space-between;
     align-items: center;
     margin-bottom: $spacing-lg;
-    
+
     h3 {
       margin: 0;
       font-size: 18px;
       color: $text-color;
     }
-    
+
     .s2j-rank-label-actions {
       display: flex;
       gap: $spacing-sm;
-      
+
       button {
         padding: $spacing-sm $spacing-md;
         border: 1px solid $primary-color;
@@ -139,50 +139,49 @@
         font-size: 14px;
         font-weight: 600;
         transition: all 0.2s ease;
-        
+
         &:hover:not(:disabled) {
           background: color.adjust($primary-color, $lightness: -10%);
           border-color: color.adjust($primary-color, $lightness: -10%);
           transform: translateY(-1px);
           box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
         }
-        
+
         &:disabled {
           background: $text-light;
           border-color: $text-light;
           cursor: not-allowed;
           opacity: 0.6;
         }
-        
       }
-      
+
       .s2j-add-rank-label-btn {
         background: $primary-color;
         border-color: $primary-color;
         color: $white;
-        
+
         &:hover:not(:disabled) {
           background: color.adjust($primary-color, $lightness: -10%);
           border-color: color.adjust($primary-color, $lightness: -10%);
         }
       }
-      
+
       .s2j-save-rank-labels-btn {
         background: #00a32a;
         border-color: #00a32a;
         color: $white;
-        
+
         &:hover:not(:disabled) {
           background: color.adjust(#00a32a, $lightness: -10%);
           border-color: color.adjust(#00a32a, $lightness: -10%);
         }
       }
-      
+
       .s2j-cancel-rank-labels-btn {
         background: $text-light;
         border-color: $text-light;
         color: $white;
-        
+
         &:hover:not(:disabled) {
           background: color.adjust($text-light, $lightness: -10%);
           border-color: color.adjust($text-light, $lightness: -10%);
@@ -190,7 +189,7 @@
       }
     }
   }
-  
+
   .s2j-rank-labels {
     padding: $spacing-lg;
   }
@@ -207,17 +206,17 @@
   border-radius: $border-radius-sm;
   margin-bottom: $spacing-md;
   background: $white;
-  
+
   &:hover {
     box-shadow: $shadow-sm;
   }
-  
+
   // 保留中の変更がある場合のスタイル
   &.s2j-pending-changes {
     background: #fef7e0; // 薄いクリーム色
     border-color: #f0b849; // 少し濃いクリーム色のボーダー
     position: relative;
-    
+
     // 保留状態を示す小さなインジケーター
     &::before {
       content: '';
@@ -229,13 +228,13 @@
       background: #f0b849;
       border-radius: 2px 0 0 2px;
     }
-    
+
     &:hover {
       background: #fdf2d1; // ホバー時は少し濃いクリーム色
       box-shadow: 0 2px 8px rgba(240, 184, 73, 0.2);
     }
   }
-  
+
   .s2j-row-number {
     position: absolute;
     top: 4px;
@@ -248,17 +247,17 @@
     border-radius: 2px;
     line-height: 1;
     z-index: 2;
-    
+
     // 保留状態の場合は左側のインジケーターを避ける
     .s2j-pending-changes & {
       left: 8px;
     }
   }
-  
+
   .s2j-label-field {
     display: flex;
     align-items: center;
-    
+
     &.title {
       input[type="text"] {
         width: 100%;
@@ -267,7 +266,7 @@
         border-radius: $border-radius-sm;
       }
     }
-    
+
     &.content {
       textarea {
         width: 100%;
@@ -278,7 +277,7 @@
         resize: vertical;
       }
     }
-    
+
     &.thumbnail {
       .s2j-logo-preview {
         width: 40px;
@@ -287,7 +286,7 @@
         object-fit: cover;
         border: 1px solid $border-color;
       }
-      
+
       .s2j-logo-placeholder {
         width: 40px;
         height: 40px;
@@ -301,13 +300,13 @@
         color: $text-light;
       }
     }
-    
+
     &.actions {
       display: flex;
       gap: $spacing-xs;
       flex-wrap: wrap;
       min-width: 0;
-      
+
       button {
         padding: $spacing-xs $spacing-sm;
         border: 1px solid $border-color;
@@ -316,32 +315,32 @@
         cursor: pointer;
         font-size: 12px;
         flex-shrink: 0;
-        
+
         &:hover {
           background: $background-color;
         }
-        
+
         &.button-primary {
           background: $primary-color;
           color: $white;
           border-color: $primary-color;
-          
+
           &:hover {
             background: color.adjust($primary-color, $lightness: -10%);
           }
         }
-        
+
         &.button-danger {
           background: $error-color;
           color: $white;
           border-color: $error-color;
-          
+
           &:hover {
             background: color.adjust($error-color, $lightness: -10%);
           }
         }
       }
-      
+
       .s2j-move-up-btn,
       .s2j-move-down-btn {
         min-width: 65px;
@@ -349,7 +348,7 @@
         font-size: 11px;
         white-space: nowrap;
       }
-      
+
       .s2j-delete-btn {
         min-width: 55px;
         padding: 4px 6px;
@@ -357,7 +356,7 @@
         background: $error-color;
         color: $white;
         border-color: $error-color;
-        
+
         &:hover:not(:disabled) {
           background: color.adjust($error-color, $lightness: -10%);
           border-color: color.adjust($error-color, $lightness: -10%);
@@ -379,7 +378,7 @@
   display: flex;
   align-items: center;
   gap: $spacing-sm;
-  
+
   button {
     padding: $spacing-sm $spacing-md;
     border: 1px solid $primary-color;
@@ -390,43 +389,43 @@
     font-size: 14px;
     font-weight: 600;
     transition: all 0.2s ease;
-    
+
     &:hover:not(:disabled) {
       background: color.adjust($primary-color, $lightness: -10%);
       border-color: color.adjust($primary-color, $lightness: -10%);
       transform: translateY(-1px);
       box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
     }
-    
+
     &:disabled {
       background: $text-light;
       border-color: $text-light;
       cursor: not-allowed;
       opacity: 0.6;
     }
-    
+
     span {
       display: inline-block;
     }
   }
-  
+
   // 特定のボタンクラス用のスタイル
   .s2j-add-partner-btn {
     background: $primary-color;
     border-color: $primary-color;
     color: $white;
-    
+
     &:hover:not(:disabled) {
       background: color.adjust($primary-color, $lightness: -10%);
       border-color: color.adjust($primary-color, $lightness: -10%);
     }
   }
-  
+
   .s2j-save-changes-btn {
     background: #00a32a;
     border-color: #00a32a;
     color: $white;
-    
+
     &:hover:not(:disabled) {
       background: color.adjust(#00a32a, $lightness: -10%);
       border-color: color.adjust(#00a32a, $lightness: -10%);
@@ -438,7 +437,7 @@
   padding: $spacing-xl;
   text-align: center;
   color: $text-light;
-  
+
   p {
     margin: 0;
     font-style: italic;
@@ -456,17 +455,17 @@
   border-radius: $border-radius-sm;
   margin-bottom: $spacing-md;
   background: $white;
-  
+
   &:hover {
     box-shadow: $shadow-sm;
   }
-  
+
   // 保留中の変更がある場合のスタイル
   &.s2j-pending-changes {
     background: #fef7e0; // 薄いクリーム色
     border-color: #f0b849; // 少し濃いクリーム色のボーダー
     position: relative;
-    
+
     // 保留状態を示す小さなインジケーター
     &::before {
       content: '';
@@ -478,13 +477,13 @@
       background: #f0b849;
       border-radius: 2px 0 0 2px;
     }
-    
+
     &:hover {
       background: #fdf2d1; // ホバー時は少し濃いクリーム色
       box-shadow: 0 2px 8px rgba(240, 184, 73, 0.2);
     }
   }
-  
+
   .s2j-row-number {
     position: absolute;
     top: 4px;
@@ -497,23 +496,23 @@
     border-radius: 2px;
     line-height: 1;
     z-index: 2;
-    
+
     // 保留状態の場合は左側のインジケーターを避ける
     .s2j-pending-changes & {
       left: 8px;
     }
   }
-  
+
   .s2j-model-field {
     display: flex;
     align-items: center;
-    
+
     &.frontpage {
       input[type="checkbox"] {
         margin: 0;
       }
     }
-    
+
     &.rank {
       select {
         min-width: 120px;
@@ -522,7 +521,7 @@
         border-radius: $border-radius-sm;
       }
     }
-    
+
     &.logo {
       .s2j-logo-preview {
         width: 40px;
@@ -531,7 +530,7 @@
         object-fit: cover;
         border: 1px solid $border-color;
       }
-      
+
       .s2j-logo-placeholder {
         width: 40px;
         height: 40px;
@@ -545,7 +544,7 @@
         color: $text-light;
       }
     }
-    
+
     &.jump-url {
       input[type="url"] {
         width: 200px;
@@ -554,7 +553,7 @@
         border-radius: $border-radius-sm;
       }
     }
-    
+
     &.behavior {
       select {
         min-width: 100px;
@@ -563,13 +562,13 @@
         border-radius: $border-radius-sm;
       }
     }
-    
+
     &.actions {
       display: flex;
       gap: $spacing-xs;
       flex-wrap: wrap; // ボタンがはみ出した場合の折り返し
       min-width: 0; // フレックスアイテムの幅制御
-      
+
       button {
         padding: $spacing-xs $spacing-sm;
         border: 1px solid $border-color;
@@ -578,32 +577,32 @@
         cursor: pointer;
         font-size: 12px;
         flex-shrink: 0; // ボタンの縮小を防ぐ
-        
+
         &:hover {
           background: $background-color;
         }
-        
+
         &.button-primary {
           background: $primary-color;
           color: $white;
           border-color: $primary-color;
-          
+
           &:hover {
             background: color.adjust($primary-color, $lightness: -10%);
           }
         }
-        
+
         &.button-danger {
           background: $error-color;
           color: $white;
           border-color: $error-color;
-          
+
           &:hover {
             background: color.adjust($error-color, $lightness: -10%);
           }
         }
       }
-      
+
       // 特定のボタンクラス用のスタイル
       .s2j-move-up-btn,
       .s2j-move-down-btn {
@@ -612,13 +611,13 @@
         font-size: 11px;
         white-space: nowrap; // テキストの改行を防ぐ
       }
-      
+
       .s2j-message-btn {
         min-width: 55px;
         padding: 4px 6px;
         font-size: 11px;
       }
-      
+
       .s2j-delete-btn {
         min-width: 55px;
         padding: 4px 6px;
@@ -626,7 +625,7 @@
         background: $error-color;
         color: $white;
         border-color: $error-color;
-        
+
         &:hover:not(:disabled) {
           background: color.adjust($error-color, $lightness: -10%);
           border-color: color.adjust($error-color, $lightness: -10%);
@@ -648,7 +647,7 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  
+
   &-content {
     background: $white;
     border-radius: $border-radius-md;
@@ -657,22 +656,22 @@
     width: 90%;
     max-height: 80vh;
     overflow-y: auto;
-    
+
     h3 {
       margin: 0 0 $spacing-md 0;
       color: $text-color;
     }
-    
+
     .form-field {
       margin-bottom: $spacing-md;
-      
+
       label {
         display: block;
         margin-bottom: $spacing-xs;
         font-weight: 600;
         color: $text-color;
       }
-      
+
       textarea {
         width: 100%;
         min-height: 100px;
@@ -680,7 +679,7 @@
         border: 1px solid $border-color;
         border-radius: $border-radius-sm;
         resize: vertical;
-        
+
         &:focus {
           border-color: $primary-color;
           outline: none;
@@ -688,7 +687,7 @@
         }
       }
     }
-    
+
     .modal-actions {
       display: flex;
       gap: $spacing-sm;
@@ -702,7 +701,7 @@
 .s2j-media-uploader {
   .s2j-media-preview {
     margin-bottom: $spacing-sm;
-    
+
     img {
       max-width: 100px;
       max-height: 100px;
@@ -710,17 +709,17 @@
       border: 1px solid $border-color;
     }
   }
-  
+
   .s2j-logo-placeholder {
     span {
       display: inline-block;
     }
   }
-  
+
   .s2j-media-actions {
     display: flex;
     gap: $spacing-xs;
-    
+
     button {
       padding: $spacing-xs $spacing-sm;
       border: 1px solid $border-color;
@@ -728,33 +727,33 @@
       background: $white;
       cursor: pointer;
       font-size: 12px;
-      
+
       &:hover {
         background: $background-color;
       }
-      
+
       span {
         display: inline-block;
       }
     }
-    
+
     // 特定のボタンクラス用のスタイル
     .s2j-media-select-btn {
       background: $primary-color;
       color: $white;
       border-color: $primary-color;
-      
+
       &:hover:not(:disabled) {
         background: color.adjust($primary-color, $lightness: -10%);
         border-color: color.adjust($primary-color, $lightness: -10%);
       }
     }
-    
+
     .s2j-media-remove-btn {
       background: $error-color;
       color: $white;
       border-color: $error-color;
-      
+
       &:hover:not(:disabled) {
         background: color.adjust($error-color, $lightness: -10%);
         border-color: color.adjust($error-color, $lightness: -10%);
@@ -766,97 +765,97 @@
 // Debug Information Styles
 .s2j-debug-info {
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen-Sans, Ubuntu, Cantarell, 'Helvetica Neue', sans-serif;
-  
+
   .s2j-debug-header {
     background: #f1f1f1;
     padding: 15px;
     margin: -10px -10px 20px -10px;
     border-left: 4px solid #0073aa;
-    
+
     h2 {
       margin: 0;
       color: #23282d;
       font-size: 18px;
     }
-    
+
     p {
       margin: 5px 0 0 0;
       color: #666;
       font-size: 14px;
     }
   }
-  
+
   .s2j-debug-section {
     background: $white;
     border: 1px solid #ccd0d4;
     border-radius: 4px;
     margin-bottom: 20px;
     overflow: hidden;
-    
+
     &-header {
       background: #f9f9f9;
       padding: 12px 15px;
       border-bottom: 1px solid #ccd0d4;
-      
+
       h3 {
         margin: 0;
         font-size: 16px;
         color: #23282d;
       }
     }
-    
+
     &-content {
       padding: 15px;
-      
+
       .s2j-debug-row {
         display: flex;
         justify-content: space-between;
         align-items: center;
         padding: 8px 0;
         border-bottom: 1px solid #f0f0f1;
-        
+
         &:last-child {
           border-bottom: none;
         }
-        
+
         .s2j-debug-label {
           font-weight: 600;
           color: #23282d;
         }
-        
+
         .s2j-debug-value {
           background: #e7f3ff;
           color: #0073aa;
           padding: 4px 8px;
           border-radius: 3px;
           font-size: 13px;
-          
+
           &--success {
             background: #d4edda;
             color: #155724;
           }
-          
+
           &--error {
             background: #f8d7da;
             color: #721c24;
           }
-          
+
           &--info {
             background: #e7f3ff;
             color: #0073aa;
           }
         }
       }
-      
+
       .s2j-debug-url-section {
         padding: 8px 0;
-        
+
         .s2j-debug-label {
           font-weight: 600;
           color: #23282d;
           margin-bottom: 5px;
         }
-        
+
         .s2j-debug-url-container {
           background: #f8f9fa;
           padding: 8px;
@@ -868,14 +867,14 @@
       }
     }
   }
-  
+
   .s2j-debug-footer {
     background: #f8f9fa;
     padding: 15px;
     margin: 20px -10px -10px -10px;
     border-top: 1px solid #ccd0d4;
     text-align: center;
-    
+
     p {
       margin: 0;
       color: #666;
@@ -895,18 +894,18 @@
   .s2j-rank-label {
     grid-template-columns: 1fr;
     gap: $spacing-sm;
-    
+
     .s2j-label-field {
       &.actions {
         justify-content: flex-end;
       }
     }
   }
-  
+
   .s2j-content-model {
     grid-template-columns: 1fr;
     gap: $spacing-sm;
-    
+
     .s2j-model-field {
       &.actions {
         justify-content: flex-end;

@@ -46,8 +46,6 @@ export const ContentList: React.FC<ContentListProps> = ({
    * 「s2j-add-partner-btn.onClick()」メソッドから呼ばれます。
    */
   const addNewModel = async () => {
-    console.log('addNewModel called, current models:', contentModels.length);
-
     const newModel: ContentModel = {
       frontpage: 'NO',
       rank: 'default',
@@ -59,8 +57,6 @@ export const ContentList: React.FC<ContentListProps> = ({
     const currentModels = pendingModels || contentModels;
     const updatedModels = [...currentModels, newModel];
 
-    console.log('Updated models:', updatedModels.length);
-    
     // 追加は常に保留状態にする
     setPendingModels(updatedModels);
     setHasUnsavedChanges(true);
@@ -98,7 +94,7 @@ export const ContentList: React.FC<ContentListProps> = ({
     const updated = [...currentModels];
 
     updated[index] = { ...updated[index], [field]: value };
-    
+
     // 更新は常に保留状態にする
     setPendingModels(updated);
 
@@ -116,7 +112,7 @@ export const ContentList: React.FC<ContentListProps> = ({
     const currentModels = pendingModels || contentModels;
     const updated = [...currentModels];
     const newIndex = direction === 'up' ? index - 1 : index + 1;
-    
+
     if (newIndex >= 0 && newIndex < updated.length) {
       [updated[index], updated[newIndex]] = [updated[newIndex], updated[index]];
       setPendingModels(updated);
@@ -134,11 +130,11 @@ export const ContentList: React.FC<ContentListProps> = ({
     if (window.confirm(__('Are you sure you want to delete this item?', 's2j-alliance-manager'))) {
       const currentModels = pendingModels || contentModels;
       const updated = currentModels.filter((_, i) => i !== index);
-      
+
       // 削除は常に保留状態にする
       setPendingModels(updated);
       setHasUnsavedChanges(true);
-      
+
       // 元の順序も更新（削除されたインデックス以降を1つずつ前にずらす）
       const newOriginalOrder = originalOrder.filter((_, i) => i !== index);
 
@@ -157,7 +153,7 @@ export const ContentList: React.FC<ContentListProps> = ({
       value: label.slug,
       label: label.title
     }));
-    
+
     // Add default option if no labels exist
     if (options.length === 0) {
       options.push({
@@ -165,7 +161,7 @@ export const ContentList: React.FC<ContentListProps> = ({
         label: __('Default', 's2j-alliance-manager')
       });
     }
-    
+
     return options;
   };
 
@@ -200,8 +196,6 @@ export const ContentList: React.FC<ContentListProps> = ({
   const closeMessageModal = () => {
     setShowMessageModal(null);
   };
-
-  console.log('ContentList rendering with models:', contentModels.length, 'isLoading:', isLoading);
 
   // 表示するモデルを決定（保留中の変更がある場合はそれを使用、なければ保存済みのモデルを使用）
   const displayModels = pendingModels || contentModels;
@@ -239,7 +233,7 @@ export const ContentList: React.FC<ContentListProps> = ({
             const rowNumber = hasUnsavedChanges && originalOrder.length > index 
               ? originalOrder[index] + 1 
               : index + 1;
-            
+
             return (
             <div key={`model-${index}-${model.logo}`} className={`s2j-content-model ${hasUnsavedChanges ? 's2j-pending-changes' : ''}`}>
               <div className="s2j-row-number">#{rowNumber}</div>

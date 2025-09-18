@@ -29,8 +29,6 @@ export const RankLabelManager: React.FC<RankLabelManagerProps> = ({
   const [hasUnsavedChanges, setHasUnsavedChanges] = useState(false);
   const [originalOrder, setOriginalOrder] = useState<number[]>([]);
 
-  console.log('RankLabelManager rendering with isLoading:', isLoading, 'rankLabels:', initialRankLabels.length);
-
   // ランクラベルが変更された際に、original order を初期化します。
   useEffect(() => {
     if (initialRankLabels.length > 0 && originalOrder.length === 0) {
@@ -51,10 +49,10 @@ export const RankLabelManager: React.FC<RankLabelManagerProps> = ({
       menu_order: initialRankLabels.length,
       slug: ''
     };
-    
+
     const currentLabels = pendingLabels || initialRankLabels;
     const updatedLabels = [...currentLabels, newLabel];
-    
+
     setPendingLabels(updatedLabels);
 
     setHasUnsavedChanges(true);
@@ -138,12 +136,12 @@ export const RankLabelManager: React.FC<RankLabelManagerProps> = ({
     const currentLabels = pendingLabels || initialRankLabels;
     const updated = [...currentLabels];
     updated[index] = { ...updated[index], [field]: value };
-    
+
     // title 変更時に slug を更新します。
     if (field === 'title') {
       updated[index].slug = value.toLowerCase().replace(/\s+/g, '-');
     }
-    
+
     setPendingLabels(updated);
 
     setHasUnsavedChanges(true);
@@ -160,15 +158,15 @@ export const RankLabelManager: React.FC<RankLabelManagerProps> = ({
     const currentLabels = pendingLabels || initialRankLabels;
     const updated = [...currentLabels];
     const newIndex = direction === 'up' ? index - 1 : index + 1;
-    
+
     if (newIndex >= 0 && newIndex < updated.length) {
       [updated[index], updated[newIndex]] = [updated[newIndex], updated[index]];
-      
+
       // `menu_order` を更新します。
       updated.forEach((label, idx) => {
         label.menu_order = idx;
       });
-      
+
       setPendingLabels(updated);
       setHasUnsavedChanges(true);
     }
@@ -184,10 +182,10 @@ export const RankLabelManager: React.FC<RankLabelManagerProps> = ({
     if (window.confirm(__('Are you sure you want to delete this rank label?', 's2j-alliance-manager'))) {
       const currentLabels = pendingLabels || initialRankLabels;
       const updated = currentLabels.filter((_, i) => i !== index);
-      
+
       setPendingLabels(updated);
       setHasUnsavedChanges(true);
-      
+
       // original order を更新します。
       const newOriginalOrder = originalOrder.filter((_, i) => i !== index);
       setOriginalOrder(newOriginalOrder);
@@ -205,11 +203,11 @@ export const RankLabelManager: React.FC<RankLabelManagerProps> = ({
     const notice = document.createElement('div');
     notice.className = `notice notice-${type} is-dismissible`;
     notice.innerHTML = `<p>${message}</p>`;
-    
+
     const container = document.querySelector('.wrap');
     if (container) {
       container.insertBefore(notice, container.firstChild);
-      
+
       // 5秒後に自動で消えます。
       setTimeout(() => {
         if (notice.parentNode) {
@@ -266,14 +264,12 @@ export const RankLabelManager: React.FC<RankLabelManagerProps> = ({
         ) : (
           displayLabels.map((label: RankLabel, index: number) => {
             // Show original order number when there are unsaved changes
-            const rowNumber = hasUnsavedChanges && originalOrder.length > index 
-              ? originalOrder[index] + 1 
-              : index + 1;
-            
+            const rowNumber = hasUnsavedChanges && originalOrder.length > index ? originalOrder[index] + 1 : index + 1;
+
             return (
               <div key={`label-${index}-${label.id}`} className={`s2j-rank-label ${hasUnsavedChanges ? 's2j-pending-changes' : ''}`}>
                 <div className="s2j-row-number">#{rowNumber}</div>
-                
+
                 <div className="s2j-label-field title">
                   <TextControl
                     value={label.title}

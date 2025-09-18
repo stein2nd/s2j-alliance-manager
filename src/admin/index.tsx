@@ -32,29 +32,20 @@ class AllianceManagerAdmin {
    * コンストラクターから呼ばれます。
    */
   private async init() {
-    console.log('AllianceManagerAdmin init started');
-
     // 設定を読み込みます。
     await this.loadData();
 
     // ランクラベルを読み込みます。
     await this.loadRankLabels();
 
-    console.log('Data loaded, settings:', this.settings);
-    console.log('Rank labels loaded:', this.rankLabels);
-
     // 初期化状態を設定します。
     this.isInitialized = true;
-
-    console.log('isInitialized set to true');
 
     // 管理用 UI をレンダリングします。
     this.renderAdmin();
 
     // イベントをバインドします。
     this.bindEvents();
-
-    console.log('AllianceManagerAdmin init completed');
   }
 
   /**
@@ -97,8 +88,6 @@ class AllianceManagerAdmin {
       if (response.ok) {
         const data = await response.json();
         this.rankLabels = data;
-
-        console.log('Rank labels loaded:', data);
       } else {
         console.error('Failed to load rank labels:', response.status, response.statusText);
       }
@@ -113,16 +102,11 @@ class AllianceManagerAdmin {
    * プロパティ「updateRankLabels」「updateContentModels」から呼ばれます。
    */
   private renderAdmin() {
-    console.log('renderAdmin called, isInitialized:', this.isInitialized);
-    
     // 表示設定のコンテナを取得します。
     const displaySettingsContainer = document.getElementById('s2j-display-settings');
 
-    console.log('displaySettingsContainer:', displaySettingsContainer);
-
     if (displaySettingsContainer) {
       try {
-        console.log('About to render SettingsForm');
         // 「SettingsForm」に、「表示設定のコンテナ」をレンダリングします。
         render(
           <SettingsForm
@@ -132,8 +116,6 @@ class AllianceManagerAdmin {
           />,
           displaySettingsContainer
         );
-
-        console.log('SettingsForm rendered successfully');
       } catch (error) {
         console.error('Error rendering SettingsForm:', error);
       }
@@ -142,12 +124,8 @@ class AllianceManagerAdmin {
     // 「ランクラベル・マネージャーのコンテナ」を取得します。
     const rankLabelContainer = document.getElementById('s2j-rank-labels');
 
-    console.log('rankLabelContainer:', rankLabelContainer);
-
     if (rankLabelContainer && this.isInitialized) {
       try {
-        console.log('Rendering RankLabelManager component');
-
         // 「RankLabelManager」に、「ランクラベル・マネージャーのコンテナ」をレンダリングします。
         render(
           <RankLabelManager 
@@ -157,8 +135,6 @@ class AllianceManagerAdmin {
           />,
           rankLabelContainer
         );
-
-        console.log('RankLabelManager rendered successfully');
       } catch (error) {
         console.error('Error rendering RankLabelManager:', error);
       }
@@ -166,18 +142,10 @@ class AllianceManagerAdmin {
       console.log('RankLabelManager not rendered - container:', !!rankLabelContainer, 'initialized:', this.isInitialized);
     }
 
-    // コンテンツモデルをレンダリングします。
-    console.log('About to get contentModelsContainer');
-
     // 「コンテンツモデルのコンテナ」を取得します。
     const contentModelsContainer = document.getElementById('s2j-content-models');
-
-    console.log('contentModelsContainer:', contentModelsContainer);
-    console.log('this.isInitialized:', this.isInitialized);
-    console.log('this.settings.content_models:', this.settings.content_models);
     
     if (contentModelsContainer && this.isInitialized) {
-      console.log('Rendering ContentList component');
       try {
         // 「ContentList」に、「コンテンツモデルのコンテナ」をレンダリングします。
         render(
@@ -189,8 +157,6 @@ class AllianceManagerAdmin {
           />,
           contentModelsContainer
         );
-
-        console.log('ContentList rendered successfully');
       } catch (error) {
         console.error('Error rendering ContentList:', error);
       }
@@ -300,13 +266,13 @@ class AllianceManagerAdmin {
 
     // 「通知」に、メッセージを設定します。
     notice.innerHTML = `<p>${message}</p>`;
-    
+
     // 「通知」を配置するコンテナを取得します。
     const container = document.querySelector('.wrap');
     if (container) {
       // 「通知」を配置します。
       container.insertBefore(notice, container.firstChild);
-      
+
       // 5秒後に自動で消えます。
       setTimeout(() => {
         if (notice.parentNode) {
@@ -323,11 +289,7 @@ class AllianceManagerAdmin {
    * @param rankLabels 
    */
   private updateRankLabels = async (rankLabels: RankLabel[]) => {
-    console.log('updateRankLabels called with:', rankLabels.length, 'labels');
-
     this.rankLabels = rankLabels;
-
-    console.log('Rank labels updated, re-rendering admin');
 
     // 管理用 UI をレンダリングします。
     this.renderAdmin();
@@ -340,15 +302,9 @@ class AllianceManagerAdmin {
    * @param contentModels 
    */
   private updateContentModels = async (contentModels: ContentModel[]) => {
-    console.log('updateContentModels called with:', contentModels.length, 'models');
-
     this.settings.content_models = contentModels;
 
-    console.log('Settings updated, triggering saveData');
-
     await this.saveData();
-
-    console.log('saveData completed, re-rendering admin');
 
     // 管理用 UI をレンダリングします。
     this.renderAdmin();
@@ -367,8 +323,6 @@ class AllianceManagerAdmin {
 
 // DOM が準備完了時に、「AllianceManagerAdmin」を初期化します。
 jQuery(document).ready(() => {
-  console.log('jQuery document ready, initializing AllianceManagerAdmin');
-
   // 「AllianceManagerAdmin」を初期化します。
   new AllianceManagerAdmin();
 });

@@ -24,7 +24,7 @@ export const MediaUploader: React.FC<MediaUploaderProps> = ({
   attachmentId,
   onSelect,
   label,
-  allowedTypes = ['image']
+  allowedTypes = ['image', 'video']
 }) => {
   const [media, setMedia] = useState<WordPressMedia | null>(null);
   const [isLoading, setIsLoading] = useState(false);
@@ -126,20 +126,41 @@ export const MediaUploader: React.FC<MediaUploaderProps> = ({
     );
   }
 
+  /**
+   * メディアが動画かどうかを判定します。
+   * 
+   * @param mimeType MIME タイプ
+   * @returns 動画かどうか
+   */
+  const isVideo = (mimeType: string) => {
+    return mimeType.startsWith('video/');
+  };
+
   return (
     <div className="s2j-media-uploader">
       {media ? (
         <div className="s2j-media-preview">
-          <img
-            src={media.url}
-            alt={media.alt}
-            className="s2j-logo-preview"
-          />
+          {isVideo(media.mime_type) ? (
+            <video
+              src={media.url}
+              controls
+              className="s2j-logo-preview"
+              style={{ maxWidth: '100%', height: 'auto' }}
+            >
+              {__('Your browser does not support the video tag.', 's2j-alliance-manager')}
+            </video>
+          ) : (
+            <img
+              src={media.url}
+              alt={media.alt}
+              className="s2j-logo-preview"
+            />
+          )}
         </div>
       ) : (
         <div className="s2j-media-preview">
           <div className="s2j-logo-placeholder">
-            <span>{__('No logo', 's2j-alliance-manager')}</span>
+            <span>{__('No media', 's2j-alliance-manager')}</span>
           </div>
         </div>
       )}

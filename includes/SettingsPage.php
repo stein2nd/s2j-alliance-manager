@@ -14,7 +14,7 @@ if (!defined('ABSPATH')) {
  * 設定ページ
  */
 class S2J_Alliance_Manager_SettingsPage {
-    
+
     /**
      * コンストラクター
      */
@@ -25,7 +25,7 @@ class S2J_Alliance_Manager_SettingsPage {
         // 管理用設定とそのデータを登録します。
         add_action('admin_init', array($this, 'admin_init'));
     }
-    
+
     /**
      * サブメニューページ「S2J Alliance Manager」を追加します。
      * 「コンストラクター」から呼ばれます。
@@ -42,7 +42,7 @@ class S2J_Alliance_Manager_SettingsPage {
             array($this, 'admin_page')
         );
     }
-    
+
     /**
      * 管理用設定とそのデータを登録します。
      * 「コンストラクター」から呼ばれます。
@@ -57,7 +57,7 @@ class S2J_Alliance_Manager_SettingsPage {
             array($this, 'sanitize_settings')
         );
     }
-    
+
     /**
      * 設定をサニタイズします。
      *
@@ -66,49 +66,45 @@ class S2J_Alliance_Manager_SettingsPage {
      */
     public function sanitize_settings($input) {
         $sanitized = array();
-        
+
         // 表示スタイルをサニタイズします。
         if (isset($input['display_style'])) {
             $allowed_styles = array('grid-single', 'grid-multi');
-            $sanitized['display_style'] = in_array($input['display_style'], $allowed_styles) 
-                ? $input['display_style'] 
-                : 'grid-single';
+            $sanitized['display_style'] = in_array($input['display_style'], $allowed_styles) ? $input['display_style'] : 'grid-single';
         }
-        
+
         // コンテンツモデルをサニタイズします。
         if (isset($input['content_models']) && is_array($input['content_models'])) {
             $sanitized['content_models'] = array();
             foreach ($input['content_models'] as $model) {
                 $sanitized_model = array();
-                
+
                 // frontpage をサニタイズします。
                 $sanitized_model['frontpage'] = isset($model['frontpage']) ? 'YES' : 'NO';
-                
+
                 // rank をサニタイズします。
                 $sanitized_model['rank'] = sanitize_title($model['rank'] ?? '');
-                
+
                 // logo (attachment ID) をサニタイズします。
                 $sanitized_model['logo'] = intval($model['logo'] ?? 0);
-                
+
                 // jump_url をサニタイズします。
                 $sanitized_model['jump_url'] = esc_url_raw($model['jump_url'] ?? '');
-                
+
                 // behavior をサニタイズします。
                 $allowed_behaviors = array('jump', 'modal');
-                $sanitized_model['behavior'] = in_array($model['behavior'] ?? '', $allowed_behaviors) 
-                    ? $model['behavior'] 
-                    : 'jump';
-                
+                $sanitized_model['behavior'] = in_array($model['behavior'] ?? '', $allowed_behaviors) ? $model['behavior'] : 'jump';
+
                 // message をサニタイズします。
                 $sanitized_model['message'] = sanitize_textarea_field($model['message'] ?? '');
-                
+
                 $sanitized['content_models'][] = $sanitized_model;
             }
         }
-        
+
         return $sanitized;
     }
-    
+
     /**
      * サブメニューページ「S2J Alliance Manager」のコンテンツを表示します。
      * 「admin_page」フックから呼ばれます。
@@ -120,14 +116,14 @@ class S2J_Alliance_Manager_SettingsPage {
         ?>
         <div class="wrap">
             <h1><?php echo esc_html(get_admin_page_title()); ?></h1>
-            
+
             <div id="s2j-alliance-manager-admin">
                 <div class="s2j-admin-container">
                     <div class="s2j-admin-header">
                         <h2><?php _e('Alliance Partner Management', 's2j-alliance-manager'); ?></h2>
                         <p><?php _e('Manage your alliance partner banners and links.', 's2j-alliance-manager'); ?></p>
                     </div>
-                    
+
                     <div class="s2j-admin-content">
                         <div class="s2j-admin-main">
                             <div class="s2j-admin-card">
@@ -138,7 +134,7 @@ class S2J_Alliance_Manager_SettingsPage {
                                     <!-- Rank labels will be rendered here by React -->
                                 </div>
                             </div>
-                            
+
                             <div class="s2j-admin-card">
                                 <div class="s2j-admin-card-header">
                                     <h3><?php _e('Alliance Partners', 's2j-alliance-manager'); ?></h3>
@@ -148,7 +144,7 @@ class S2J_Alliance_Manager_SettingsPage {
                                 </div>
                             </div>
                         </div>
-                        
+
                         <div class="s2j-admin-sidebar">
                             <div class="s2j-admin-card">
                                 <h3><?php _e('Display Settings', 's2j-alliance-manager'); ?></h3>

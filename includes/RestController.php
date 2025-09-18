@@ -14,12 +14,12 @@ if (!defined('ABSPATH')) {
  * REST API コントローラー
  */
 class S2J_Alliance_Manager_RestController {
-    
+
     /**
      * Namespace
      */
     const NAMESPACE = 's2j-alliance-manager/v1';
-    
+
     /**
      * コンストラクター
      */
@@ -27,7 +27,7 @@ class S2J_Alliance_Manager_RestController {
         // REST API ルートを登録します。
         add_action('rest_api_init', array($this, 'register_routes'));
     }
-    
+
     /**
      * REST API ルートを登録します。
      * 「コンストラクター」から呼ばれます。
@@ -46,7 +46,7 @@ class S2J_Alliance_Manager_RestController {
                 'permission_callback' => array($this, 'check_permissions'),
             )
         );
-        
+
         // REST API ルート (ベース URL: '/content-models') の GET メソッドに、「get_content_models」メソッドを登録し、権限チェックの上で、コンテンツモデルを取得します。
         register_rest_route(
             self::NAMESPACE, 
@@ -57,7 +57,7 @@ class S2J_Alliance_Manager_RestController {
                 'permission_callback' => array($this, 'check_permissions'),
             )
         );
-        
+
         // REST API ルート (ベース URL: '/save-all') の POST メソッドに、「save_all」メソッドを登録し、権限チェックの上で、設定とコンテンツモデルを保存します。
         // 設定とコンテンツモデルをサニタイズします。
         register_rest_route(
@@ -81,7 +81,7 @@ class S2J_Alliance_Manager_RestController {
                 ),
             )
         );
-        
+
         // REST API ルート (ベース URL: '/rank-labels') の GET メソッドに、「get_rank_labels」メソッドを登録し、権限チェックの上で、ランクラベルを取得します。
         register_rest_route(
             self::NAMESPACE, 
@@ -92,7 +92,7 @@ class S2J_Alliance_Manager_RestController {
                 'permission_callback' => array($this, 'check_permissions'),
             )
         );
-        
+
         // REST API ルート (ベース URL: '/rank-labels') の POST メソッドに、「save_rank_labels」メソッドを登録し、権限チェックの上で、ランクラベルを保存します。
         // ランクラベルをサニタイズします。
         register_rest_route(
@@ -112,7 +112,7 @@ class S2J_Alliance_Manager_RestController {
             )
         );
     }
-    
+
     /**
      * 現在のユーザーが指定された権限を持っているか否かをチェックします。
      * 「register_routes」フックから呼ばれます。
@@ -122,7 +122,7 @@ class S2J_Alliance_Manager_RestController {
     public function check_permissions() {
         return current_user_can('manage_options');
     }
-    
+
     /**
      * REST API ルート (ベース URL: '/settings') の GET メソッドに登録され、設定を取得します。
      * 「register_routes」フックから呼ばれます。
@@ -137,10 +137,10 @@ class S2J_Alliance_Manager_RestController {
                 'content_models' => array()
             )
         );
-        
+
         return rest_ensure_response($settings);
     }
-    
+
     /**
      * REST API ルート (ベース URL: '/content-models') の GET メソッドに登録され、コンテンツモデルを取得します。
      * 「register_routes」フックから呼ばれます。
@@ -154,7 +154,7 @@ class S2J_Alliance_Manager_RestController {
         );
 
         $content_models = isset($settings['content_models']) ? $settings['content_models'] : array();
-        
+
         // Validate and clean up content models
         $validated_models = array();
         foreach ($content_models as $model) {
@@ -163,10 +163,10 @@ class S2J_Alliance_Manager_RestController {
                 $validated_models[] = $validated_model;
             }
         }
-        
+
         return rest_ensure_response($validated_models);
     }
-    
+
     /**
      * REST API ルート (ベース URL: '/save-all') の POST メソッドに登録され、設定とコンテンツモデルを保存します。
      * 「register_routes」フックから呼ばれます。
@@ -178,14 +178,14 @@ class S2J_Alliance_Manager_RestController {
         $settings = $request->get_param('settings');
 
         $content_models = $request->get_param('content_models');
-        
+
         $data = array(
             'display_style' => $settings['display_style'] ?? 'grid-single',
             'content_models' => $content_models
         );
-        
+
         $result = update_option('s2j_alliance_manager_settings', $data);
-        
+
         if ($result) {
             return rest_ensure_response(array(
                 'success' => true,
@@ -199,7 +199,7 @@ class S2J_Alliance_Manager_RestController {
             );
         }
     }
-    
+
     /**
      * 設定をサニタイズします。
      * 「register_routes」フックから呼ばれます。
@@ -209,18 +209,16 @@ class S2J_Alliance_Manager_RestController {
      */
     public function sanitize_settings($settings) {
         $sanitized = array();
-        
+
         // Sanitize display style
         if (isset($settings['display_style'])) {
             $allowed_styles = array('grid-single', 'grid-multi', 'masonry');
-            $sanitized['display_style'] = in_array($settings['display_style'], $allowed_styles) 
-                ? $settings['display_style'] 
-                : 'grid-single';
+            $sanitized['display_style'] = in_array($settings['display_style'], $allowed_styles) ? $settings['display_style'] : 'grid-single';
         }
-        
+
         return $sanitized;
     }
-    
+
     /**
      * コンテンツモデルをサニタイズします。
      * 「register_routes」フックから呼ばれます。
@@ -230,37 +228,35 @@ class S2J_Alliance_Manager_RestController {
      */
     public function sanitize_content_models($content_models) {
         $sanitized = array();
-        
+
         foreach ($content_models as $model) {
             $sanitized_model = array();
-            
+
             // Sanitize frontpage
             $sanitized_model['frontpage'] = isset($model['frontpage']) && $model['frontpage'] === 'YES' ? 'YES' : 'NO';
-            
+
             // Sanitize rank
             $sanitized_model['rank'] = sanitize_title($model['rank'] ?? '');
-            
+
             // Sanitize logo (attachment ID)
             $sanitized_model['logo'] = intval($model['logo'] ?? 0);
-            
+
             // Sanitize jump_url
             $sanitized_model['jump_url'] = esc_url_raw($model['jump_url'] ?? '');
-            
+
             // Sanitize behavior
             $allowed_behaviors = array('jump', 'modal');
-            $sanitized_model['behavior'] = in_array($model['behavior'] ?? '', $allowed_behaviors) 
-                ? $model['behavior'] 
-                : 'jump';
-            
+            $sanitized_model['behavior'] = in_array($model['behavior'] ?? '', $allowed_behaviors) ? $model['behavior'] : 'jump';
+
             // Sanitize message
             $sanitized_model['message'] = sanitize_textarea_field($model['message'] ?? '');
-            
+
             $sanitized[] = $sanitized_model;
         }
-        
+
         return $sanitized;
     }
-    
+
     /**
      * コンテンモデルを検証します。
      * 「register_routes」フックから呼ばれます。
@@ -277,10 +273,10 @@ class S2J_Alliance_Manager_RestController {
                 return false;
             }
         }
-        
+
         return $model;
     }
-    
+
     /**
      * REST API ルート (ベース URL: '/rank-labels') の GET メソッドに登録され、ランクラベルを取得します。
      * 「register_routes」フックから呼ばれます。
@@ -295,10 +291,10 @@ class S2J_Alliance_Manager_RestController {
             'orderby' => 'menu_order',
             'order' => 'ASC',
         );
-        
+
         $posts = get_posts($args);
         $rank_labels = array();
-        
+
         foreach ($posts as $post) {
             $rank_labels[] = array(
                 'id' => $post->ID,
@@ -309,10 +305,10 @@ class S2J_Alliance_Manager_RestController {
                 'slug' => $post->post_name,
             );
         }
-        
+
         return rest_ensure_response($rank_labels);
     }
-    
+
     /**
      * REST API ルート (ベース URL: '/rank-labels') の POST メソッドに登録され、ランクラベルを保存します。
      * 「register_routes」フックから呼ばれます。
@@ -322,7 +318,7 @@ class S2J_Alliance_Manager_RestController {
      */
     public function save_rank_labels($request) {
         $rank_labels = $request->get_param('rank_labels');
-        
+
         foreach ($rank_labels as $rank_label) {
             $post_data = array(
                 'ID' => $rank_label['id'],
@@ -333,7 +329,7 @@ class S2J_Alliance_Manager_RestController {
                 'post_type' => 's2j_am_rank_label',
                 'post_status' => 'publish',
             );
-            
+
             if ($rank_label['id'] === 0) {
                 // New post
                 unset($post_data['ID']);
@@ -342,7 +338,7 @@ class S2J_Alliance_Manager_RestController {
                 // Update existing post
                 $post_id = wp_update_post($post_data);
             }
-            
+
             if ($post_id && !is_wp_error($post_id)) {
                 // Set thumbnail
                 if (isset($rank_label['thumbnail_id']) && $rank_label['thumbnail_id'] > 0) {
@@ -350,13 +346,13 @@ class S2J_Alliance_Manager_RestController {
                 }
             }
         }
-        
+
         return rest_ensure_response(array(
             'success' => true,
             'message' => __('Rank labels saved successfully.', 's2j-alliance-manager')
         ));
     }
-    
+
     /**
      * ランクラベルをサニタイズします。
      * 「register_routes」フックから呼ばれます。
@@ -366,31 +362,31 @@ class S2J_Alliance_Manager_RestController {
      */
     public function sanitize_rank_labels($rank_labels) {
         $sanitized = array();
-        
+
         foreach ($rank_labels as $rank_label) {
             $sanitized_label = array();
-            
+
             // Sanitize ID
             $sanitized_label['id'] = intval($rank_label['id'] ?? 0);
-            
+
             // Sanitize title
             $sanitized_label['title'] = sanitize_text_field($rank_label['title'] ?? '');
-            
+
             // Sanitize content
             $sanitized_label['content'] = sanitize_textarea_field($rank_label['content'] ?? '');
-            
+
             // Sanitize thumbnail_id
             $sanitized_label['thumbnail_id'] = intval($rank_label['thumbnail_id'] ?? 0);
-            
+
             // Sanitize menu_order
             $sanitized_label['menu_order'] = intval($rank_label['menu_order'] ?? 0);
-            
+
             // Generate slug from title
             $sanitized_label['slug'] = sanitize_title($sanitized_label['title']);
-            
+
             $sanitized[] = $sanitized_label;
         }
-        
+
         return $sanitized;
     }
 }

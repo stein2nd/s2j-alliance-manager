@@ -139,12 +139,9 @@ class S2J_Alliance_Manager_AllianceManager {
         
         // デバッグ用ログ（一時的）
         if (defined('WP_DEBUG') && WP_DEBUG) {
-            error_log('S2J Alliance Manager: Alliance data: ' . print_r($alliance_data, true));
-            
             // 設定データも確認
             $settings = get_option('s2j_alliance_manager_settings', array());
-            error_log('S2J Alliance Manager: Settings: ' . print_r($settings, true));
-            
+
             // ランクラベルも確認
             $rank_labels = get_posts(array(
                 'post_type' => 's2j_am_rank_label',
@@ -153,15 +150,14 @@ class S2J_Alliance_Manager_AllianceManager {
                 'orderby' => 'menu_order',
                 'order' => 'ASC'
             ));
-            error_log('S2J Alliance Manager: Rank labels: ' . print_r($rank_labels, true));
         }
-        
+
         if (empty($alliance_data)) {
             return '<p>' . __('No alliance partners found.', 's2j-alliance-manager') . '</p>';
         }
-        
+
         ob_start();
-        
+
         // クラス名の構築
         $banner_class = 's2j-alliance-banner s2j-alliance-banner--' . esc_attr($display_style);
         if ($display_style === 'grid-single') {
@@ -195,7 +191,9 @@ class S2J_Alliance_Manager_AllianceManager {
                                     <?php elseif ($partner['behavior'] === 'modal'): ?>
                                         <?php // モーダルの場合 ?>
                                         <div class="s2j-alliance-partner-modal" 
-                                             data-message="<?php echo esc_attr($partner['message']); ?>">
+                                             data-message="<?php echo esc_attr($partner['message']); ?>"
+                                             data-jump-url="<?php echo esc_attr($partner['jump_url']); ?>"
+                                             data-logo-id="<?php echo esc_attr($partner['logo']); ?>">
                                             <?php echo $this->render_partner_logo($partner); ?>
                                         </div>
                                     <?php else: ?>
@@ -214,7 +212,15 @@ class S2J_Alliance_Manager_AllianceManager {
         <div id="s2j-alliance-modal" class="s2j-alliance-modal" style="display: none;">
             <div class="s2j-alliance-modal-content">
                 <span class="s2j-alliance-modal-close">&times;</span>
-                <div class="s2j-alliance-modal-message"></div>
+                <div class="s2j-alliance-modal-grid">
+                    <div class="s2j-alliance-modal-cell s2j-alliance-modal-logo-cell">
+                        <div class="s2j-alliance-modal-logo"></div>
+                        <div class="s2j-alliance-modal-jump-url"></div>
+                    </div>
+                    <div class="s2j-alliance-modal-cell s2j-alliance-modal-message-cell">
+                        <div class="s2j-alliance-modal-message"></div>
+                    </div>
+                </div>
             </div>
         </div>
         <?php // アライアンスパートナー向けメッセージ用モーダル・スクリプト ?>
@@ -227,18 +233,52 @@ class S2J_Alliance_Manager_AllianceManager {
                     setTimeout(initAllianceModal, 100);
                     return;
                 }
-                
+
                 jQuery(document).ready(function($) {
                     $('.s2j-alliance-partner-modal').on('click', function() {
-                        var message = $(this).data('message');
-                        $('#s2j-alliance-modal .s2j-alliance-modal-message').html(message);
+                        var $this = $(this);
+                        var message = $this.data('message');
+                        var jumpUrl = $this.data('jump-url');
+                        var logoId = $this.data('logo-id');
+
+                        // メッセージの処理（先頭・末尾の改行・TAB 文字をトリム）
+                        var trimmedMessage = message ? message.replace(/^[\n\t\s]+|[\n\t\s]+$/g, '') : '';
+
+                        // ジャンプ URL の処理（trim して空文字列でない場合のみ表示）
+                        var trimmedJumpUrl = jumpUrl ? jumpUrl.trim() : '';
+
+                        // ロゴの再レンダリング
+                        if (logoId) {
+                            // 既存のロゴ HTML を取得してモーダルに表示
+                            var logoHtml = $this.find('.s2j-alliance-partner-logo, .s2j-alliance-partner-placeholder').clone();
+                            $('#s2j-alliance-modal .s2j-alliance-modal-logo').html(logoHtml);
+                        } else {
+                            $('#s2j-alliance-modal .s2j-alliance-modal-logo').html('<div class="s2j-alliance-partner-placeholder">' + '<?php echo esc_js(__("No logo", "s2j-alliance-manager")); ?>' + '</div>');
+                        }
+
+                        // ジャンプ URL の表示
+                        if (trimmedJumpUrl) {
+                            $('#s2j-alliance-modal .s2j-alliance-modal-jump-url').html('<a href="' + encodeURIComponent(trimmedJumpUrl) + '" target="_blank" rel="noopener noreferrer" class="s2j-alliance-modal-link">' + trimmedJumpUrl + '</a>');
+                        } else {
+                            $('#s2j-alliance-modal .s2j-alliance-modal-jump-url').empty();
+                        }
+
+                        // メッセージの表示
+                        if (trimmedMessage) {
+                            // 改行を保持して表示
+                            var formattedMessage = trimmedMessage.replace(/\n/g, '<br>');
+                            $('#s2j-alliance-modal .s2j-alliance-modal-message').html(formattedMessage);
+                        } else {
+                            $('#s2j-alliance-modal .s2j-alliance-modal-message').empty();
+                        }
+
                         $('#s2j-alliance-modal').show();
                     });
-                    
+
                     $('.s2j-alliance-modal-close').on('click', function() {
                         $('#s2j-alliance-modal').hide();
                     });
-                    
+
                     $(document).on('click', function(e) {
                         if ($(e.target).hasClass('s2j-alliance-modal')) {
                             $('#s2j-alliance-modal').hide();
@@ -246,7 +286,7 @@ class S2J_Alliance_Manager_AllianceManager {
                     });
                 });
             }
-            
+
             // 初期化を開始
             initAllianceModal();
         })();
@@ -270,18 +310,18 @@ class S2J_Alliance_Manager_AllianceManager {
             'orderby' => 'menu_order',
             'order' => 'ASC'
         ));
-        
+
         $grouped_data = array();
-        
+
         foreach ($rank_labels as $rank_label) {
             $rank_title = $rank_label->post_title;
-            
+
             // オプション値「s2j_alliance_manager_settings」を取得します。
             $settings = get_option('s2j_alliance_manager_settings', array());
 
             // 設定「コンテンツモデル」を取得します。
             $content_models = $settings['content_models'] ?? array();
-            
+
             // 配列の各値を反復処理し、それらをコールバック関数に渡します。
             // 反復処理の内容: `rank` が一致し、`frontpage` が `YES` である、設定「コンテンツモデル」を取得します。
             $matching_items = array_filter(
@@ -290,16 +330,16 @@ class S2J_Alliance_Manager_AllianceManager {
                     // 大文字小文字を区別しない比較と、default の特別処理
                     $item_rank = isset($item['rank']) ? strtolower($item['rank']) : '';
                     $rank_title_lower = strtolower($rank_title);
-                    
+
                     // default は最初のランク (Silver) にマッチさせる
                     if ($item_rank === 'default' && $rank_title_lower === 'silver') {
                         return isset($item['frontpage']) && $item['frontpage'] === 'YES';
                     }
-                    
+
                     return $item_rank === $rank_title_lower && isset($item['frontpage']) && $item['frontpage'] === 'YES';
                 }
             );
-            
+
             // 「index」が存在する場合は、その値を使用して配列を値でソートします。
             // ユーザー定義の比較関数を使用して、配列を値でソートします (「index」の昇順でソート)。
             usort($matching_items, function($a, $b) {
@@ -309,7 +349,7 @@ class S2J_Alliance_Manager_AllianceManager {
 
                 return $index_a - $index_b;
             });
-            
+
             if (empty($matching_items)) {
                 // 暫定的に「該当レコードなし」を表示
                 $grouped_data[$rank_title] = array(
@@ -322,7 +362,7 @@ class S2J_Alliance_Manager_AllianceManager {
                 $grouped_data[$rank_title] = $matching_items;
             }
         }
-        
+
         return $grouped_data;
     }
 
@@ -338,20 +378,20 @@ class S2J_Alliance_Manager_AllianceManager {
             return '<div class="s2j-alliance-partner-placeholder">' . 
                    __('No logo', 's2j-alliance-manager') . '</div>';
         }
-        
+
         // 添付ファイルの URL を取得します。
         $logo_url = wp_get_attachment_url($partner['logo']);
         if (!$logo_url) {
             return '<div class="s2j-alliance-partner-placeholder">' . 
                    __('Invalid logo', 's2j-alliance-manager') . '</div>';
         }
-        
+
         // 指定された投稿 ID の投稿メタフィールドを取得します。
         $alt_text = get_post_meta($partner['logo'], '_wp_attachment_image_alt', true);
         if (empty($alt_text)) {
             $alt_text = __('Alliance partner logo', 's2j-alliance-manager');
         }
-        
+
         // ID に基づいて添付ファイルの MIME タイプを取得し、動画の場合は動画タグ、画像の場合は画像タグとしてレンダリングします。
         $mime_type = get_post_mime_type($partner['logo']);
         if (strpos($mime_type, 'video/') === 0) {
@@ -398,8 +438,8 @@ class S2J_Alliance_Manager_AllianceManager {
         if (!$screen) {
             return;
         }
-        
-        // 投稿エディタ/ページエディターか否かを確認します。
+
+        // 投稿エディター/ページエディターか否かを確認します。
         if (strpos($screen->id, 'post') !== false || strpos($screen->id, 'page') !== false) {
             $this->enqueue_block_editor_assets();
         }
@@ -417,7 +457,7 @@ class S2J_Alliance_Manager_AllianceManager {
         if (!is_admin()) {
             // jQuery を確実に読み込む
             wp_enqueue_script('jquery');
-            
+
             // フロントエンド用スタイルを読み込む
             wp_enqueue_style(
                 's2j-alliance-manager-gutenberg',
@@ -715,7 +755,7 @@ class S2J_Alliance_Manager_AllianceManager {
     public function add_alliance_meta_box() {
         // 登録済みの「投稿タイプ」オブジェクトのリストを取得します。
         $post_types = get_post_types(array('public' => true), 'names');
-        
+
         // 登録済みの「投稿タイプ」オブジェクトのリストをループします。
         foreach ($post_types as $post_type) {
             // メタボックスを追加します。
@@ -739,7 +779,7 @@ class S2J_Alliance_Manager_AllianceManager {
      */
     public function alliance_meta_box_callback($post) {
         wp_nonce_field('s2j_alliance_manager_meta_box', 's2j_alliance_manager_meta_box_nonce');
-        
+
         $display_style = get_post_meta($post->ID, '_s2j_alliance_display_style', true);
 
         if (empty($display_style)) {
@@ -747,7 +787,7 @@ class S2J_Alliance_Manager_AllianceManager {
 
             $display_style = $settings['display_style'] ?? 'grid-single';
         }
-        
+
         ?>
         <div id="s2j-alliance-classic-editor">
             <p>

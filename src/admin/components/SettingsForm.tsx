@@ -52,7 +52,7 @@ export const SettingsForm: React.FC<SettingsFormProps> = ({
 
   return (
     <div className="s2j-settings-form">
-      <p>Settings form loaded successfully</p>
+      <p>{__('Settings form loaded successfully', 's2j-alliance-manager')}</p>
     </div>
   );
 };

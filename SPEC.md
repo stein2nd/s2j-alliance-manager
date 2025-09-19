@@ -17,14 +17,14 @@
 * プラグイン・スラッグ: s2j-alliance-manager
 * テキスト・ドメイン: s2j-alliance-manager
 * ライセンス: GPL v2 以降
-* 目的: アライアンス関係にある協力会社のリンク付きバナー（ロゴ・動画含む）を管理し、Front page 等でブロック表示します。
+* 目的: アライアンス関係にある協力会社のリンク付きバナー (ロゴ・動画含む) を管理し、Front page 等でブロック表示します。
 * 特徴:
-  * Gutenberg ブロックエディタに対応します。
-  * MetaBox により、Classic エディタに対応します。
+  * Gutenberg ブロックエディターに対応します。
+  * MetaBox により、Classic エディターに対応します。
     * Gutenberg ブロックでの処理内容を基本的に再現します。
-  * 管理画面でバナー画像(または動画)・リンク先 URL・グループ等を保存します。
+  * 管理画面でバナー画像 (または動画)・リンク先 URL・グループ等を保存します。
     * 管理 UI は独自の React コンポーネントで実装します (設計において、[Create Content Model](https://github.com/Automattic/create-content-model) の機能を参考とします。
-    * basic版 / pro版 を視野に入れた設計とします (masonry 表示は pro 版にて提供)。
+    * basic版 / pro版を視野に入れた設計とします。
 
 ## 2. プロジェクト構成
 
@@ -44,19 +44,20 @@
 ├── node_modules/
 ├┬─ languages/ # 翻訳ファイル (.pot、.po、.mo)
 │└─ `s2j-alliance-manager.pot`
-├┬─ includes/ # PHP クラス群 (REST、Settings、Admin UI)
+├┬─ includes/ # PHP クラス群 (設定画面、REST API、ブロック)
 │├─ `SettingsPage.php` (設定画面)
 │├─ `RestController.php` (REST API)
 │└─ `AllianceManager.php` (Gutenberg ブロック)
 ├┬─ src/ # TypeScript/React (Gutenberg ブロック、設定画面) /SCSS ソース
 │├┬─ admin/ # 設定画面用
-││├─ `index.tsx` # 管理画面メインエントリーポイント
+││├─ `index.tsx` # 管理画面メイン・エントリーポイント
 ││├┬─ components/
 │││├─ `SettingsForm.tsx` # 設定保存フォーム
 │││├─ `ContentList.tsx` # 一覧表 UI (独自実装)
 │││├─ `RankLabelManager.tsx`  # ランクラベル管理 UI
 │││├─ `MediaUploader.tsx` # WordPress メディアアップローダー統合
-│││└─ `MessageModal.tsx` # メッセージ編集モーダル
+│││├─ `MessageModal.tsx` # メッセージ編集モーダル
+│││└─ `FFmpegLibraryManager.tsx` # FFmpeg 設定・テスト機能
 ││└┬─ data/
 ││　└─ `constants.ts` # 定数定義 (表示形式、ランク、動作オプション)
 │├┬─ gutenberg/ # Gutenberg ブロック用
@@ -70,7 +71,7 @@
 ││├─ `gutenberg.scss` (Gutenberg ブロック用)
 ││├─ `classic.scss` (MetaBox 用)
 ││└─ `variables.scss` (SCSS 変数定義)
-│└┬─ types/ # プラグイン用のグローバル・タイプ・定義
+│└┬─ types/ # プラグイン用のグローバル型定義
 │　├─ `index.ts` (ContentModel 型定義)
 │　└─ `wordpress.d.ts` (WordPress 型定義)
 └┬─ dist/ # Vite ビルド成果物 (Git 管理外)、アイコン
@@ -99,6 +100,7 @@
 * `src/admin/components/SettingsForm.tsx` : 表示形式設定フォーム
 * `src/admin/components/MessageModal.tsx` : メッセージ編集モーダル
 * `src/admin/components/MediaUploader.tsx` : WordPress メディア・アップローダ統合
+* `src/admin/components/FFmpegLibraryManager.tsx` : FFmpeg 設定・テスト機能
 * `src/admin/data/constants.ts` : 定数定義 (表示形式、ランク、動作オプション)
 * `src/gutenberg/index.tsx` : Gutenberg ブロックの UI ロジック
 * `src/classic/index.ts` : Classic エディタ対応スクリプト
@@ -122,7 +124,7 @@
 * **理由**: WordPress 6.3以降で標準採用されているバージョンです。WordPress の Gutenberg エディタとの互換性を確保するため、最新版ではなく安定版を採用します。
 
 #### 3.1.2 Rollup モジュール
-* **Rollup**: `^4.50.0`
+* **Rollup**: `^4.50.2`
 * **用途**: Vite の内部バンドラーとして使用します。IIFE 形式での出力と WordPress 環境での動作最適化を実現します。
 * **理由**: Vite 7.x系との互換性を確保するため、最新版ではなく安定版を採用します。WordPress 環境でのビルド安定性を重視します。
 
@@ -167,18 +169,26 @@
 * **MessageModal**: モーダル表示機能
 * **SettingsForm**: 表示設定フォーム
 
-### 4.4 パフォーマンス最適化
+### 4.4 FFmpeg統合機能
+
+* **FFmpegLibraryManager**: FFmpeg 設定とテスト機能を提供
+* **動画サポート**: ロゴとして動画ファイルをアップロード可能
+* **ポスター画像自動生成**: FFmpeg を使用して動画からポスター画像を生成
+* **手動ポスターアップロード**: FFmpeg が利用できない場合の代替手段
+
+### 4.5 パフォーマンス最適化
 
 * **IIFE 形式**: WordPress 環境での最適な読み込みを目指します。
 * **コード分割**: 管理画面、Gutenberg、Classic エディタ用を分離します。
 * **最小化**: 本番環境でのファイルサイズ最適化を目指します。
 
-### 4.5 デバッグ機能
+### 4.6 デバッグ機能
 
-* **ヘルプタブ統合**: WordPress 標準のヘルプシステムを活用
 * **条件付き表示**: Alliance Manager 専用管理画面でのみ表示
+* **ヘルプタブ統合**: WordPress 標準のヘルプシステムを活用
 * **視覚的デザイン**: カード形式、カラーコーディング、絵文字使用
 * **レスポンシブ対応**: 管理画面の幅に応じた表示調整
+* **FFmpeg利用可能性表示**: デバッグ情報に FFmpeg の利用状況を表示
 
 ## 5. 国際化
 
@@ -223,7 +233,7 @@
     * `rank` (コンボボックス) … ゴールド、シルバー等。
       * ランクラベルの登録/修正は、「ランクラベル管理」参照。
       * 選択肢は「ランクラベル管理」で登録されたラベルの `title` から動的生成。
-    * `logo` (メディアボタン) … ロゴ画像 (または動画) の追加/変更。
+    * `logo` (メディアボタン) … ロゴ画像・動画の追加/変更、ポスター画像生成。
       * サムネイル表示。
     * `jump_url` (テキストボックス) … 遷移先 URL。
     * `behavior` (コンボボックス)
@@ -263,14 +273,45 @@
   * 「キャンセル」ボタンのクリックで、ローカル state を「初期取得データ」にリセットします。
 * ラベルの多言語対応は、ユーザー自身で行える様、Polylang / WPML 対応とします。
 
-#### 6.1.5 データフローと状態管理
+#### 6.1.5 FFmpeg Library 管理
+
+* FFmpeg 実行ファイルのパス設定機能
+* FFmpeg 利用可能性のテスト機能
+* 動画ファイルからポスター画像の自動生成機能
+* 手動ポスター画像アップロード機能
+
+#### 6.1.6 データフローと状態管理
 
 * **データフロー**: 親コンポーネント (AllianceManagerAdmin) でランクラベル・データを一元管理し、データの整合性を保証します。
 * **リアルタイム連携**: ランクラベル保存後、即座に ContentList の rank 選択肢が更新されます。
 * **状態管理**: ランクラベル管理とメインコンテンツ管理は、独立した状態管理とし、保留中の変更は視覚的にハイライト表示され、保存・キャンセル操作が可能です。
 * **権限管理**: 管理者権限に `edit_s2j_am_rank_labels` 権限を自動付与します。
 
-### 6.2 Gutenberg ブロック対応
+#### 6.1.7 データ構造と型定義
+
+* **設定データの拡張**:
+  ```php
+  $settings = array(
+      'display_style' => 'grid-single',
+      'ffmpeg_path' => '',  // 新規追加
+      'content_models' => array()
+  );
+  ```
+
+* **型定義の追加**:
+  * `FFmpegSettings`: FFmpeg 設定用インターフェイス
+  * `FFmpegTestResult`: FFmpeg テスト結果用インターフェイス
+  * `WordPressMedia`: WordPress メディア情報用インターフェイス
+
+### 6.2 動画・ポスター機能
+
+* **動画ファイル対応**: ロゴとして動画ファイルをアップロード可能
+* **ポスター画像自動生成**: FFmpeg を使用して動画からポスター画像を生成
+* **手動ポスターアップロード**: FFmpeg が利用できない場合の代替手段
+* **動画プレビュー**: 管理画面で動画ファイルのプレビュー表示
+* **ポスター優先表示**: フロントエンドでは動画のポスター画像を優先表示
+
+### 6.3 Gutenberg ブロック対応
 
 * REST API 経由でデータを取得します。
   * `frontpage:'YES'` のレコードを抽出します。
@@ -305,6 +346,15 @@
 
 * `POST /wp-json/s2j-alliance-manager/v1/rank_labels`
   * ランクラベル一括保存
+
+* `GET /wp-json/s2j-alliance-manager/v1/ffmpeg/settings`
+  * FFmpeg 設定取得
+
+* `POST /wp-json/s2j-alliance-manager/v1/ffmpeg/test`
+  * FFmpeg 利用可能性テスト
+
+* `POST /wp-json/s2j-alliance-manager/v1/ffmpeg/generate-poster`
+  * ポスター画像生成
 
 ### 7.2 セキュリティ
 

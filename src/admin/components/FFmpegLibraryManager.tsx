@@ -49,7 +49,7 @@ export const FFmpegLibraryManager: React.FC<FFmpegLibraryManagerProps> = ({
     setTestResult(null);
 
     try {
-      const response = await fetch(`${window.s2jAllianceManager.apiUrl}/ffmpeg/test`, {
+      const response = await fetch(`${window.s2jAllianceManager.apiUrl}ffmpeg/test`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

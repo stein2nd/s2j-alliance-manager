@@ -270,6 +270,9 @@ class AllianceManagerAdmin {
         if (result.success) {
           // 通知を表示します。
           this.showNotice('success', result.message || __('Settings saved successfully.', 's2j-alliance-manager'));
+          
+          // デバッグ情報を自動的にリフレッシュします。
+          this.refreshDebugInfo();
         } else {
           // 通知を表示します。
           this.showNotice('error', result.message || __('Failed to save settings.', 's2j-alliance-manager'));
@@ -392,10 +395,235 @@ class AllianceManagerAdmin {
    * 「init()」メソッドから呼ばれます。
    */
   private bindEvents() {
-    // イベントは現在、React コンポーネントによって処理されます。
-    // 追加のイベントバインディングは不要です。
+    // デバッグ情報リフレッシュボタンのイベントをバインドします。
+    jQuery(document).on(
+      'click',
+      '#s2j-refresh-debug-info',
+      this.handleRefreshDebugInfo.bind(this)
+    );
+    
+    // ヘルプタブのクリックイベントを監視して、デバッグタブが表示された時に自動更新します。
+    jQuery(document).on(
+      'click',
+      'a[href="#tab-s2j-alliance-manager-debug"]',
+      () => {
+      // 少し遅延を入れて、タブの切り替えが完了してからデバッグ情報を更新します。
+      setTimeout(() => {
+        this.refreshDebugInfo();
+      }, 100);
+    }
+  );
+
+    // ヘルプパネルの展開状態を監視します。
+    this.observeHelpPanelExpansion();
   }
 
+  /**
+   * ヘルプパネルの展開状態を監視します。
+   * 「bindEvents()」メソッドから呼ばれます。
+   */
+  private observeHelpPanelExpansion() {
+    // ヘルプパネルのリンク要素を監視対象として設定
+    const helpLink = document.querySelector('#contextual-help-link');
+    
+    if (helpLink) {
+      this.setupHelpPanelObserver(helpLink);
+    } else {
+      console.warn('Help panel link not found, retrying in 1 second');
+      // ヘルプパネルがまだ読み込まれていない場合、1秒後に再試行
+      setTimeout(() => {
+        this.observeHelpPanelExpansion();
+      }, 1000);
+    }
+  }
+
+  /**
+   * ヘルプパネルの監視を設定します。
+   * 「observeHelpPanelExpansion()」メソッドから呼ばれます。
+   * 
+   * @param helpLink ヘルプパネルのリンク要素
+   */
+  private setupHelpPanelObserver(helpLink: Element) {
+    // MutationObserver を使用して aria-expanded 属性の変更を監視
+    const observer = new MutationObserver((mutations) => {
+      mutations.forEach((mutation) => {
+        if (mutation.type === 'attributes' && mutation.attributeName === 'aria-expanded') {
+          const target = mutation.target as HTMLElement;
+          const isExpanded = target.getAttribute('aria-expanded') === 'true';
+
+          if (isExpanded) {
+            console.log('Help panel expanded, refreshing debug info');
+            // ヘルプパネルが展開された時にデバッグ情報を更新
+            setTimeout(() => {
+              this.refreshDebugInfo();
+            }, 200); // ヘルプパネルのコンテンツが完全に読み込まれるまで待機
+          }
+        }
+      });
+    });
+
+    // aria-expanded属性の変更を監視開始
+    observer.observe(helpLink, {
+      attributes: true,
+      attributeFilter: ['aria-expanded']
+    });
+
+    console.log('Help panel expansion observer initialized');
+  }
+
+  /**
+   * デバッグ情報をリフレッシュします（通知なし）。
+   * 「saveData()」メソッドから呼ばれます。
+   */
+  private async refreshDebugInfo() {
+    try {
+      // デバッグ情報を取得します。
+      const response = await fetch(`${window.s2jAllianceManager.apiUrl}debug-info`, {
+        method: 'GET',
+        headers: {
+          'X-WP-Nonce': window.s2jAllianceManager.nonce,
+        },
+      });
+
+      if (response.ok) {
+        const result = await response.json();
+
+        if (result.success && result.debug_html) {
+          // デバッグ情報を更新します。
+          const debugContainer = jQuery('#tab-s2j-alliance-manager-debug .s2j-debug-info');
+
+          if (debugContainer.length) {
+            debugContainer.replaceWith(result.debug_html);
+          } else {
+            // フォールバック: ヘルプタブのコンテンツ全体を更新
+            const tabContent = jQuery('#tab-s2j-alliance-manager-debug');
+            if (tabContent.length) {
+              tabContent.html(result.debug_html);
+            }
+          }
+        }
+      }
+    } catch (error) {
+      console.error('Error refreshing debug info:', error);
+    }
+  }
+
+  /**
+   * デバッグ情報をリフレッシュします。
+   * 「bindEvents()」メソッドから呼ばれます。
+   */
+  private async handleRefreshDebugInfo() {
+    console.log('Debug refresh button clicked');
+
+    const button = jQuery('#s2j-refresh-debug-info');
+    const refreshText = button.find('.refresh-text');
+    const originalText = refreshText.text();
+
+    // ボタンを無効化し、ローディング状態にします。
+    button.prop('disabled', true);
+    refreshText.text(__('Refreshing...', 's2j-alliance-manager'));
+
+    try {
+      // デバッグ情報を取得します。
+      console.log('Fetching debug info from:', `${window.s2jAllianceManager.apiUrl}debug-info`);
+      const response = await fetch(`${window.s2jAllianceManager.apiUrl}debug-info`, {
+        method: 'GET',
+        headers: {
+          'X-WP-Nonce': window.s2jAllianceManager.nonce,
+        },
+      });
+
+      console.log('Response status:', response.status);
+      console.log('Response ok:', response.ok);
+
+      if (response.ok) {
+        const result = await response.json();
+        console.log('Response result:', result);
+
+        if (result.success && result.debug_html) {
+          console.log('Debug info received, updating content');
+          console.log('Debug HTML preview:', `${result.debug_html.substring(0, 500)}...`);
+
+          // FFmpeg 情報が含まれているかチェック
+          if (result.debug_html.includes('FFmpeg Available') || result.debug_html.includes('FFmpeg path')) {
+            console.log('FFmpeg info found in debug HTML');
+          } else {
+            console.warn('FFmpeg info NOT found in debug HTML');
+          }
+
+          // デバッグ情報を更新します。
+          // まず、既存のデバッグ情報コンテナを探します
+          const debugContainer = jQuery('.s2j-debug-info');
+          console.log('Debug container found:', debugContainer.length);
+
+          if (debugContainer.length) {
+            // 既存のコンテナを新しい HTML で置き換え
+            debugContainer.replaceWith(result.debug_html);
+            console.log('Debug info updated via existing container');
+          } else {
+            // フォールバック: ヘルプタブのコンテンツ全体を更新
+            const tabContent = jQuery('#tab-s2j-alliance-manager-debug');
+            console.log('Tab content found:', tabContent.length);
+
+            if (tabContent.length) {
+              tabContent.html(result.debug_html);
+              console.log('Debug info updated via tab content');
+            } else {
+              // さらにフォールバック: ページ内の任意の場所にデバッグ情報を挿入
+              const helpTab = jQuery('a[href="#tab-s2j-alliance-manager-debug"]');
+              if (helpTab.length) {
+                const href = helpTab.attr('href');
+                if (href) {
+                  const helpTabPanel = jQuery(href);
+                  if (helpTabPanel.length) {
+                    helpTabPanel.html(result.debug_html);
+                    console.log('Debug info updated via help tab panel');
+                  }
+                }
+              } else {
+                console.warn('No debug container, tab content, or help tab found');
+              }
+            }
+          }
+
+          // 更新後の要素を確認
+          const updatedContainer = jQuery('.s2j-debug-info');
+          console.log('Updated container found:', updatedContainer.length);
+          if (updatedContainer.length) {
+            const ffmpegAvailable = updatedContainer.find('.s2j-debug-value--success, .s2j-debug-value--error').first();
+            console.log('FFmpeg Available element:', ffmpegAvailable.length, ffmpegAvailable.text());
+
+            const ffmpegPath = updatedContainer.find('.s2j-debug-url-container span').first();
+            console.log('FFmpeg Path element:', ffmpegPath.length, ffmpegPath.text());
+
+            // 更新後のリフレッシュボタンにイベントリスナーを再設定
+            const refreshButton = updatedContainer.find('#s2j-refresh-debug-info');
+            if (refreshButton.length) {
+              refreshButton.off('click').on('click', () => {
+                console.log('Debug refresh button clicked (re-attached)');
+                this.refreshDebugInfo();
+              });
+              console.log('Refresh button event listener re-attached');
+            }
+          }
+
+          // 成功通知を表示します。
+          this.showNotice('success', __('Debug information refreshed successfully.', 's2j-alliance-manager'));
+        } else {
+          throw new Error('Invalid response format');
+        }
+      } else {
+        throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+      }
+    } catch (error) {
+      console.error('Error refreshing debug info:', error);
+      this.showNotice('error', __('Failed to refresh debug information.', 's2j-alliance-manager'));
+    } finally {
+      // ボタンを有効化し、元のテキストに戻します。
+      button.prop('disabled', false);
+      refreshText.text(originalText);
+    }
+  }
 }
 
 // DOM が準備完了時に、「AllianceManagerAdmin」を初期化します。

@@ -20,35 +20,14 @@ interface SettingsFormProps {
  */
 export const SettingsForm: React.FC<SettingsFormProps> = ({
   settings,
-  onSave,
-  isLoading = false
+  onSave: _onSave,
+  isLoading: _isLoading = false
 }) => {
-  const [formData, setFormData] = useState<AllianceSettings>(settings);
+  const [, _setFormData] = useState<AllianceSettings>(settings);
 
   useEffect(() => {
-    setFormData(settings);
+    _setFormData(settings);
   }, [settings]);
-
-  /**
-   * 表示形式を変更します。
-   * 「s2j-display-style-select.onChange()」メソッドから呼ばれます。
-   * 
-   * @param value 値
-   */
-  const handleDisplayStyleChange = (value: string) => {
-    setFormData(prev => ({
-      ...prev,
-      display_style: value as AllianceSettings['display_style']
-    }));
-  };
-
-  /**
-   * 設定を保存します。
-   * 「s2j-save-settings-btn.onClick()」メソッドから呼ばれます。
-   */
-  const handleSave = () => {
-    onSave(formData);
-  };
 
   return (
     <div className="s2j-settings-form">

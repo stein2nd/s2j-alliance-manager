@@ -133,11 +133,11 @@ class S2J_Alliance_Manager_AllianceManager {
     public function render_alliance_banner_block($attributes) {
         $display_style = $attributes['displayStyle'] ?? 'grid-single';
         $alignment = $attributes['alignment'] ?? 'center';
-        
+
         // コンテンツデータを取得します。
         $alliance_data = $this->get_alliance_data();
-        
-        // デバッグ用ログ（一時的）
+
+        // デバッグ用ログ (一時的)
         if (defined('WP_DEBUG') && WP_DEBUG) {
             // 設定データも確認
             $settings = get_option('s2j_alliance_manager_settings', array());
@@ -313,6 +313,9 @@ class S2J_Alliance_Manager_AllianceManager {
 
         $grouped_data = array();
 
+        // 最初のランクを取得（default のマッチング用）
+        $first_rank_title = !empty($rank_labels) ? $rank_labels[0]->post_title : '';
+
         foreach ($rank_labels as $rank_label) {
             $rank_title = $rank_label->post_title;
 
@@ -326,13 +329,14 @@ class S2J_Alliance_Manager_AllianceManager {
             // 反復処理の内容: `rank` が一致し、`frontpage` が `YES` である、設定「コンテンツモデル」を取得します。
             $matching_items = array_filter(
                 $content_models,
-                function($item) use ($rank_title) {
+                function($item) use ($rank_title, $first_rank_title) {
                     // 大文字小文字を区別しない比較と、default の特別処理
                     $item_rank = isset($item['rank']) ? strtolower($item['rank']) : '';
                     $rank_title_lower = strtolower($rank_title);
+                    $first_rank_title_lower = strtolower($first_rank_title);
 
-                    // default は最初のランク (Silver) にマッチさせる
-                    if ($item_rank === 'default' && $rank_title_lower === 'silver') {
+                    // default は最初のランクにマッチさせる
+                    if ($item_rank === 'default' && $rank_title_lower === $first_rank_title_lower) {
                         return isset($item['frontpage']) && $item['frontpage'] === 'YES';
                     }
 
@@ -375,15 +379,13 @@ class S2J_Alliance_Manager_AllianceManager {
      */
     private function render_partner_logo($partner) {
         if (empty($partner['logo'])) {
-            return '<div class="s2j-alliance-partner-placeholder">' . 
-                   __('No logo', 's2j-alliance-manager') . '</div>';
+            return '<div class="s2j-alliance-partner-placeholder">' . __('No logo', 's2j-alliance-manager') . '</div>';
         }
 
         // 添付ファイルの URL を取得します。
         $logo_url = wp_get_attachment_url($partner['logo']);
         if (!$logo_url) {
-            return '<div class="s2j-alliance-partner-placeholder">' . 
-                   __('Invalid logo', 's2j-alliance-manager') . '</div>';
+            return '<div class="s2j-alliance-partner-placeholder">' . __('Invalid logo', 's2j-alliance-manager') . '</div>';
         }
 
         // 指定された投稿 ID の投稿メタフィールドを取得します。
@@ -540,7 +542,7 @@ class S2J_Alliance_Manager_AllianceManager {
      * 
      * @return string
      */
-    private function get_debug_info() {
+    public function get_debug_info() {
         $blocks_manifest_path = S2J_ALLIANCE_MANAGER_PLUGIN_DIR . 'dist/blocks/alliance-banner/block.json';
         $blocks_manifest_exists = file_exists($blocks_manifest_path);
         $blocks_manifest_url = S2J_ALLIANCE_MANAGER_PLUGIN_URL . 'dist/blocks/alliance-banner/block.json';
@@ -636,12 +638,17 @@ class S2J_Alliance_Manager_AllianceManager {
         $css_file_url_display_text = esc_html($css_url);
 
         $debug_tip_message = '💡 <strong>' . __('Tip:', 's2j-alliance-manager') . '</strong>' . __('When the block is used, JavaScript and CSS are automatically loaded.', 's2j-alliance-manager');
+        $refresh_text = __('Refresh Debug Info', 's2j-alliance-manager');
 
         $html = <<<HTML01
         <div class="s2j-debug-info">
             <div class="s2j-debug-header">
                 <h2>{$debug_title}</h2>
                 <p>{$debug_description}</p>
+                <button type="button" id="s2j-refresh-debug-info" class="button button-secondary">
+                    <span class="dashicons dashicons-update" style="vertical-align: middle; margin-right: 5px;"></span>
+                    <span class="refresh-text">{$refresh_text}</span>
+                </button>
             </div>
             <div class="s2j-debug-section">
                 <div class="s2j-debug-section-header">

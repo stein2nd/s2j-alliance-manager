@@ -158,6 +158,17 @@ class S2J_Alliance_Manager_RestController {
                 ),
             )
         );
+
+        // REST API ルート (ベース URL: '/debug-info') の GET メソッドに、「get_debug_info」メソッドを登録し、権限チェックの上で、デバッグ情報を取得します。
+        register_rest_route(
+            self::NAMESPACE, 
+            '/debug-info', 
+            array(
+                'methods' => 'GET',
+                'callback' => array($this, 'get_debug_info'),
+                'permission_callback' => array($this, 'check_permissions'),
+            )
+        );
     }
 
     /**
@@ -203,7 +214,7 @@ class S2J_Alliance_Manager_RestController {
 
         $content_models = isset($settings['content_models']) ? $settings['content_models'] : array();
 
-        // Validate and clean up content models
+        // コンテンツモデルを検証し、クリーンアップ
         $validated_models = array();
         foreach ($content_models as $model) {
             $validated_model = $this->validate_content_model($model);
@@ -259,13 +270,13 @@ class S2J_Alliance_Manager_RestController {
     public function sanitize_settings($settings) {
         $sanitized = array();
 
-        // Sanitize display style
+        // 表示スタイルをサニタイズ
         if (isset($settings['display_style'])) {
             $allowed_styles = array('grid-single', 'grid-multi', 'masonry');
             $sanitized['display_style'] = in_array($settings['display_style'], $allowed_styles) ? $settings['display_style'] : 'grid-single';
         }
 
-        // Sanitize FFmpeg path
+        // FFmpeg のパスをサニタイズ
         if (isset($settings['ffmpeg_path'])) {
             $sanitized['ffmpeg_path'] = sanitize_text_field($settings['ffmpeg_path']);
         }
@@ -286,23 +297,23 @@ class S2J_Alliance_Manager_RestController {
         foreach ($content_models as $model) {
             $sanitized_model = array();
 
-            // Sanitize frontpage
+            // frontpage をサニタイズ
             $sanitized_model['frontpage'] = isset($model['frontpage']) && $model['frontpage'] === 'YES' ? 'YES' : 'NO';
 
-            // Sanitize rank
+            // rank をサニタイズ
             $sanitized_model['rank'] = sanitize_title($model['rank'] ?? '');
 
-            // Sanitize logo (attachment ID)
+            // logo (attachment ID) をサニタイズ
             $sanitized_model['logo'] = intval($model['logo'] ?? 0);
 
-            // Sanitize jump_url
+            // jump_url をサニタイズ
             $sanitized_model['jump_url'] = esc_url_raw($model['jump_url'] ?? '');
 
-            // Sanitize behavior
+            // behavior をサニタイズ
             $allowed_behaviors = array('jump', 'modal');
             $sanitized_model['behavior'] = in_array($model['behavior'] ?? '', $allowed_behaviors) ? $model['behavior'] : 'jump';
 
-            // Sanitize message
+            // message をサニタイズ
             $sanitized_model['message'] = sanitize_textarea_field($model['message'] ?? '');
 
             $sanitized[] = $sanitized_model;
@@ -420,22 +431,22 @@ class S2J_Alliance_Manager_RestController {
         foreach ($rank_labels as $rank_label) {
             $sanitized_label = array();
 
-            // Sanitize ID
+            // ID をサニタイズ
             $sanitized_label['id'] = intval($rank_label['id'] ?? 0);
 
-            // Sanitize title
+            // title をサニタイズ
             $sanitized_label['title'] = sanitize_text_field($rank_label['title'] ?? '');
 
-            // Sanitize content
+            // content をサニタイズ
             $sanitized_label['content'] = sanitize_textarea_field($rank_label['content'] ?? '');
 
-            // Sanitize thumbnail_id
+            // thumbnail_id をサニタイズ
             $sanitized_label['thumbnail_id'] = intval($rank_label['thumbnail_id'] ?? 0);
 
-            // Sanitize menu_order
+            // menu_order をサニタイズ
             $sanitized_label['menu_order'] = intval($rank_label['menu_order'] ?? 0);
 
-            // Generate slug from title
+            // title から slug を生成
             $sanitized_label['slug'] = sanitize_title($sanitized_label['title']);
 
             $sanitized[] = $sanitized_label;
@@ -605,5 +616,21 @@ class S2J_Alliance_Manager_RestController {
         wp_update_attachment_metadata($poster_attachment_id, $attachment_metadata);
 
         return $poster_attachment_id;
+    }
+
+    /**
+     * REST API ルート (ベース URL: '/debug-info') の GET メソッドに登録され、デバッグ情報を取得します。
+     * 「register_routes」フックから呼ばれます。
+     *
+     * @return array<string, mixed> $debug_info デバッグ情報
+     */
+    public function get_debug_info() {
+        $alliance_manager = new S2J_Alliance_Manager_AllianceManager();
+        $debug_html = $alliance_manager->get_debug_info();
+        
+        return rest_ensure_response(array(
+            'success' => true,
+            'debug_html' => $debug_html
+        ));
     }
 }

@@ -3,12 +3,23 @@
 
 // 管理画面用スタイル定義
 
-// Button text utility class
+// アニメーション定義
+@keyframes spin {
+  from {
+    transform: rotate(0deg);
+  }
+
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+// ボタン・テキスト用ユーティリティー
 .s2j-button-text {
   display: inline-block;
 }
 
-// Debug Information Styles
+// デバッグ情報
 .s2j-debug-info {
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen-Sans, Ubuntu, Cantarell, 'Helvetica Neue', sans-serif;
 
@@ -17,6 +28,9 @@
     padding: 15px;
     margin: -10px -10px 20px -10px;
     border-left: 4px solid #0073aa;
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
 
     h2 {
       margin: 0;
@@ -28,6 +42,29 @@
       margin: 5px 0 0 0;
       color: #666;
       font-size: 14px;
+    }
+
+    #s2j-refresh-debug-info {
+      margin-top: 5px;
+      white-space: nowrap;
+      
+      .dashicons {
+        animation: none;
+        transition: transform 0.3s ease;
+      }
+      
+      &:hover .dashicons {
+        transform: rotate(180deg);
+      }
+      
+      &:disabled {
+        opacity: 0.6;
+        cursor: not-allowed;
+        
+        .dashicons {
+          animation: spin 1s linear infinite;
+        }
+      }
     }
   }
 
@@ -129,7 +166,7 @@
   }
 }
 
-// Debug URL Link - Independent selector to avoid compound selector issues
+// デバッグ URL リンク - 複合セレクターの課題を回避するための、独立セレクター
 .s2j-debug-url-link {
   color: #0073aa;
   text-decoration: none;
@@ -210,7 +247,7 @@
   }
 }
 
-// FFmpeg Library Manager スタイル
+// FFmpeg ライブラリー・マネージャー
 .s2j-ffmpeg-library-manager {
   .s2j-ffmpeg-library-header {
     display: flex;
@@ -373,7 +410,7 @@
   }
 }
 
-// Rank Label Manager
+// ランクラベル・マネージャー
 .s2j-rank-label-manager {
   .s2j-rank-label-header {
     display: flex;
@@ -628,7 +665,7 @@
   }
 }
 
-// Content Models List
+// コンテンツモデル一覧
 .s2j-content-models {
   padding: $spacing-lg;
 }
@@ -886,7 +923,7 @@
   }
 }
 
-// Media Uploader
+// メディア・アップローダー
 .s2j-media-uploader {
   .s2j-media-preview {
     margin-bottom: $spacing-sm;
@@ -1014,7 +1051,7 @@
   }
 }
 
-// Message Modal
+// メッセージモーダル
 .s2j-message-modal {
   position: fixed;
   top: 0;
@@ -1076,7 +1113,7 @@
   }
 }
 
-// Display Settings Form
+// 表示設定フォーム
 .s2j-display-settings {
   .form-field {
     margin-bottom: $spacing-md;
@@ -1115,7 +1152,7 @@
   }
 }
 
-// Responsive Design
+// レスポンシブ・デザイン
 @media (max-width: $breakpoint-md) {
   .s2j-rank-label {
     grid-template-columns: 1fr;

@@ -744,6 +744,11 @@
   margin-bottom: $spacing-md;
   background: $white;
 
+  // メッセージ表示時の柔軟なレイアウト
+  &.s2j-has-poster-notice {
+    grid-template-rows: auto auto;
+  }
+
   &:hover {
     box-shadow: $shadow-sm;
   }
@@ -853,73 +858,88 @@
 
     &.actions {
       display: flex;
+      flex-direction: column; // 縦方向にグループを配置
       gap: $spacing-xs;
-      flex-wrap: wrap; // ボタンがはみ出した場合の折り返し
-      min-width: 0; // フレックスアイテムの幅制御
+      min-width: 0;
 
-      button {
-        padding: $spacing-xs $spacing-sm;
-        border: 1px solid $border-color;
-        border-radius: $border-radius-sm;
-        background: $white;
-        cursor: pointer;
-        font-size: 12px;
-        flex-shrink: 0; // ボタンの縮小を防ぐ
+      .s2j-navigation-actions,
+      .s2j-management-actions {
+        display: flex;
+        gap: $spacing-xs;
+        flex-wrap: wrap; // グループ内でボタンが折り返し可能
+        min-width: 0;
 
-        &:hover {
-          background: $background-color;
-        }
-
-        &.button-primary {
-          background: $primary-color;
-          color: $white;
-          border-color: $primary-color;
+        button {
+          padding: $spacing-xs $spacing-sm;
+          border: 1px solid $border-color;
+          border-radius: $border-radius-sm;
+          background: $white;
+          cursor: pointer;
+          font-size: 12px;
+          flex-shrink: 0;
 
           &:hover {
-            background: color.adjust($primary-color, $lightness: -10%);
+            background: $background-color;
           }
-        }
-
-        &.button-danger {
-          background: $error-color;
-          color: $white;
-          border-color: $error-color;
-
-          &:hover {
-            background: color.adjust($error-color, $lightness: -10%);
-          }
-        }
-      }
-
-      // 特定のボタンクラス用のスタイル
-      .s2j-move-up-btn,
-      .s2j-move-down-btn {
-        min-width: 65px; // 少し小さくしてスペースを確保
-        padding: 4px 6px;
-        font-size: 11px;
-        white-space: nowrap; // テキストの改行を防ぐ
-      }
-
-      .s2j-message-btn {
-        min-width: 55px;
-        padding: 4px 6px;
-        font-size: 11px;
-      }
-
-      .s2j-delete-btn {
-        min-width: 55px;
-        padding: 4px 6px;
-        font-size: 11px;
-        background: $error-color;
-        color: $white;
-        border-color: $error-color;
-
-        &:hover:not(:disabled) {
-          background: color.adjust($error-color, $lightness: -10%);
-          border-color: color.adjust($error-color, $lightness: -10%);
         }
       }
     }
+  }
+}
+
+// アクションボタンの独立スタイル（ネストの深さを避けるため）
+.s2j-navigation-actions,
+.s2j-management-actions {
+  button {
+    &.button-primary {
+      background: $primary-color;
+      color: $white;
+      border-color: $primary-color;
+
+      &:hover {
+        background: color.adjust($primary-color, $lightness: -10%);
+      }
+    }
+
+    &.button-danger {
+      background: $error-color;
+      color: $white;
+      border-color: $error-color;
+
+      &:hover {
+        background: color.adjust($error-color, $lightness: -10%);
+      }
+    }
+  }
+
+  // 特定のボタンクラス用のスタイル
+  .s2j-move-up-btn,
+  .s2j-move-down-btn {
+    min-width: 65px;
+    padding: 4px 6px;
+    font-size: 11px;
+    white-space: nowrap;
+  }
+
+  .s2j-message-btn {
+    min-width: 55px;
+    padding: 4px 6px;
+    font-size: 11px;
+  }
+}
+
+// 削除ボタンのスタイル（より具体的なセレクターで確実に適用）
+.s2j-content-model .s2j-model-field.actions .s2j-management-actions .s2j-delete-btn {
+  min-width: 55px;
+  padding: 4px 6px;
+  font-size: 11px;
+  background: $error-color !important;
+  color: $white !important;
+  border-color: $error-color !important;
+
+  &:hover:not(:disabled) {
+    background: color.adjust($error-color, $lightness: -10%) !important;
+    border-color: color.adjust($error-color, $lightness: -10%) !important;
   }
 }
 
@@ -936,6 +956,34 @@
     }
   }
 
+  // 独立した行のポスターノティス
+  .s2j-poster-notice {
+    margin-top: $spacing-sm;
+    margin-left: 0;
+    margin-right: 0;
+    padding: $spacing-sm $spacing-md;
+    background-color: rgba($error-color, 0.1);
+    border: 1px solid rgba($error-color, 0.4);
+    border-left: 4px solid $error-color;
+    border-radius: $border-radius-sm;
+    font-size: 13px;
+    font-weight: 500;
+    color: $error-color;
+    box-shadow: 0 1px 3px rgba($error-color, 0.1);
+
+    p {
+      margin: 0;
+      display: flex;
+      align-items: center;
+      
+      &::before {
+        content: "⚠️";
+        margin-right: $spacing-xs;
+        font-size: 14px;
+      }
+    }
+  }
+
   .s2j-logo-placeholder {
     span {
       display: inline-block;
@@ -944,7 +992,9 @@
 
   .s2j-media-actions {
     display: flex;
+    flex-direction: column; // 横並びから縦積みに変更
     gap: $spacing-xs;
+    width: 100%; // 幅を100%に設定
 
     button {
       padding: $spacing-xs $spacing-sm;
@@ -953,6 +1003,8 @@
       background: $white;
       cursor: pointer;
       font-size: 12px;
+      width: 100%; // ボタンの幅を100%に設定
+      text-align: center; // テキストを中央揃え
 
       &:hover {
         background: $background-color;
@@ -1017,21 +1069,6 @@
     }
   }
 
-  // FFmpeg 関連の通知スタイル
-  .s2j-poster-notice {
-    margin-top: $spacing-xs;
-    padding: $spacing-xs $spacing-sm;
-    background-color: rgba($warning-color, 0.1);
-    border: 1px solid rgba($warning-color, 0.3);
-    border-radius: $border-radius-sm;
-    font-size: 12px;
-    color: $warning-color;
-
-    p {
-      margin: 0;
-    }
-  }
-
   .s2j-ffmpeg-notice {
     margin-top: $spacing-xs;
     padding: $spacing-xs $spacing-sm;
@@ -1048,6 +1085,61 @@
   .s2j-poster-preview {
     border: 2px solid $primary-color;
     border-radius: $border-radius-sm;
+  }
+}
+
+// グリッドレイアウト内のポスターノティス
+.s2j-content-model.s2j-has-poster-notice .s2j-poster-notice {
+  grid-column: 2 / 8; // 2列目から8列目まで結合（ロゴ列からActions列まで）
+  grid-row: 2;
+  margin-top: $spacing-sm;
+  margin-left: 0;
+  margin-right: 0;
+  padding: $spacing-sm $spacing-md;
+  background-color: rgba($error-color, 0.1);
+  border: 1px solid rgba($error-color, 0.4);
+  border-left: 4px solid $error-color;
+  border-radius: $border-radius-sm;
+  font-size: 13px;
+  font-weight: 500;
+  color: $error-color;
+  box-shadow: 0 1px 3px rgba($error-color, 0.1);
+
+  p {
+    margin: 0;
+    display: flex;
+    align-items: center;
+
+    &::before {
+      content: "⚠️";
+      margin-right: $spacing-xs;
+      font-size: 14px;
+    }
+  }
+}
+
+// ポスターノティスの強制スタイル（詳細度の問題を回避）
+.s2j-poster-notice {
+  padding: $spacing-sm $spacing-md !important;
+  background-color: rgba($error-color, 0.1) !important;
+  border: 1px solid rgba($error-color, 0.4) !important;
+  border-left: 4px solid $error-color !important;
+  border-radius: $border-radius-sm !important;
+  font-size: 13px !important;
+  font-weight: 500 !important;
+  color: $error-color !important;
+  box-shadow: 0 1px 3px rgba($error-color, 0.1) !important;
+
+  p {
+    margin: 0 !important;
+    display: flex !important;
+    align-items: center !important;
+
+    &::before {
+      content: "⚠️" !important;
+      margin-right: $spacing-xs !important;
+      font-size: 14px !important;
+    }
   }
 }
 

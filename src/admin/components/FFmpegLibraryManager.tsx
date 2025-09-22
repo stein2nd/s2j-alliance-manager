@@ -63,6 +63,7 @@ export const FFmpegLibraryManager: React.FC<FFmpegLibraryManagerProps> = ({
       const result: FFmpegTestResult = await response.json();
       setTestResult(result);
     } catch (error) {
+      console.error('Error testing FFmpeg:', error);
       setTestResult({
         success: false,
         available: false,

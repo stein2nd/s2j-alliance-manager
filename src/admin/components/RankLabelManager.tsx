@@ -276,6 +276,8 @@ export const RankLabelManager: React.FC<RankLabelManagerProps> = ({
                     onChange={(value: string) => updateLabel(index, 'title', value)}
                     label={__('Title', 's2j-alliance-manager')}
                     placeholder={__('Enter rank label title', 's2j-alliance-manager')}
+                    __next40pxDefaultSize={true}
+                    __nextHasNoMarginBottom={true}
                   />
                 </div>
 
@@ -286,6 +288,7 @@ export const RankLabelManager: React.FC<RankLabelManagerProps> = ({
                     label={__('Description', 's2j-alliance-manager')}
                     placeholder={__('Enter description', 's2j-alliance-manager')}
                     rows={2}
+                    __nextHasNoMarginBottom={true}
                   />
                 </div>
 

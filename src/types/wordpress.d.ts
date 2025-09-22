@@ -45,11 +45,32 @@ declare global {
     };
     wp: {
       media: {
-        (options: Record<string, unknown>): Record<string, unknown>;
+        (options: Record<string, unknown>): WordPressMediaFrame;
         editor: {
           get(): Record<string, unknown>;
         };
       };
+      ajax: {
+        post(action: string, data: Record<string, unknown>): Promise<unknown>;
+      };
+      apiFetch: unknown;
+      element: unknown;
+      components: unknown;
+      i18n: unknown;
     };
   }
+}
+
+export interface WordPressMediaFrame {
+  on(event: string, callback: () => void): void;
+  open(): void;
+  state(): {
+    get(selection: string): {
+      first(): {
+        toJSON(): {
+          id: number;
+        };
+      };
+    };
+  };
 }

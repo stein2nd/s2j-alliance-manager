@@ -36,7 +36,7 @@ export const ContentList: React.FC<ContentListProps> = ({
   const [hasUnsavedChanges, setHasUnsavedChanges] = useState(false);
   const [originalOrder, setOriginalOrder] = useState<number[]>([]);
 
-  // contentModelsが変更された時に元の順序を初期化
+  // contentModels が変更された時に、元の順序を初期化
   useEffect(() => {
     if (contentModels.length > 0 && originalOrder.length === 0) {
       setOriginalOrder(contentModels.map((_, index) => index));
@@ -91,7 +91,7 @@ export const ContentList: React.FC<ContentListProps> = ({
    * @param field フィールド
    * @param value 値
    */
-  const updateModel = async (index: number, field: keyof ContentModel, value: any) => {
+  const updateModel = async (index: number, field: keyof ContentModel, value: string | number) => {
     const currentModels = pendingModels || contentModels;
     const updated = [...currentModels];
 
@@ -156,7 +156,7 @@ export const ContentList: React.FC<ContentListProps> = ({
       label: label.title
     }));
 
-    // Add default option if no labels exist
+    // ラベルが存在しない場合に、デフォルトオプションを追加します
     if (options.length === 0) {
       options.push({
         value: 'default',
@@ -234,14 +234,20 @@ export const ContentList: React.FC<ContentListProps> = ({
             // 保留中の変更がある場合は元の順序を表示、なければ現在のインデックス+1を表示
             const rowNumber = hasUnsavedChanges && originalOrder.length > index ? originalOrder[index] + 1 : index + 1;
 
+            // ポスターノティスの表示状態を取得
+            // Behavior が「Show Modal」の場合のみポスターノティスを表示
+            // 動画ファイルが選択されていて、ポスター画像が存在しない場合に表示
+            const hasPosterNotice = model.behavior === 'modal' && model.logo > 0;
+
             return (
-            <div key={`model-${index}-${model.logo}`} className={`s2j-content-model ${hasUnsavedChanges ? 's2j-pending-changes' : ''}`}>
+            <div key={`model-${index}-${model.logo}`} className={`s2j-content-model ${hasUnsavedChanges ? 's2j-pending-changes' : ''} ${hasPosterNotice ? 's2j-has-poster-notice' : ''}`}>
               <div className="s2j-row-number">#{rowNumber}</div>
               <div className="s2j-model-field frontpage">
                 <CheckboxControl
                   checked={model.frontpage === 'YES'}
                   onChange={(checked: boolean) => updateModel(index, 'frontpage', checked ? 'YES' : 'NO')}
                   label={__('Frontpage', 's2j-alliance-manager')}
+                  __nextHasNoMarginBottom={true}
                 />
               </div>
 
@@ -251,6 +257,8 @@ export const ContentList: React.FC<ContentListProps> = ({
                   options={getRankOptions()}
                   onChange={(value: string) => updateModel(index, 'rank', value)}
                   label={__('Rank', 's2j-alliance-manager')}
+                  __next40pxDefaultSize={true}
+                  __nextHasNoMarginBottom={true}
                 />
               </div>
 
@@ -271,6 +279,8 @@ export const ContentList: React.FC<ContentListProps> = ({
                   label={__('Jump URL', 's2j-alliance-manager')}
                   type="url"
                   placeholder="https://example.com"
+                  __next40pxDefaultSize={true}
+                  __nextHasNoMarginBottom={true}
                 />
               </div>
 
@@ -283,47 +293,61 @@ export const ContentList: React.FC<ContentListProps> = ({
                   }))}
                   onChange={(value: string) => updateModel(index, 'behavior', value)}
                   label={__('Behavior', 's2j-alliance-manager')}
+                  __next40pxDefaultSize={true}
+                  __nextHasNoMarginBottom={true}
                 />
               </div>
 
               <div className="s2j-model-field actions">
-                <Button
-                  size="small"
-                  onClick={() => moveModel(index, 'up')}
-                  disabled={index === 0}
-                  title={__('Move Up', 's2j-alliance-manager')}
-                  className="s2j-move-up-btn"
-                >
-                  <span className="s2j-button-text">▲ {__('Up', 's2j-alliance-manager')}</span>
-                </Button>
-                <Button
-                  size="small"
-                  onClick={() => moveModel(index, 'down')}
-                  disabled={index === displayModelsLength - 1}
-                  title={__('Move Down', 's2j-alliance-manager')}
-                  className="s2j-move-down-btn"
-                >
-                  <span className="s2j-button-text">▼ {__('Down', 's2j-alliance-manager')}</span>
-                </Button>
-                <Button
-                  size="small"
-                  onClick={() => openMessageModal(index)}
-                  disabled={model.behavior !== 'modal'}
-                  title={model.behavior === 'modal' ? __('Edit Message', 's2j-alliance-manager') : __('Message is only available when behavior is set to "Show Modal"', 's2j-alliance-manager')}
-                  className="s2j-message-btn"
-                >
-                  {__('Message', 's2j-alliance-manager')}
-                </Button>
-                <Button
-                  size="small"
-                  variant="destructive"
-                  onClick={() => deleteModel(index)}
-                  title={__('Delete', 's2j-alliance-manager')}
-                  className="s2j-delete-btn"
-                >
-                  {__('Delete', 's2j-alliance-manager')}
-                </Button>
+                <div className="s2j-navigation-actions">
+                  <Button
+                    size="small"
+                    onClick={() => moveModel(index, 'up')}
+                    disabled={index === 0}
+                    title={__('Move Up', 's2j-alliance-manager')}
+                    className="s2j-move-up-btn"
+                  >
+                    <span className="s2j-button-text">▲ {__('Up', 's2j-alliance-manager')}</span>
+                  </Button>
+                  <Button
+                    size="small"
+                    onClick={() => moveModel(index, 'down')}
+                    disabled={index === displayModelsLength - 1}
+                    title={__('Move Down', 's2j-alliance-manager')}
+                    className="s2j-move-down-btn"
+                  >
+                    <span className="s2j-button-text">▼ {__('Down', 's2j-alliance-manager')}</span>
+                  </Button>
+                </div>
+
+                <div className="s2j-management-actions">
+                  <Button
+                    size="small"
+                    onClick={() => openMessageModal(index)}
+                    disabled={model.behavior !== 'modal'}
+                    title={model.behavior === 'modal' ? __('Edit Message', 's2j-alliance-manager') : __('Message is only available when behavior is set to "Show Modal"', 's2j-alliance-manager')}
+                    className="s2j-message-btn"
+                  >
+                    {__('Message', 's2j-alliance-manager')}
+                  </Button>
+                  <Button
+                    size="small"
+                    variant="destructive"
+                    onClick={() => deleteModel(index)}
+                    title={__('Delete', 's2j-alliance-manager')}
+                    className="s2j-delete-btn"
+                  >
+                    {__('Delete', 's2j-alliance-manager')}
+                  </Button>
+                </div>
               </div>
+
+              {/* ポスターノティス（独立した行として表示） */}
+              {hasPosterNotice && (
+                <div className="s2j-poster-notice">
+                  <p>{__('No poster image available. Please generate or upload one.', 's2j-alliance-manager')}</p>
+                </div>
+              )}
             </div>
             );
           })

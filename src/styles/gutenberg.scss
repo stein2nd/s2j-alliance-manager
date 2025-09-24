@@ -103,7 +103,7 @@
 
   &-title {
     margin: 0 0 $spacing-md 0;
-    font-size: 24px;
+    font-size: 1.5rem;
     font-weight: 600;
     color: $text-color;
     border-bottom: 2px solid $primary-color;
@@ -197,7 +197,7 @@
     position: absolute;
     top: $spacing-md;
     right: $spacing-md;
-    font-size: 24px;
+    font-size: 1.5rem;
     font-weight: bold;
     color: $text-light;
     cursor: pointer;
@@ -209,7 +209,7 @@
   }
 
   &-message {
-    font-size: 16px;
+    font-size: 1rem;
     line-height: 1.6;
     color: $text-color;
 
@@ -317,6 +317,6 @@
   }
   
   .s2j-alliance-rank-title {
-    font-size: 20px;
+    font-size: 1.25rem;
   }
 }

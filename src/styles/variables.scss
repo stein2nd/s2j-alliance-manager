@@ -13,11 +13,11 @@ $background-color: #f1f1f1 !default;
 $white: #fff !default;
 
 // Spacing
-$spacing-xs: 4px !default;
-$spacing-sm: 8px !default;
-$spacing-md: 16px !default;
-$spacing-lg: 24px !default;
-$spacing-xl: 32px !default;
+$spacing-xs: 0.25rem !default;  // 4px
+$spacing-sm: 0.5rem !default;   // 8px
+$spacing-md: 1rem !default;     // 16px
+$spacing-lg: 1.5rem !default;   // 24px
+$spacing-xl: 2rem !default;     // 32px
 
 // Border radius
 $border-radius-sm: 3px !default;

@@ -36,15 +36,15 @@
     "react-dom": "^18.2.0"
   },
   "overrides": {
-    "rollup": "^4.52.0"
+    "rollup": "^4.52.2"
   },
   "devDependencies": {
     "@types/jquery": "^3.5.33",
     "@types/node": "^24.5.2",
     "@types/react": "^18.2.0",
     "@types/react-dom": "^18.2.0",
-    "@typescript-eslint/eslint-plugin": "^8.44.0",
-    "@typescript-eslint/parser": "^8.44.0",
+    "@typescript-eslint/eslint-plugin": "^8.44.1",
+    "@typescript-eslint/parser": "^8.44.1",
     "@wordpress/api-fetch": "^7.29.0",
     "@wordpress/block-editor": "^15.2.0",
     "@wordpress/blocks": "^15.2.0",
@@ -57,12 +57,12 @@
     "eslint": "^9.36.0",
     "eslint-plugin-react": "^7.37.5",
     "eslint-plugin-react-hooks": "^5.2.0",
-    "rollup": "^4.52.0",
-    "sass": "^1.93.0",
+    "rollup": "^4.52.2",
+    "sass": "^1.93.2",
     "stylelint": "^16.24.0",
     "stylelint-config-standard-scss": "^16.0.0",
     "typescript": "^5.9.2",
-    "vite": "^7.1.6",
+    "vite": "^7.1.7",
     "vite-plugin-static-copy": "^3.1.2"
   }
 }

@@ -14,14 +14,14 @@ if (!defined('ABSPATH')) {
  * Alliance Manager
  */
 class S2J_Alliance_Manager_AllianceManager {
-    
+
     /**
      * Block registration status
      */
     private $block_registered = false;
     private $using_block_json = false;
     private $initialized = false;
-    
+
     /**
      * コンストラクター
      */
@@ -38,7 +38,7 @@ class S2J_Alliance_Manager_AllianceManager {
         // フロントエンド用アセット (s2j-alliance-manager-gutenberg.css) をキューに追加します。
         add_action('wp_enqueue_scripts', array($this, 'enqueue_frontend_assets'));
         
-        // デバッグ用のヘルプタブを表示します（Alliance Manager 専用管理画面でのみ）。
+        // デバッグ用のヘルプタブを表示します (Alliance Manager 専用管理画面でのみ)。
         if (is_admin()) {
             add_action('admin_head', array($this, 'add_debug_help_tab'));
         }
@@ -88,7 +88,6 @@ class S2J_Alliance_Manager_AllianceManager {
 
         $this->initialized = true;
     }
-    
 
     /**
      * Gutenberg ブロックアセット (s2j-alliance-manager-gutenberg.js, s2j-alliance-manager-gutenberg.css) を登録します。
@@ -99,9 +98,9 @@ class S2J_Alliance_Manager_AllianceManager {
     private function register_block_assets() {
         $js_path = S2J_ALLIANCE_MANAGER_PLUGIN_DIR . 'dist/js/s2j-alliance-manager-gutenberg.js';
         $css_path = S2J_ALLIANCE_MANAGER_PLUGIN_DIR . 'dist/css/s2j-alliance-manager-gutenberg.css';
-        
+
         if (file_exists($js_path)) {
-            // スクリプトを登録します（block.json で参照されるため必要）
+            // スクリプトを登録します (block.json で参照されるため必要)
             wp_register_script(
                 's2j-alliance-manager-gutenberg',
                 S2J_ALLIANCE_MANAGER_PLUGIN_URL . 'dist/js/s2j-alliance-manager-gutenberg.js',
@@ -110,9 +109,9 @@ class S2J_Alliance_Manager_AllianceManager {
                 true
             );
         }
-        
+
         if (file_exists($css_path)) {
-            // スタイルを登録します（block.json で参照されるため必要）
+            // スタイルを登録します (block.json で参照されるため必要)
             wp_register_style(
                 's2j-alliance-manager-gutenberg',
                 S2J_ALLIANCE_MANAGER_PLUGIN_URL . 'dist/css/s2j-alliance-manager-gutenberg.css',
@@ -241,10 +240,10 @@ class S2J_Alliance_Manager_AllianceManager {
                         var jumpUrl = $this.data('jump-url');
                         var logoId = $this.data('logo-id');
 
-                        // メッセージの処理（先頭・末尾の改行・TAB 文字をトリム）
+                        // メッセージの処理 (先頭・末尾の改行・TAB 文字をトリム)
                         var trimmedMessage = message ? message.replace(/^[\n\t\s]+|[\n\t\s]+$/g, '') : '';
 
-                        // ジャンプ URL の処理（trim して空文字列でない場合のみ表示）
+                        // ジャンプ URL の処理 (trim して空文字列でない場合のみ表示)
                         var trimmedJumpUrl = jumpUrl ? jumpUrl.trim() : '';
 
                         // ロゴの再レンダリング
@@ -313,7 +312,7 @@ class S2J_Alliance_Manager_AllianceManager {
 
         $grouped_data = array();
 
-        // 最初のランクを取得（default のマッチング用）
+        // 最初のランクを取得 (default のマッチング用)
         $first_rank_title = !empty($rank_labels) ? $rank_labels[0]->post_title : '';
 
         foreach ($rank_labels as $rank_label) {
@@ -397,9 +396,18 @@ class S2J_Alliance_Manager_AllianceManager {
         // ID に基づいて添付ファイルの MIME タイプを取得し、動画の場合は動画タグ、画像の場合は画像タグとしてレンダリングします。
         $mime_type = get_post_mime_type($partner['logo']);
         if (strpos($mime_type, 'video/') === 0) {
+            // 動画の場合、poster 画像の URL を取得
+            $poster_url = '';
+            if (!empty($partner['poster'])) {
+                $poster_url = wp_get_attachment_url($partner['poster']);
+            }
+
+            $poster_attr = $poster_url ? sprintf(' poster="%s"', esc_url($poster_url)) : '';
+
             return sprintf(
-                '<video src="%s" class="s2j-alliance-partner-logo" controls></video>',
-                esc_url($logo_url)
+                '<video src="%s" class="s2j-alliance-partner-logo" controls%s></video>',
+                esc_url($logo_url),
+                $poster_attr
             );
         } else {
             return sprintf(
@@ -552,12 +560,14 @@ class S2J_Alliance_Manager_AllianceManager {
 
         $js_exists = file_exists(S2J_ALLIANCE_MANAGER_PLUGIN_DIR . 'dist/js/s2j-alliance-manager-gutenberg.js');
         $js_url = S2J_ALLIANCE_MANAGER_PLUGIN_URL . 'dist/js/s2j-alliance-manager-gutenberg.js';
+
         // スクリプトが登録とキューに追加されているか否かをチェックします。
         $js_registered = wp_script_is('s2j-alliance-manager-gutenberg', 'registered');
         $js_enqueued = wp_script_is('s2j-alliance-manager-gutenberg', 'enqueued');
 
         $css_exists = file_exists(S2J_ALLIANCE_MANAGER_PLUGIN_DIR . 'dist/css/s2j-alliance-manager-gutenberg.css');
         $css_url = S2J_ALLIANCE_MANAGER_PLUGIN_URL . 'dist/css/s2j-alliance-manager-gutenberg.css';
+
         // スタイルが登録とキューに追加されているか否かをチェックします。
         $css_registered = wp_style_is('s2j-alliance-manager-gutenberg', 'registered');
         $css_enqueued = wp_style_is('s2j-alliance-manager-gutenberg', 'enqueued');

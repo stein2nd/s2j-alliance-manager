@@ -17,6 +17,7 @@ export interface ContentModel {
   frontpage: 'YES' | 'NO';
   rank: string;
   logo: number; // WordPress attachment ID
+  poster: number; // WordPress attachment ID for video poster
   jump_url: string;
   behavior: 'jump' | 'modal';
   message: string;

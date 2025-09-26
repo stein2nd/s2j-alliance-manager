@@ -47,20 +47,20 @@
     #s2j-refresh-debug-info {
       margin-top: 0.3125rem;
       white-space: nowrap;
-      
+
       .dashicons {
         animation: none;
         transition: transform 0.3s ease;
       }
-      
+
       &:hover .dashicons {
         transform: rotate(180deg);
       }
-      
+
       &:disabled {
         opacity: 0.6;
         cursor: not-allowed;
-        
+
         .dashicons {
           animation: spin 1s linear infinite;
         }
@@ -193,7 +193,7 @@
 
 .s2j-admin-content {
   display: grid;
-  grid-template-columns: 1fr 280px;
+  grid-template-columns: 1fr 17.5rem;
   gap: $spacing-lg;
   max-width: 100%;
   overflow: hidden;
@@ -928,7 +928,7 @@
   }
 }
 
-// 削除ボタンのスタイル（より具体的なセレクターで確実に適用）
+// 削除ボタンのスタイル (より具体的なセレクターで確実に適用)
 .s2j-content-model .s2j-model-field.actions .s2j-management-actions .s2j-delete-btn {
   min-width: 55px;
   padding: 0.25rem 0.375rem;
@@ -945,14 +945,50 @@
 
 // メディア・アップローダー
 .s2j-media-uploader {
+  // 画像ロゴプレビュー
   .s2j-media-preview {
     margin-bottom: $spacing-sm;
+    display: flex;
+    gap: $spacing-sm;
+    align-items: flex-start;
 
     img {
-      max-width: 100px;
-      max-height: 100px;
+      width: 100px;
+      height: 100px;
+      object-fit: cover;
       border-radius: $border-radius-sm;
       border: 1px solid $border-color;
+    }
+
+    video {
+      width: 100px;
+      height: 100px;
+      object-fit: cover;
+      border-radius: $border-radius-sm;
+      border: 1px solid $border-color;
+    }
+  }
+
+  // poster 画像プレビューコンテナ
+  .s2j-poster-preview-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: $spacing-xs;
+
+    .s2j-poster-preview {
+      width: 100px;
+      height: 100px;
+      object-fit: cover;
+      border-radius: $border-radius-sm;
+      border: 1px solid $border-color;
+    }
+
+    .s2j-poster-label {
+      font-size: 0.75rem;
+      color: $text-light;
+      text-align: center;
+      font-weight: 500;
     }
   }
 
@@ -975,7 +1011,7 @@
       margin: 0;
       display: flex;
       align-items: center;
-      
+
       &::before {
         content: "⚠️";
         margin-right: $spacing-xs;
@@ -994,7 +1030,7 @@
     display: flex;
     flex-direction: column; // 横並びから縦積みに変更
     gap: $spacing-xs;
-    width: 100%; // 幅を100%に設定
+    width: 100%;
 
     button {
       padding: $spacing-xs $spacing-sm;
@@ -1003,8 +1039,8 @@
       background: $white;
       cursor: pointer;
       font-size: 0.75rem;
-      width: 100%; // ボタンの幅を100%に設定
-      text-align: center; // テキストを中央揃え
+      width: 100%;
+      text-align: center;
 
       &:hover {
         background: $background-color;
@@ -1041,7 +1077,7 @@
     // FFmpeg 関連のボタンスタイル
     .s2j-generate-poster-btn,
     .s2j-upload-poster-btn {
-      background-color: $primary-color;
+      background-color: $secondary-color;
       color: $white;
       border: none;
       border-radius: $border-radius-sm;
@@ -1051,20 +1087,12 @@
       transition: background-color 0.2s ease;
 
       &:hover:not(:disabled) {
-        background-color: color.adjust($primary-color, $lightness: -10%);
+        background-color: color.adjust($secondary-color, $lightness: -10%);
       }
 
       &:disabled {
         opacity: 0.6;
         cursor: not-allowed;
-      }
-    }
-
-    .s2j-upload-poster-btn {
-      background-color: $secondary-color;
-
-      &:hover:not(:disabled) {
-        background-color: color.adjust($secondary-color, $lightness: -10%);
       }
     }
   }
@@ -1090,7 +1118,7 @@
 
 // グリッドレイアウト内のポスターノティス
 .s2j-content-model.s2j-has-poster-notice .s2j-poster-notice {
-  grid-column: 2 / 8; // 2列目から8列目まで結合（ロゴ列からActions列まで）
+  grid-column: 2 / 8; // 2列目から8列目まで結合 (ロゴ列から Actions 列まで)
   grid-row: 2;
   margin-top: $spacing-sm;
   margin-left: 0;
@@ -1118,7 +1146,7 @@
   }
 }
 
-// ポスターノティスの強制スタイル（詳細度の問題を回避）
+// ポスターノティスの強制スタイル (詳細度の問題を回避)
 .s2j-poster-notice {
   padding: $spacing-sm $spacing-md !important;
   background-color: rgba($error-color, 0.1) !important;

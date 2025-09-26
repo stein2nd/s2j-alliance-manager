@@ -12,9 +12,10 @@ interface MediaUploaderProps {
   onSelect: (attachmentId: number) => void;
   label?: string;
   allowedTypes?: string[];
-  onPosterGenerated?: (posterId: number) => void;
   onPosterNoticeChange?: (showNotice: boolean) => void;
   ffmpegSettings?: FFmpegSettings;
+  posterId?: number;
+  onPosterSelect?: (posterId: number) => void;
 }
 
 /**
@@ -29,14 +30,16 @@ export const MediaUploader: React.FC<MediaUploaderProps> = ({
   onSelect,
   label,
   allowedTypes = ['image', 'video'],
-  onPosterGenerated,
   onPosterNoticeChange,
-  ffmpegSettings
+  ffmpegSettings,
+  posterId,
+  onPosterSelect
 }) => {
   const [media, setMedia] = useState<WordPressMedia | null>(null);
   const [isLoading, setIsLoading] = useState(false);
   const [isGeneratingPoster, setIsGeneratingPoster] = useState(false);
   const [posterAttachmentId, setPosterAttachmentId] = useState<number | null>(null);
+  const [posterMedia, setPosterMedia] = useState<WordPressMedia | null>(null);
 
   /**
    * メディアが動画かどうかを判定します。
@@ -59,6 +62,15 @@ export const MediaUploader: React.FC<MediaUploaderProps> = ({
       setPosterAttachmentId(null);
     }
   }, [attachmentId]);
+
+  // posterId が変更された時にポスター画像を読み込み
+  useEffect(() => {
+    if (posterId && posterId > 0) {
+      loadPosterMedia(posterId);
+    } else {
+      setPosterMedia(null);
+    }
+  }, [posterId]);
 
   // メディアが変更された時にポスター画像をリセット
   useEffect(() => {
@@ -91,20 +103,23 @@ export const MediaUploader: React.FC<MediaUploaderProps> = ({
   const findPosterImage = async (videoId: number) => {
     try {
       const response = await fetch(`/wp-json/wp/v2/media?parent=${videoId}&mime_type=image/jpeg&per_page=1`);
+
       if (response.ok) {
         const posters = await response.json();
         if (posters.length > 0) {
           setPosterAttachmentId(posters[0].id);
         } else {
-          // ポスター画像が見つからない場合はnullに設定
+          // ポスター画像が見つからない場合は null に設定
           setPosterAttachmentId(null);
         }
       } else {
         console.error('Failed to find poster image:', response.status, response.statusText);
+
         setPosterAttachmentId(null);
       }
     } catch (error) {
       console.error('Error finding poster image:', error);
+
       setPosterAttachmentId(null);
     }
   };
@@ -117,6 +132,7 @@ export const MediaUploader: React.FC<MediaUploaderProps> = ({
    */
   const loadMedia = async (id: number) => {
     setIsLoading(true);
+
     try {
       const response = await fetch(`/wp-json/wp/v2/media/${id}`);
 
@@ -140,6 +156,38 @@ export const MediaUploader: React.FC<MediaUploaderProps> = ({
       console.error('Error loading media:', error);
     } finally {
       setIsLoading(false);
+    }
+  };
+
+  /**
+   * poster 画像を読み込みます。
+   * 
+   * @param id 添付ファイル ID
+   */
+  const loadPosterMedia = async (id: number) => {
+    try {
+      const response = await fetch(`/wp-json/wp/v2/media/${id}`);
+
+      if (response.ok) {
+        const mediaData = await response.json();
+
+        setPosterMedia({
+          id: mediaData.id,
+          url: mediaData.source_url,
+          alt: mediaData.alt_text || '',
+          title: mediaData.title?.rendered || '',
+          caption: mediaData.caption?.rendered || '',
+          description: mediaData.description?.rendered || '',
+          mime_type: mediaData.mime_type,
+          file_size: mediaData.media_details?.filesize || 0,
+          width: mediaData.media_details?.width || 0,
+          height: mediaData.media_details?.height || 0
+        });
+      }
+    } catch (error) {
+      console.error('Error loading poster media:', error);
+
+      setPosterMedia(null);
     }
   };
 
@@ -183,6 +231,16 @@ export const MediaUploader: React.FC<MediaUploaderProps> = ({
    */
   const removeMedia = () => {
     onSelect(0);
+
+    // poster画像も削除
+    if (onPosterSelect) {
+      onPosterSelect(0);
+    }
+
+    // ローカル状態もリセット
+    setMedia(null);
+    setPosterAttachmentId(null);
+    setPosterMedia(null);
   };
 
   /**
@@ -219,11 +277,12 @@ export const MediaUploader: React.FC<MediaUploaderProps> = ({
       if (result.success && result.poster_id) {
         // ポスター生成成功
         setPosterAttachmentId(result.poster_id);
-        if (onPosterGenerated) {
-          onPosterGenerated(result.poster_id);
+        // poster 画像を読み込み
+        loadPosterMedia(result.poster_id);
+
+        if (onPosterSelect) {
+          onPosterSelect(result.poster_id);
         }
-        // ポスター画像を再検索
-        findPosterImage(attachmentId);
       } else {
         console.error('Failed to generate poster:', result.message);
         window.alert(result.message || __('Failed to generate poster image.', 's2j-alliance-manager'));
@@ -260,13 +319,13 @@ export const MediaUploader: React.FC<MediaUploaderProps> = ({
 
     frame.on('select', () => {
       const attachment = frame.state().get('selection').first().toJSON();
-      
+
       // ポスター画像を動画の子として設定
       if (media && isVideo(media.mime_type)) {
         // ローディング状態を設定
         setIsLoading(true);
-        
-        // ポスター画像の親を動画に設定（REST APIを使用）
+
+        // ポスター画像の親を動画に設定 (REST API を使用)
         fetch(`/wp-json/wp/v2/media/${attachment.id}`, {
           method: 'POST',
           headers: {
@@ -279,11 +338,12 @@ export const MediaUploader: React.FC<MediaUploaderProps> = ({
         }).then(response => {
           if (response.ok) {
             setPosterAttachmentId(attachment.id);
-            if (onPosterGenerated) {
-              onPosterGenerated(attachment.id);
+            // poster 画像を読み込み
+            loadPosterMedia(attachment.id);
+
+            if (onPosterSelect) {
+              onPosterSelect(attachment.id);
             }
-            // ポスター画像を再検索
-            findPosterImage(attachmentId);
           } else {
             throw new Error(`HTTP ${response.status}: ${response.statusText}`);
           }
@@ -315,27 +375,18 @@ export const MediaUploader: React.FC<MediaUploaderProps> = ({
 
   /**
    * 表示するメディアを決定します。
-   * 動画の場合はポスター画像を優先表示し、なければ動画を表示します。
+   * 動画の場合は常に動画を表示し、poster 画像は別途表示します。
    */
   const getDisplayMedia = () => {
     if (!media) return null;
 
     if (isVideo(media.mime_type)) {
-      // 動画の場合、ポスター画像があればそれを表示
-      if (posterAttachmentId) {
-        return {
-          type: 'poster',
-          url: `/wp-json/wp/v2/media/${posterAttachmentId}`,
-          alt: `${media.title} Poster`
-        };
-      } else {
-        // ポスター画像がない場合は動画を表示
-        return {
-          type: 'video',
-          url: media.url,
-          alt: media.alt
-        };
-      }
+      // 動画の場合は常に動画を表示
+      return {
+        type: 'video',
+        url: media.url,
+        alt: media.alt
+      };
     } else {
       // 画像の場合はそのまま表示
       return {
@@ -374,6 +425,21 @@ export const MediaUploader: React.FC<MediaUploaderProps> = ({
               className="s2j-logo-preview"
             />
           ) : null}
+
+          {/* Poster 画像のプレビュー (動画の場合のみ) */}
+          {media && isVideo(media.mime_type) && (posterAttachmentId || posterMedia) && (
+            <div className="s2j-poster-preview-container">
+              <img
+                src={posterMedia?.url || `/wp-json/wp/v2/media/${posterAttachmentId}`}
+                alt={`${posterMedia?.title || media.title} Poster`}
+                className="s2j-poster-preview"
+                style={{ maxWidth: '100%', height: 'auto', marginTop: '8px' }}
+              />
+              <div className="s2j-poster-label">
+                {__('Poster Image', 's2j-alliance-manager')}
+              </div>
+            </div>
+          )}
         </div>
       ) : (
         <div className="s2j-media-preview">
@@ -391,7 +457,7 @@ export const MediaUploader: React.FC<MediaUploaderProps> = ({
         >
           <span>{media ? __('Change', 's2j-alliance-manager') : __('Select', 's2j-alliance-manager')}</span>
         </Button>
-        
+
         {/* 動画の場合のポスター関連ボタン */}
         {media && isVideo(media.mime_type) && (
           <>
@@ -411,7 +477,7 @@ export const MediaUploader: React.FC<MediaUploaderProps> = ({
                 </span>
               </Button>
             )}
-            
+
             {/* ポスター画像アップロードボタン */}
             <Button
               size="small"
@@ -425,7 +491,7 @@ export const MediaUploader: React.FC<MediaUploaderProps> = ({
                 }
               </span>
             </Button>
-            
+
             {/* FFmpeg が利用不可能な場合の注意表示 */}
             {!ffmpegSettings?.ffmpeg_available && (
               <div className="s2j-ffmpeg-notice">
@@ -436,7 +502,7 @@ export const MediaUploader: React.FC<MediaUploaderProps> = ({
             )}
           </>
         )}
-        
+
         {media && (
           <Button
             size="small"
@@ -448,7 +514,6 @@ export const MediaUploader: React.FC<MediaUploaderProps> = ({
           </Button>
         )}
       </div>
-
     </div>
   );
 };

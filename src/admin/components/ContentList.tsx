@@ -52,6 +52,7 @@ export const ContentList: React.FC<ContentListProps> = ({
       frontpage: 'NO',
       rank: 'default',
       logo: 0,
+      poster: 0,
       jump_url: '',
       behavior: 'jump',
       message: ''
@@ -237,7 +238,7 @@ export const ContentList: React.FC<ContentListProps> = ({
             // ポスターノティスの表示状態を取得
             // Behavior が「Show Modal」の場合のみポスターノティスを表示
             // 動画ファイルが選択されていて、ポスター画像が存在しない場合に表示
-            const hasPosterNotice = model.behavior === 'modal' && model.logo > 0;
+            const hasPosterNotice = model.behavior === 'modal' && model.logo > 0 && model.poster === 0;
 
             return (
             <div key={`model-${index}-${model.logo}`} className={`s2j-content-model ${hasUnsavedChanges ? 's2j-pending-changes' : ''} ${hasPosterNotice ? 's2j-has-poster-notice' : ''}`}>
@@ -266,7 +267,8 @@ export const ContentList: React.FC<ContentListProps> = ({
                 <MediaUploader
                   attachmentId={model.logo}
                   onSelect={(attachmentId) => updateModel(index, 'logo', attachmentId)}
-                  onPosterGenerated={(posterId) => updateModel(index, 'logo', posterId)}
+                  posterId={model.poster}
+                  onPosterSelect={(posterId) => updateModel(index, 'poster', posterId)}
                   ffmpegSettings={ffmpegSettings}
                   label={__('Logo', 's2j-alliance-manager')}
                 />

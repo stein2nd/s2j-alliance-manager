@@ -142,6 +142,26 @@
         opacity: 0.8;
       }
     }
+
+    // 動画要素用スタイル（モーダル表示の場合のみ）
+    .s2j-alliance-partner-logo {
+      pointer-events: none;   // 一覧では直接操作させない
+      filter: grayscale(100%);
+      cursor: pointer;        // 視覚的にクリック可能だと示す
+      position: relative;
+
+      &::after {
+        content: "▶︎";       // 再生アイコン or Overlay 文言
+        position: absolute;
+        inset: 0;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 2rem;
+        color: $white;
+        background: rgba(0, 0, 0, 0.3);
+      }
+    }
   }
 
   &-logo {
@@ -221,8 +241,8 @@
       }
     }
   }
-  
-  // モーダルグリッドレイアウト
+
+  // モーダル・グリッドレイアウト
   &-grid {
     display: grid;
     grid-template-columns: 1fr 1fr;
@@ -232,7 +252,7 @@
       grid-template-columns: 1fr;
     }
   }
-  
+
   &-cell {
     display: flex;
     flex-direction: column;
@@ -315,7 +335,7 @@
       padding: $spacing-lg;
     }
   }
-  
+
   .s2j-alliance-rank-title {
     font-size: 1.25rem;
   }

@@ -123,7 +123,6 @@ export const FFmpegLibraryManager: React.FC<FFmpegLibraryManagerProps> = ({
           {__('Enter the path to the FFmpeg executable. Leave empty to use the system default.', 's2j-alliance-manager')}
         </p>
       </div>
-
       {testResult && (
         <div className={`s2j-test-result s2j-test-result--${testResult.available ? 'success' : 'error'}`}>
           <div className="s2j-test-result-icon">
@@ -134,7 +133,6 @@ export const FFmpegLibraryManager: React.FC<FFmpegLibraryManagerProps> = ({
           </div>
         </div>
       )}
-
     </div>
   );
 };

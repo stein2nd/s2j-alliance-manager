@@ -224,7 +224,6 @@ export const ContentList: React.FC<ContentListProps> = ({
           </button>
         )}
       </div>
-
       <div className="s2j-content-models">
         {displayModelsLength === 0 ? (
           <div className="s2j-empty-state">
@@ -251,7 +250,6 @@ export const ContentList: React.FC<ContentListProps> = ({
                   __nextHasNoMarginBottom={true}
                 />
               </div>
-
               <div className="s2j-model-field rank">
                 <SelectControl
                   value={model.rank}
@@ -262,7 +260,6 @@ export const ContentList: React.FC<ContentListProps> = ({
                   __nextHasNoMarginBottom={true}
                 />
               </div>
-
               <div className="s2j-model-field logo">
                 <MediaUploader
                   attachmentId={model.logo}
@@ -273,7 +270,6 @@ export const ContentList: React.FC<ContentListProps> = ({
                   label={__('Logo', 's2j-alliance-manager')}
                 />
               </div>
-
               <div className="s2j-model-field jump-url">
                 <TextControl
                   value={model.jump_url}
@@ -285,7 +281,6 @@ export const ContentList: React.FC<ContentListProps> = ({
                   __nextHasNoMarginBottom={true}
                 />
               </div>
-
               <div className="s2j-model-field behavior">
                 <SelectControl
                   value={model.behavior}
@@ -299,7 +294,6 @@ export const ContentList: React.FC<ContentListProps> = ({
                   __nextHasNoMarginBottom={true}
                 />
               </div>
-
               <div className="s2j-model-field actions">
                 <div className="s2j-navigation-actions">
                   <Button
@@ -321,7 +315,6 @@ export const ContentList: React.FC<ContentListProps> = ({
                     <span className="s2j-button-text">▼ {__('Down', 's2j-alliance-manager')}</span>
                   </Button>
                 </div>
-
                 <div className="s2j-management-actions">
                   <Button
                     size="small"
@@ -343,7 +336,6 @@ export const ContentList: React.FC<ContentListProps> = ({
                   </Button>
                 </div>
               </div>
-
               {/* ポスターノティス（独立した行として表示） */}
               {hasPosterNotice && (
                 <div className="s2j-poster-notice">
@@ -355,7 +347,6 @@ export const ContentList: React.FC<ContentListProps> = ({
           })
         )}
       </div>
-
       {showMessageModal !== null && (
         <MessageModal
           message={displayModels[showMessageModal]?.message || ''}

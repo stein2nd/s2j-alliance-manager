@@ -206,7 +206,6 @@ class S2J_Alliance_Manager_AllianceManager {
                 </div>
             <?php endforeach; ?>
         </div>
-
         <?php // アライアンスパートナー向けメッセージ用モーダル ?>
         <div id="s2j-alliance-modal" class="s2j-alliance-modal" style="display: none;">
             <div class="s2j-alliance-modal-content">
@@ -248,8 +247,21 @@ class S2J_Alliance_Manager_AllianceManager {
 
                         // ロゴの再レンダリング
                         if (logoId) {
-                            // 既存のロゴ HTML を取得してモーダルに表示
-                            var logoHtml = $this.find('.s2j-alliance-partner-logo, .s2j-alliance-partner-placeholder').clone();
+                            // 既存のロゴ要素を取得
+                            var logoElement = $this.find('.s2j-alliance-partner-logo, .s2j-alliance-partner-placeholder');
+                            var logoHtml;
+
+                            if (logoElement.is('video')) {
+                                // 動画の場合は poster 属性を含む新しい要素を生成
+                                var videoSrc = logoElement.attr('src');
+                                var posterSrc = logoElement.attr('poster');
+                                var posterAttr = posterSrc ? ' poster="' + posterSrc + '"' : '';
+                                logoHtml = '<video src="' + videoSrc + '" class="s2j-alliance-partner-logo" controls' + posterAttr + '></video>';
+                            } else {
+                                // 画像の場合は既存の要素を複製
+                                logoHtml = logoElement.clone();
+                            }
+
                             $('#s2j-alliance-modal .s2j-alliance-modal-logo').html(logoHtml);
                         } else {
                             $('#s2j-alliance-modal .s2j-alliance-modal-logo').html('<div class="s2j-alliance-partner-placeholder">' + '<?php echo esc_js(__("No logo", "s2j-alliance-manager")); ?>' + '</div>');
@@ -362,6 +374,12 @@ class S2J_Alliance_Manager_AllianceManager {
                     )
                 );
             } else {
+                // デバッグ用ログ（一時的）- マッチしたアイテムの内容を確認
+                error_log('S2J Alliance Manager - Matching items for rank: ' . $rank_title);
+                foreach ($matching_items as $index => $item) {
+                    error_log('  Item ' . $index . ': ' . print_r($item, true));
+                }
+
                 $grouped_data[$rank_title] = $matching_items;
             }
         }
@@ -396,16 +414,28 @@ class S2J_Alliance_Manager_AllianceManager {
         // ID に基づいて添付ファイルの MIME タイプを取得し、動画の場合は動画タグ、画像の場合は画像タグとしてレンダリングします。
         $mime_type = get_post_mime_type($partner['logo']);
         if (strpos($mime_type, 'video/') === 0) {
+            // デバッグ用ログ（一時的）- 常に出力
+            error_log('S2J Alliance Manager - Video Debug:');
+            error_log('  Partner data: ' . print_r($partner, true));
+            error_log('  Logo ID: ' . $partner['logo']);
+            error_log('  Logo URL: ' . $logo_url);
+            error_log('  MIME type: ' . $mime_type);
+
             // 動画の場合、poster 画像の URL を取得
             $poster_url = '';
-            if (!empty($partner['poster'])) {
+            if (!empty($partner['poster']) && $partner['poster'] > 0) {
                 $poster_url = wp_get_attachment_url($partner['poster']);
+
+                error_log('  Partner poster ID: ' . $partner['poster']);
+                error_log('  Poster URL: ' . ($poster_url ?: 'Failed to get URL'));
+            } else {
+                error_log('  No poster ID found in partner data');
             }
 
-            $poster_attr = $poster_url ? sprintf(' poster="%s"', esc_url($poster_url)) : '';
+            $poster_attr = $poster_url ? sprintf(' poster="%s"', esc_attr($poster_url)) : '';
 
             return sprintf(
-                '<video src="%s" class="s2j-alliance-partner-logo" controls%s></video>',
+                '<video src="%s" class="s2j-alliance-partner-logo" controls playsinline%s></video>',
                 esc_url($logo_url),
                 $poster_attr
             );

@@ -255,7 +255,6 @@ export const RankLabelManager: React.FC<RankLabelManagerProps> = ({
           )}
         </div>
       </div>
-
       <div className="s2j-rank-labels">
         {displayLabelsLength === 0 ? (
           <div className="s2j-empty-state">
@@ -269,7 +268,6 @@ export const RankLabelManager: React.FC<RankLabelManagerProps> = ({
             return (
               <div key={`label-${index}-${label.id}`} className={`s2j-rank-label ${hasUnsavedChanges ? 's2j-pending-changes' : ''}`}>
                 <div className="s2j-row-number">#{rowNumber}</div>
-
                 <div className="s2j-label-field title">
                   <TextControl
                     value={label.title}
@@ -280,7 +278,6 @@ export const RankLabelManager: React.FC<RankLabelManagerProps> = ({
                     __nextHasNoMarginBottom={true}
                   />
                 </div>
-
                 <div className="s2j-label-field content">
                   <TextareaControl
                     value={label.content}
@@ -291,7 +288,6 @@ export const RankLabelManager: React.FC<RankLabelManagerProps> = ({
                     __nextHasNoMarginBottom={true}
                   />
                 </div>
-
                 <div className="s2j-label-field thumbnail">
                   <MediaUploader
                     attachmentId={label.thumbnail_id}
@@ -299,7 +295,6 @@ export const RankLabelManager: React.FC<RankLabelManagerProps> = ({
                     label={__('Thumbnail', 's2j-alliance-manager')}
                   />
                 </div>
-
                 <div className="s2j-label-field actions">
                   <Button
                     size="small"

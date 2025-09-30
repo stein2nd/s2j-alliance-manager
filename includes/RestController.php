@@ -306,6 +306,9 @@ class S2J_Alliance_Manager_RestController {
             // logo (attachment ID) をサニタイズ
             $sanitized_model['logo'] = intval($model['logo'] ?? 0);
 
+            // poster (attachment ID) をサニタイズ
+            $sanitized_model['poster'] = intval($model['poster'] ?? 0);
+
             // jump_url をサニタイズ
             $sanitized_model['jump_url'] = esc_url_raw($model['jump_url'] ?? '');
 
@@ -464,10 +467,10 @@ class S2J_Alliance_Manager_RestController {
      */
     public function test_ffmpeg($request) {
         $ffmpeg_path = $request->get_param('ffmpeg_path');
-        
+
         $settings_page = new S2J_Alliance_Manager_SettingsPage();
         $is_available = $settings_page->test_ffmpeg_availability($ffmpeg_path);
-        
+
         return rest_ensure_response(array(
             'success' => true,
             'available' => $is_available,
@@ -486,7 +489,7 @@ class S2J_Alliance_Manager_RestController {
     public function get_ffmpeg_settings() {
         $settings_page = new S2J_Alliance_Manager_SettingsPage();
         $settings = $settings_page->get_ffmpeg_settings();
-        
+
         return rest_ensure_response($settings);
     }
 
@@ -499,7 +502,7 @@ class S2J_Alliance_Manager_RestController {
      */
     public function generate_poster($request) {
         $attachment_id = $request->get_param('attachment_id');
-        
+
         // 添付ファイルを取得
         $attachment = get_post($attachment_id);
         if (!$attachment || $attachment->post_type !== 'attachment') {
@@ -533,7 +536,7 @@ class S2J_Alliance_Manager_RestController {
         // FFmpeg 設定を取得
         $settings_page = new S2J_Alliance_Manager_SettingsPage();
         $ffmpeg_settings = $settings_page->get_ffmpeg_settings();
-        
+
         if (!$ffmpeg_settings['ffmpeg_available']) {
             return new WP_Error(
                 'ffmpeg_not_available',
@@ -544,7 +547,7 @@ class S2J_Alliance_Manager_RestController {
 
         // ポスター画像を生成
         $result = $this->generate_video_poster($file_path, $attachment_id, $ffmpeg_settings['ffmpeg_path']);
-        
+
         if (is_wp_error($result)) {
             return $result;
         }
@@ -583,7 +586,7 @@ class S2J_Alliance_Manager_RestController {
         );
 
         $output = shell_exec($command);
-        
+
         if (!file_exists($poster_path)) {
             return new WP_Error(
                 'poster_generation_failed',
@@ -605,7 +608,7 @@ class S2J_Alliance_Manager_RestController {
         );
 
         $poster_attachment_id = wp_insert_attachment($attachment_data, $poster_path, $attachment_id);
-        
+
         if (is_wp_error($poster_attachment_id)) {
             return $poster_attachment_id;
         }
@@ -627,7 +630,7 @@ class S2J_Alliance_Manager_RestController {
     public function get_debug_info() {
         $alliance_manager = new S2J_Alliance_Manager_AllianceManager();
         $debug_html = $alliance_manager->get_debug_info();
-        
+
         return rest_ensure_response(array(
             'success' => true,
             'debug_html' => $debug_html

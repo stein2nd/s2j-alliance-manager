@@ -425,15 +425,22 @@ export const MediaUploader: React.FC<MediaUploaderProps> = ({
               className="s2j-logo-preview"
             />
           ) : null}
-
           {/* Poster 画像のプレビュー (動画の場合のみ) */}
           {media && isVideo(media.mime_type) && (posterAttachmentId || posterMedia) && (
             <div className="s2j-poster-preview-container">
               <img
-                src={posterMedia?.url || `/wp-json/wp/v2/media/${posterAttachmentId}`}
+                src={posterMedia?.url || (posterAttachmentId ? `/wp-json/wp/v2/media/${posterAttachmentId}` : '')}
                 alt={`${posterMedia?.title || media.title} Poster`}
                 className="s2j-poster-preview"
                 style={{ maxWidth: '100%', height: 'auto', marginTop: '8px' }}
+                onError={(e) => {
+                  console.error('Failed to load poster image:', e);
+                  // エラーが発生した場合、画像を非表示にする
+                  const target = e.target as { style?: { display: string } };
+                  if (target && target.style) {
+                    target.style.display = 'none';
+                  }
+                }}
               />
               <div className="s2j-poster-label">
                 {__('Poster Image', 's2j-alliance-manager')}
@@ -448,7 +455,6 @@ export const MediaUploader: React.FC<MediaUploaderProps> = ({
           </div>
         </div>
       )}
-
       <div className="s2j-media-actions">
         <Button
           size="small"
@@ -457,7 +463,6 @@ export const MediaUploader: React.FC<MediaUploaderProps> = ({
         >
           <span>{media ? __('Change', 's2j-alliance-manager') : __('Select', 's2j-alliance-manager')}</span>
         </Button>
-
         {/* 動画の場合のポスター関連ボタン */}
         {media && isVideo(media.mime_type) && (
           <>
@@ -477,7 +482,6 @@ export const MediaUploader: React.FC<MediaUploaderProps> = ({
                 </span>
               </Button>
             )}
-
             {/* ポスター画像アップロードボタン */}
             <Button
               size="small"
@@ -491,7 +495,6 @@ export const MediaUploader: React.FC<MediaUploaderProps> = ({
                 }
               </span>
             </Button>
-
             {/* FFmpeg が利用不可能な場合の注意表示 */}
             {!ffmpegSettings?.ffmpeg_available && (
               <div className="s2j-ffmpeg-notice">
@@ -502,7 +505,6 @@ export const MediaUploader: React.FC<MediaUploaderProps> = ({
             )}
           </>
         )}
-
         {media && (
           <Button
             size="small"

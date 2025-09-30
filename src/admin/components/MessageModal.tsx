@@ -47,7 +47,6 @@ export const MessageModal: React.FC<MessageModalProps> = ({
     <div className="s2j-message-modal">
       <div className="s2j-message-modal-content">
         <h3>{__('Edit Message', 's2j-alliance-manager')}</h3>
-
         <div className="form-field">
           <TextareaControl
             label={__('Message', 's2j-alliance-manager')}
@@ -57,7 +56,6 @@ export const MessageModal: React.FC<MessageModalProps> = ({
             rows={6}
           />
         </div>
-
         <div className="modal-actions">
           <Button
             variant="secondary"

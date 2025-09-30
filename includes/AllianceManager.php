@@ -283,7 +283,32 @@ class S2J_Alliance_Manager_AllianceManager {
                             $('#s2j-alliance-modal .s2j-alliance-modal-message').empty();
                         }
 
+                        // モーダルを表示し、中央配置を確実にする
                         $('#s2j-alliance-modal').show();
+                        
+                        // モーダルの位置を強制的に中央にリセット
+                        setTimeout(function() {
+                            $('#s2j-alliance-modal').css({
+                                'position': 'fixed',
+                                'top': '0',
+                                'left': '0',
+                                'width': '100vw',
+                                'height': '100vh',
+                                'display': 'flex',
+                                'align-items': 'center',
+                                'justify-content': 'center',
+                                'padding': '0',
+                                'margin': '0',
+                                'box-sizing': 'border-box'
+                            });
+
+                            // モーダルコンテンツの位置もリセット
+                            $('#s2j-alliance-modal .s2j-alliance-modal-content').css({
+                                'margin': '24px',
+                                'max-width': '600px',
+                                'width': 'calc(100vw - 48px)'
+                            });
+                        }, 10);
                     });
 
                     $('.s2j-alliance-modal-close').on('click', function() {
@@ -374,12 +399,6 @@ class S2J_Alliance_Manager_AllianceManager {
                     )
                 );
             } else {
-                // デバッグ用ログ（一時的）- マッチしたアイテムの内容を確認
-                error_log('S2J Alliance Manager - Matching items for rank: ' . $rank_title);
-                foreach ($matching_items as $index => $item) {
-                    error_log('  Item ' . $index . ': ' . print_r($item, true));
-                }
-
                 $grouped_data[$rank_title] = $matching_items;
             }
         }
@@ -414,22 +433,11 @@ class S2J_Alliance_Manager_AllianceManager {
         // ID に基づいて添付ファイルの MIME タイプを取得し、動画の場合は動画タグ、画像の場合は画像タグとしてレンダリングします。
         $mime_type = get_post_mime_type($partner['logo']);
         if (strpos($mime_type, 'video/') === 0) {
-            // デバッグ用ログ（一時的）- 常に出力
-            error_log('S2J Alliance Manager - Video Debug:');
-            error_log('  Partner data: ' . print_r($partner, true));
-            error_log('  Logo ID: ' . $partner['logo']);
-            error_log('  Logo URL: ' . $logo_url);
-            error_log('  MIME type: ' . $mime_type);
-
             // 動画の場合、poster 画像の URL を取得
             $poster_url = '';
+
             if (!empty($partner['poster']) && $partner['poster'] > 0) {
                 $poster_url = wp_get_attachment_url($partner['poster']);
-
-                error_log('  Partner poster ID: ' . $partner['poster']);
-                error_log('  Poster URL: ' . ($poster_url ?: 'Failed to get URL'));
-            } else {
-                error_log('  No poster ID found in partner data');
             }
 
             $poster_attr = $poster_url ? sprintf(' poster="%s"', esc_attr($poster_url)) : '';

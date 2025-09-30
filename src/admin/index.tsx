@@ -429,7 +429,6 @@ class AllianceManagerAdmin {
     if (helpLink) {
       this.setupHelpPanelObserver(helpLink);
     } else {
-      console.warn('Help panel link not found, retrying in 1 second');
       // ヘルプパネルがまだ読み込まれていない場合、1秒後に再試行
       setTimeout(() => {
         this.observeHelpPanelExpansion();
@@ -452,7 +451,6 @@ class AllianceManagerAdmin {
           const isExpanded = target.getAttribute('aria-expanded') === 'true';
 
           if (isExpanded) {
-            console.log('Help panel expanded, refreshing debug info');
             // ヘルプパネルが展開された時にデバッグ情報を更新
             setTimeout(() => {
               this.refreshDebugInfo();
@@ -468,7 +466,6 @@ class AllianceManagerAdmin {
       attributeFilter: ['aria-expanded']
     });
 
-    console.log('Help panel expansion observer initialized');
   }
 
   /**
@@ -513,7 +510,6 @@ class AllianceManagerAdmin {
    * 「bindEvents()」メソッドから呼ばれます。
    */
   private async handleRefreshDebugInfo() {
-    console.log('Debug refresh button clicked');
 
     const button = jQuery('#s2j-refresh-debug-info');
     const refreshText = button.find('.refresh-text');
@@ -525,7 +521,6 @@ class AllianceManagerAdmin {
 
     try {
       // デバッグ情報を取得します。
-      console.log('Fetching debug info from:', `${window.s2jAllianceManager.apiUrl}debug-info`);
       const response = await fetch(`${window.s2jAllianceManager.apiUrl}debug-info`, {
         method: 'GET',
         headers: {
@@ -533,77 +528,51 @@ class AllianceManagerAdmin {
         },
       });
 
-      console.log('Response status:', response.status);
-      console.log('Response ok:', response.ok);
-
       if (response.ok) {
         const result = await response.json();
-        console.log('Response result:', result);
 
         if (result.success && result.debug_html) {
-          console.log('Debug info received, updating content');
-          console.log('Debug HTML preview:', `${result.debug_html.substring(0, 500)}...`);
-
-          // FFmpeg 情報が含まれているかチェック
-          if (result.debug_html.includes('FFmpeg Available') || result.debug_html.includes('FFmpeg path')) {
-            console.log('FFmpeg info found in debug HTML');
-          } else {
-            console.warn('FFmpeg info NOT found in debug HTML');
-          }
-
           // デバッグ情報を更新します。
           // まず、既存のデバッグ情報コンテナを探します
           const debugContainer = jQuery('.s2j-debug-info');
-          console.log('Debug container found:', debugContainer.length);
 
           if (debugContainer.length) {
             // 既存のコンテナを新しい HTML で置き換え
             debugContainer.replaceWith(result.debug_html);
-            console.log('Debug info updated via existing container');
           } else {
             // フォールバック: ヘルプタブのコンテンツ全体を更新
             const tabContent = jQuery('#tab-s2j-alliance-manager-debug');
-            console.log('Tab content found:', tabContent.length);
 
             if (tabContent.length) {
               tabContent.html(result.debug_html);
-              console.log('Debug info updated via tab content');
             } else {
               // さらにフォールバック: ページ内の任意の場所にデバッグ情報を挿入
               const helpTab = jQuery('a[href="#tab-s2j-alliance-manager-debug"]');
+
               if (helpTab.length) {
                 const href = helpTab.attr('href');
+
                 if (href) {
                   const helpTabPanel = jQuery(href);
+
                   if (helpTabPanel.length) {
                     helpTabPanel.html(result.debug_html);
-                    console.log('Debug info updated via help tab panel');
                   }
                 }
-              } else {
-                console.warn('No debug container, tab content, or help tab found');
               }
             }
           }
 
           // 更新後の要素を確認
           const updatedContainer = jQuery('.s2j-debug-info');
-          console.log('Updated container found:', updatedContainer.length);
           if (updatedContainer.length) {
-            const ffmpegAvailable = updatedContainer.find('.s2j-debug-value--success, .s2j-debug-value--error').first();
-            console.log('FFmpeg Available element:', ffmpegAvailable.length, ffmpegAvailable.text());
-
-            const ffmpegPath = updatedContainer.find('.s2j-debug-url-container span').first();
-            console.log('FFmpeg Path element:', ffmpegPath.length, ffmpegPath.text());
-
             // 更新後のリフレッシュボタンにイベントリスナーを再設定
             const refreshButton = updatedContainer.find('#s2j-refresh-debug-info');
+
             if (refreshButton.length) {
               refreshButton.off('click').on('click', () => {
-                console.log('Debug refresh button clicked (re-attached)');
                 this.refreshDebugInfo();
               });
-              console.log('Refresh button event listener re-attached');
             }
           }
 

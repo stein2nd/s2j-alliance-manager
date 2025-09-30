@@ -132,13 +132,13 @@ export const RankLabelManager: React.FC<RankLabelManagerProps> = ({
    * @param field 
    * @param value 
    */
-  const updateLabel = (index: number, field: keyof RankLabel, value: any) => {
+  const updateLabel = (index: number, field: keyof RankLabel, value: string | number) => {
     const currentLabels = pendingLabels || initialRankLabels;
     const updated = [...currentLabels];
     updated[index] = { ...updated[index], [field]: value };
 
     // title 変更時に slug を更新します。
-    if (field === 'title') {
+    if (field === 'title' && typeof value === 'string') {
       updated[index].slug = value.toLowerCase().replace(/\s+/g, '-');
     }
 
@@ -220,8 +220,6 @@ export const RankLabelManager: React.FC<RankLabelManagerProps> = ({
   // 表示ラベル (変更保留中と保存済み)
   const displayLabels = pendingLabels || initialRankLabels;
   const displayLabelsLength = displayLabels.length;
-
-  console.log('RankLabelManager render - displayLabelsLength:', displayLabelsLength, 'hasUnsavedChanges:', hasUnsavedChanges);
 
   return (
     <div className="s2j-rank-label-manager">

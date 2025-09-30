@@ -269,7 +269,7 @@ class S2J_Alliance_Manager_AllianceManager {
 
                         // ジャンプ URL の表示
                         if (trimmedJumpUrl) {
-                            $('#s2j-alliance-modal .s2j-alliance-modal-jump-url').html('<a href="' + encodeURIComponent(trimmedJumpUrl) + '" target="_blank" rel="noopener noreferrer" class="s2j-alliance-modal-link">' + trimmedJumpUrl + '</a>');
+                            $('#s2j-alliance-modal .s2j-alliance-modal-jump-url').html('<a href="' + trimmedJumpUrl + '" target="_blank" rel="noopener noreferrer" class="s2j-alliance-modal-link">' + trimmedJumpUrl + '</a>');
                         } else {
                             $('#s2j-alliance-modal .s2j-alliance-modal-jump-url').empty();
                         }

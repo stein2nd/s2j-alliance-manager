@@ -4,9 +4,7 @@
 
 * 本ドキュメントでは、WordPress プラグイン「s2j-alliance-manager」の専用仕様を定義します。
 * 本プラグインの設計は、以下の共通 SPEC に準拠します。
-
-- [WP_PLUGIN_SPEC.md (共通仕様)](https://github.com/stein2nd/wp-plugin-spec/blob/main/WP_PLUGIN_SPEC.md)
-
+  * [WP_PLUGIN_SPEC.md (共通仕様)](https://github.com/stein2nd/wp-plugin-spec/blob/main/WP_PLUGIN_SPEC.md)
 * 以下は、本プラグイン固有の仕様をまとめたものです。
 
 ---
@@ -34,55 +32,55 @@
 `s2j-alliance-manager`/
 ├── `readme.md`
 ├── `LICENSE`
-├── `SPEC.md` # プラグイン固有仕様
+├── `SPEC.md`  # プラグイン固有仕様
 ├── `vite.config.ts`
 ├── `tsconfig.json`
-├── `eslint.config.js` # ESLint設定
-├── `s2j-alliance-manager.php` # プラグイン本体
-├── `uninstall.php` # プラグイン削除時の処理
-├── `package.json` # ビルド設定
+├── `eslint.config.js`  # ESLint設定
+├── `s2j-alliance-manager.php`  # プラグイン本体
+├── `uninstall.php`  # プラグイン削除時の処理
+├── `package.json`  # ビルド設定
 ├── node_modules/
-├┬─ languages/ # 翻訳ファイル (.pot、.po、.mo)
+├┬─ languages/  # 翻訳ファイル (.pot、.po、.mo)
 │└─ `s2j-alliance-manager.pot`
-├┬─ includes/ # PHP クラス群 (設定画面、REST API、ブロック)
+├┬─ includes/  # PHP クラス群 (設定画面、REST API、ブロック)
 │├─ `SettingsPage.php` (設定画面)
 │├─ `RestController.php` (REST API)
 │└─ `AllianceManager.php` (Gutenberg ブロック)
-├┬─ src/ # TypeScript/React (Gutenberg ブロック、設定画面) /SCSS ソース
-│├┬─ admin/ # 設定画面用
-││├─ `index.tsx` # 管理画面メイン・エントリーポイント
+├┬─ src/  # TypeScript/React (Gutenberg ブロック、設定画面) /SCSS ソース
+│├┬─ admin/  # 設定画面用
+││├─ `index.tsx`  # 管理画面メイン・エントリーポイント
 ││├┬─ components/
-│││├─ `SettingsForm.tsx` # 設定保存フォーム
-│││├─ `ContentList.tsx` # 一覧表 UI (独自実装)
-│││├─ `RankLabelManager.tsx` # ランクラベル管理 UI
-│││├─ `MediaUploader.tsx` # WordPress メディアアップローダー統合
-│││├─ `MessageModal.tsx` # メッセージ編集モーダル
-│││└─ `FFmpegLibraryManager.tsx` # FFmpeg 設定・テスト機能
+│││├─ `SettingsForm.tsx`  # 設定保存フォーム
+│││├─ `ContentList.tsx`  # 一覧表 UI (独自実装)
+│││├─ `RankLabelManager.tsx`  # ランクラベル管理 UI
+│││├─ `MediaUploader.tsx`  # WordPress メディアアップローダー統合
+│││├─ `MessageModal.tsx`  # メッセージ編集モーダル
+│││└─ `FFmpegLibraryManager.tsx`  # FFmpeg 設定・テスト機能
 ││└┬─ data/
-││　└─ `constants.ts` # 定数定義 (表示形式、ランク、動作オプション)
-│├┬─ gutenberg/ # Gutenberg ブロック用
+││　└─ `constants.ts`  # 定数定義 (表示形式、ランク、動作オプション)
+│├┬─ gutenberg/  # Gutenberg ブロック用
 ││├─ `index.tsx`
 ││└┬─ alliance-banner
-││　└─ `block.json` # ブロック定義
-│├┬─ classic/ # MetaBox 用
+││　└─ `block.json`  # ブロック定義
+│├┬─ classic/  # MetaBox 用
 ││└─ `index.ts`
-│├┬─ styles/ # プラグイン用のスタイル定義
+│├┬─ styles/  # プラグイン用のスタイル定義
 ││├─ `admin.scss` (設定画面用)
 ││├─ `gutenberg.scss` (Gutenberg ブロック用)
 ││├─ `classic.scss` (MetaBox 用)
 ││└─ `variables.scss` (SCSS 変数定義)
-│└┬─ types/ # プラグイン用のグローバル型定義
+│└┬─ types/  # プラグイン用のグローバル型定義
 │　├─ `index.ts` (ContentModel 型定義)
 │　└─ `wordpress.d.ts` (WordPress 型定義)
-└┬─ dist/ # Vite ビルド成果物 (Git 管理外)、アイコン
+└┬─ dist/  # Vite ビルド成果物 (Git 管理外)、アイコン
 　├┬─ blocks
 　│└┬─ alliance-banner
-　│　└─ `block.json` # ブロック定義
-　├┬─ css/ # プラグイン用のスタイル定義
+　│　└─ `block.json`  # ブロック定義
+　├┬─ css/  # プラグイン用のスタイル定義
 　│├─ s2j-alliance-manager-admin.css
 　│├─ s2j-alliance-manager-gutenberg.css
 　│└─ s2j-alliance-manager-classic.css
-　└┬─ js/ # プラグイン用の Gutenberg ブロック、設定画面
+　└┬─ js/  # プラグイン用の Gutenberg ブロック、設定画面
 　　├─ s2j-alliance-manager-admin.js
 　　├─ s2j-alliance-manager-gutenberg.js
 　　└─ s2j-alliance-manager-classic.js
@@ -124,7 +122,7 @@
 * **理由**: WordPress 6.3以降で標準採用されているバージョンです。WordPress の Gutenberg エディタとの互換性を確保するため、最新版ではなく安定版を採用します。
 
 #### 3.1.2 Rollup モジュール
-* **Rollup**: `^4.50.2`
+* **Rollup**: `^4.52.3`
 * **用途**: Vite の内部バンドラーとして使用します。IIFE 形式での出力と WordPress 環境での動作最適化を実現します。
 * **理由**: Vite 7.x系との互換性を確保するため、最新版ではなく安定版を採用します。WordPress 環境でのビルド安定性を重視します。
 
@@ -132,18 +130,21 @@
 * **@wordpress/api-fetch**: `^7.29.0` - REST API 通信とデータフェッチ機能
 * **@wordpress/block-editor**: `^15.2.0` - Gutenberg ブロックエディタの UI コンポーネント
 * **@wordpress/blocks**: `^15.2.0` - ブロック登録とレンダリング機能
-* **@wordpress/components**: `^30.2.0` - WordPress 標準 UI コンポーネント（Button、SelectControl 等）
+* **@wordpress/components**: `^30.2.0` - WordPress 標準 UI コンポーネント (Button、SelectControl 等)
 * **@wordpress/data**: `^10.29.0` - 状態管理とデータストア機能
 * **@wordpress/element**: `^6.29.0` - React 要素とフック機能
-* **@wordpress/i18n**: `^6.2.0` - 国際化機能（`__()`、`_e()` 関数）
+* **@wordpress/i18n**: `^6.2.0` - 国際化機能 (`__()`、`_e()` 関数)
 * **@wordpress/scripts**: `^30.22.0` - WordPress 開発用スクリプトとツール
 * **@wordpress/url**: `^4.29.0` - URL 処理とバリデーション機能
 * **理由**: WordPress 6.3系での安定動作を確保するため、各パッケージの互換性を重視します。最新版ではなく、WordPress 公式で推奨される安定版を採用します。
 
 ### 3.2 `package.json` の `scripts`
 
-* `npm run build:dev` → 開発用ビルド（minify 無効）
-* `npm run build:production` → 本番用ビルド（minify 有効）
+* `npm run build:dev` → 開発用ビルド (minify 無効)
+* `npm run build:production` → 本番用ビルド (minify 有効)
+* `npm run dev` → 開発用ビルド (watch モード)
+* `npm run lint` → ESLint + Stylelint によるコード品質チェック
+* `npm run makepot` → 翻訳テンプレート生成
 
 ## 4. 技術的実装詳細
 
@@ -160,6 +161,7 @@
 * **レスポンシブ対応**: モバイル環境では縦積みレイアウトとします。
 * **アクセシビリティ**: 適切なコントラスト比とフォーカス状態を目指します。
 * **国際化対応**: すべての UI 要素を翻訳可能とします。
+* **モダンCSS**: `inset: 0` などのモダンなCSSプロパティを使用してコードの簡潔性を向上させます。
 
 ### 4.3 コンポーネント設計
 
@@ -168,6 +170,7 @@
 * **MediaUploader**: WordPress メディア・ライブラリとの統合
 * **MessageModal**: モーダル表示機能
 * **SettingsForm**: 表示設定フォーム
+* **FFmpegLibraryManager**: FFmpeg 設定とテスト機能
 
 ### 4.4 FFmpeg 統合機能
 
@@ -322,6 +325,7 @@
   ```php
   $settings = array(
       'display_style' => 'grid-single',
+      'alignment' => 'center',
       'ffmpeg_path' => '',  // 新規追加
       'content_models' => array()
   );
@@ -357,7 +361,12 @@
     * `behavior: 'jump'` の場合は、「target='_blank' rel='noopener noreferrer'」で `jump_url` にジャンプ可能にします。
     * `behavior: 'modal'` の場合は、`logo` に `text` を添えて、モーダル表示します。
 
-### 6.3 Classic エディタ対応
+#### 6.3.1 ブロック属性
+
+* `displayStyle`: 表示形式 (`grid-single`, `grid-multi`)
+* `alignment`: 配置 (`left`, `center`, `right`)
+
+### 6.4 Classic エディタ対応
 
 * Gutenberg ブロック同様、MetaBox として追加します。
 
@@ -389,11 +398,14 @@
 * `POST /wp-json/s2j-alliance-manager/v1/ffmpeg/generate-poster`
   * ポスター画像生成
 
+* `GET /wp-json/s2j-alliance-manager/v1/debug-info`
+  * デバッグ情報取得
+
 #### 7.1.1 ポスター画像関連エンドポイント
 
 * `GET /wp-json/wp/v2/media?parent={video_id}&mime_type=image/jpeg&per_page=1`
   * 動画ファイルに対応するポスター画像の存在確認
-  * パラメータ: `parent` (動画の添付ファイル ID), `mime_type` (画像タイプ), `per_page` (取得件数)
+  * パラメータ: `parent` (動画の添付ファイル ID)、`mime_type` (画像タイプ)、`per_page` (取得件数)
 
 ### 7.2 セキュリティ
 
@@ -410,3 +422,47 @@
 * CLI コマンド (wp-cli) 連携
 
 ---
+
+## 9. 実装済み機能
+
+### 9.1 モーダル・ダイアログの最適化
+
+* **モダンCSS**: `inset: 0` を使用したモーダル配置の最適化
+* **中央配置**: 天地左右中央への確実な配置
+* **レスポンシブ対応**: モバイル環境での適切な表示
+
+### 9.2 ビルドシステムの改善
+
+* **Vite 7.1**: 最新のビルドツールによる高速化
+* **TypeScript 5.9**: 型安全性の向上
+* **ESLint + Stylelint**: コード品質の自動チェック
+* **開発用watchモード**: リアルタイムでの開発効率向上
+
+### 9.3 ユーザーエクスペリエンスの向上
+
+* **ポスターノティス機能**: 動画ファイル使用時の適切な注意喚起
+* **リアルタイム更新**: 設定変更の即座な反映
+* **視覚的フィードバック**: 保留状態の明確な表示
+* **エラーハンドリング**: 適切なエラーメッセージとフォールバック機能
+
+---
+
+## 10. 今後の改善予定
+
+### 10.1 パフォーマンス最適化
+
+* 画像の遅延読み込み
+* 動画の最適化
+* キャッシュ機能の強化
+
+### 10.2 アクセシビリティの向上
+
+* キーボードナビゲーションの改善
+* スクリーンリーダー対応の強化
+* コントラスト比の最適化
+
+### 10.3 国際化の拡充
+
+* 多言語対応の強化
+* RTL言語対応
+* 地域別の表示形式対応

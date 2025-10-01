@@ -22,7 +22,7 @@ WordPress プラグイン「S2J Alliance Manager」は、アライアンス関�
 
 ## 開発者
 
-stein2nd
+Koutarou ISHIKAWA
 
 ## ライセンス
 

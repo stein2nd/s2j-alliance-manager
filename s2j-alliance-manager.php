@@ -12,14 +12,14 @@
  * Description: Manage linked banners (including logos and videos) for partner companies in alliance relationships and display them in blocks on the front page and other locations.
  * Version: 1.0.0
  * Author: Koutarou ISHIKAWA
- * Author URI: https://s2j.co.jp
+ * Author URI: https://stein2nd.wordpress.com
  * License: GPL v2 or later
  * License URI: https://www.gnu.org/licenses/gpl-2.0.html
  * Text Domain: s2j-alliance-manager
  * Domain Path: /languages
- * Requires at least: 5.0
- * Tested up to: 6.4
- * Requires PHP: 7.4
+ * Requires at least: 6.3
+ * Tested up to: 6.8
+ * Requires PHP: 8.2
  * Network: false
  */
 

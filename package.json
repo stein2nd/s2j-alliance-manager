@@ -3,14 +3,19 @@
   "version": "1.0.0",
   "description": "Manage linked banners (including logos and videos) for partner companies in alliance relationships and display them in blocks on the front page and other locations.",
   "type": "module",
-  "author": "stein2nd",
+  "author": "Koutarou ISHIKAWA",
   "license": "GPL-2.0-or-later",
   "keywords": [
     "wordpress",
     "plugin",
+    "gutenberg",
+    "blocks",
     "alliance",
-    "banner",
-    "gutenberg"
+    "partners",
+    "management",
+    "banners",
+    "logos",
+    "videos"
   ],
   "main": "s2j-alliance-manager.php",
   "scripts": {
@@ -40,7 +45,7 @@
   },
   "devDependencies": {
     "@types/jquery": "^3.5.33",
-    "@types/node": "^24.6.0",
+    "@types/node": "^24.6.1",
     "@types/react": "^18.2.0",
     "@types/react-dom": "^18.2.0",
     "@typescript-eslint/eslint-plugin": "^8.45.0",
@@ -56,13 +61,13 @@
     "@wordpress/url": "^4.29.0",
     "eslint": "^9.36.0",
     "eslint-plugin-react": "^7.37.5",
-    "eslint-plugin-react-hooks": "^5.2.0",
+    "eslint-plugin-react-hooks": "^6.1.0",
     "rollup": "^4.52.3",
     "sass": "^1.93.2",
     "stylelint": "^16.24.0",
     "stylelint-config-standard-scss": "^16.0.0",
-    "typescript": "^5.9.2",
+    "typescript": "^5.9.3",
     "vite": "^7.1.7",
-    "vite-plugin-static-copy": "^3.1.2"
+    "vite-plugin-static-copy": "^3.1.3"
   }
 }

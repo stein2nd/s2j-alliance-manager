@@ -63,8 +63,8 @@ class S2J_Alliance_Manager_AllianceManager {
         // Classic エディター用のメタボックスを登録します。
         add_action('init', array($this, 'register_meta_boxes'));
 
-        // Classic エディター用のヘルプタブを追加します。
-        add_action('admin_head', array($this, 'add_shortcode_help_tab'));
+        // Classic エディター用のヘルプタブは管理画面に統合されました。
+        // add_action('admin_head', array($this, 'add_shortcode_help_tab'));
 
         // Shortcode ブロックの処理を監視してアセットを読み込む
         add_filter('render_block', array($this, 'handle_shortcode_block'), 10, 2);
@@ -682,6 +682,15 @@ class S2J_Alliance_Manager_AllianceManager {
                 'content' => $debug_info
             )
         );
+
+        // Shortcode ガイドのヘルプタブを追加します。
+        $screen->add_help_tab(
+            array(
+                'id' => 's2j-alliance-manager-shortcode',
+                'title' => __('Shortcode Guide', 's2j-alliance-manager'),
+                'content' => $this->get_shortcode_help_content()
+            )
+        );
     }
 
     /**
@@ -1029,48 +1038,19 @@ class S2J_Alliance_Manager_AllianceManager {
     }
 
     /**
-     * Classic エディター用のヘルプタブを追加します。
-     * コンストラクターから呼ばれます。
-     * 「admin_head」フックから呼ばれます。
-     * 
-     * Note: Classic Editor は Gutenberg ブロックのフォールバックとして位置づけています。
-     * 
-     * @return void
+     * Classic エディター用のヘルプタブは管理画面に統合されました。
+     * このメソッドは削除されました。
      */
-    public function add_shortcode_help_tab() {
-        $screen = get_current_screen();
-        if (!$screen) {
-            return;
-        }
-
-        // 投稿・ページエディターでのみ表示
-        if (!in_array($screen->id, array('post', 'page'))) {
-            return;
-        }
-
-        // Gutenberg が利用可能な場合は、フォールバックとしての説明を追加
-        $help_title = function_exists('register_block_type') 
-            ? __('Alliance Banner (Classic Editor Fallback)', 's2j-alliance-manager')
-            : __('Alliance Banner Shortcode', 's2j-alliance-manager');
-
-        $screen->add_help_tab(
-            array(
-                'id' => 's2j-alliance-manager-shortcode',
-                'title' => $help_title,
-                'content' => $this->get_shortcode_help_content()
-            )
-        );
-    }
 
     /**
      * Shortcode ヘルプのコンテンツを生成します。
-     * 「add_shortcode_help_tab()」メソッドから呼ばれます。
+     * 管理画面のヘルプタブから呼ばれます。
      * 
      * @return string
      */
     private function get_shortcode_help_content() {
         $shortcode_title = __('Alliance Banner Shortcode', 's2j-alliance-manager');
-        $description = __('Use the following shortcode to display alliance partner banners in Classic Editor:', 's2j-alliance-manager');
+        $description = __('Use the following shortcode in the Shortcode block to display alliance partner banners:', 's2j-alliance-manager');
 
         $basic_usage_title = __('Basic Usage', 's2j-alliance-manager');
         $basic_usage_code = '[alliance_banner]';
@@ -1088,10 +1068,8 @@ class S2J_Alliance_Manager_AllianceManager {
         $example1 = '[alliance_banner displayStyle="grid-multi"]';
         $example2 = '[alliance_banner alignment="left"]';
 
-        $note_title = __('Note', 's2j-alliance-manager');
-        $note_text = function_exists('register_block_type') 
-            ? __('This shortcode is provided as a fallback for Classic Editor. For the best experience, we recommend using the Gutenberg block editor.', 's2j-alliance-manager')
-            : __('For advanced features and better user experience, we recommend using the Gutenberg block editor.', 's2j-alliance-manager');
+        $note_title = __('How to Use', 's2j-alliance-manager');
+        $note_text = function_exists('register_block_type') ? __('1. Add a "Shortcode" block to your post/page. 2. Paste the shortcode into the block. 3. The alliance banners will be displayed automatically.', 's2j-alliance-manager') : __('For advanced features and better user experience, we recommend using the Gutenberg block editor.', 's2j-alliance-manager');
 
         $html = <<<HTML
         <div class="s2j-shortcode-help">

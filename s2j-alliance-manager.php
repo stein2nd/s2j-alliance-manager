@@ -139,7 +139,7 @@ class S2J_Alliance_Manager {
         new S2J_Alliance_Manager_RestController();
 
         // 追加機能のため、AllianceManager を初期化します。
-        $this->alliance_manager = new S2J_Alliance_Manager_AllianceManager();
+        $this->alliance_manager = S2J_Alliance_Manager_AllianceManager::get_instance();
 
         // 設定ページを初期化します。
         if (is_admin()) {

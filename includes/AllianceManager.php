@@ -23,25 +23,54 @@ class S2J_Alliance_Manager_AllianceManager {
     private $initialized = false;
 
     /**
+     * Singleton instance
+     */
+    private static $instance = null;
+
+    /**
+     * シングルトンインスタンスを取得
+     */
+    public static function get_instance() {
+        if (null === self::$instance) {
+            self::$instance = new self();
+        }
+        return self::$instance;
+    }
+
+    /**
      * コンストラクター
      */
     public function __construct() {
         // `block.json` ファイルから Gutenberg ブロックタイプ (s2j-alliance-manager/alliance-banner) を登録します。
         add_action('init', array($this, 'register_blocks'), 20);
-        
-        // Classic エディター用のメタボックスを登録します。
-        add_action('init', array($this, 'register_meta_boxes'));
 
         // Gutenberg エディター用登録済みスクリプトとスタイルのアセット (s2j-alliance-manager-gutenberg) をキューに追加します。
         add_action('enqueue_block_editor_assets', array($this, 'enqueue_block_editor_assets'));
-        
+
         // フロントエンド用アセット (s2j-alliance-manager-gutenberg.css) をキューに追加します。
         add_action('wp_enqueue_scripts', array($this, 'enqueue_frontend_assets'));
-        
+
         // デバッグ用のヘルプタブを表示します (Alliance Manager 専用管理画面でのみ)。
         if (is_admin()) {
             add_action('admin_head', array($this, 'add_debug_help_tab'));
         }
+
+        // Shortcode を登録します。
+        add_action('plugins_loaded', array($this, 'register_shortcode'), 10);
+        add_action('init', array($this, 'register_shortcode'), 1);
+        add_action('wp_loaded', array($this, 'register_shortcode'), 1);
+
+        // Classic エディター用のメタボックスを登録します。
+        add_action('init', array($this, 'register_meta_boxes'));
+
+        // Classic エディター用のヘルプタブを追加します。
+        add_action('admin_head', array($this, 'add_shortcode_help_tab'));
+
+        // Shortcode ブロックの処理を監視してアセットを読み込む
+        add_filter('render_block', array($this, 'handle_shortcode_block'), 10, 2);
+
+        // コンテンツ内のショートコードを確実に実行する
+        add_filter('the_content', array($this, 'process_shortcodes_in_content'), 20);
     }
 
     /**
@@ -122,9 +151,79 @@ class S2J_Alliance_Manager_AllianceManager {
     }
 
     /**
+     * Shortcode を登録します。
+     * コンストラクターから呼ばれます。
+     * 「init」フックから呼ばれます。
+     *
+     * @return void
+     */
+    public function register_shortcode() {
+        // 重複登録を防ぐ
+        if (shortcode_exists('alliance_banner') && shortcode_exists('test_alliance')) {
+            return;
+        }
+
+        add_shortcode('alliance_banner', array($this, 'render_alliance_banner_shortcode'));
+        add_shortcode('test_alliance', array($this, 'test_shortcode'));
+    }
+
+    /**
+     * Shortcode をレンダリングします。
+     * 「register_shortcode()」メソッドから呼ばれます。
+     * 「add_shortcode()」メソッドから呼ばれます。
+     *
+     * @param array<string, string> $atts 属性
+     * @param string $content コンテンツ
+     * @return string $html ショートコードの HTML
+     */
+    public function render_alliance_banner_shortcode($atts = array(), $content = '') {
+        // デバッグ用ログ
+        error_log('S2J Alliance Manager: Shortcode called with atts: ' . print_r($atts, true));
+
+        // ファイルに直接書き込み
+        file_put_contents(
+            WP_CONTENT_DIR . '/debug.log',
+            '[' . date('Y-m-d H:i:s') . '] S2J Alliance Manager: Shortcode called with atts: ' . print_r($atts, true) . PHP_EOL,
+            FILE_APPEND | LOCK_EX
+        );
+
+        // block.json の attributes に合わせてデフォルト値を設定
+        $atts = shortcode_atts(
+            array(
+                'displayStyle' => 'grid-single',
+                'alignment' => 'center',
+            ),
+            $atts,
+            'alliance_banner'
+        );
+
+        // 共通のレンダリング関数を呼び出し
+        $result = $this->render_alliance_banner_block($atts);
+
+        // デバッグ用: 結果の先頭にコメントを追加
+        if (defined('WP_DEBUG') && WP_DEBUG) {
+            $result = '<!-- S2J Alliance Manager Shortcode Executed -->' . $result;
+        }
+
+        return $result;
+    }
+
+    /**
+     * テスト用の簡単な shortcode をレンダリングします。
+     *
+     * @param array<string, string> $atts 属性
+     * @param string $content コンテンツ
+     * @return string $html ショートコードの HTML
+     */
+    public function test_shortcode($atts = array(), $content = '') {
+        return '<div style="background: #f0f0f0; padding: 10px; border: 2px solid #0073aa; margin: 10px 0;">TEST SHORTCODE WORKS! Time: ' . date('Y-m-d H:i:s') . '</div>';
+    }
+
+    /**
      * ブロックをレンダリングします。
      * 「register_blocks()」メソッドから呼ばれます。
      * 「register_block_type()」メソッドの「render_callback」属性から呼ばれます。
+     * 「render_alliance_banner_shortcode()」メソッドからも呼ばれます。
      *
      * @param array<string, string> $attributes 属性
      * @return string $html ブロックのHTML
@@ -285,30 +384,30 @@ class S2J_Alliance_Manager_AllianceManager {
 
                         // モーダルを表示し、中央配置を確実にする
                         $('#s2j-alliance-modal').show();
-                        
-                        // モーダルの位置を強制的に中央にリセット
-                        setTimeout(function() {
-                            $('#s2j-alliance-modal').css({
-                                'position': 'fixed',
-                                'top': '0',
-                                'left': '0',
-                                'width': '100vw',
-                                'height': '100vh',
-                                'display': 'flex',
-                                'align-items': 'center',
-                                'justify-content': 'center',
-                                'padding': '0',
-                                'margin': '0',
-                                'box-sizing': 'border-box'
-                            });
 
-                            // モーダルコンテンツの位置もリセット
-                            $('#s2j-alliance-modal .s2j-alliance-modal-content').css({
-                                'margin': '24px',
-                                'max-width': '600px',
-                                'width': 'calc(100vw - 48px)'
-                            });
-                        }, 10);
+                        // モーダルの位置を強制的に中央にリセット
+                        // setTimeout(function() {
+                        //     $('#s2j-alliance-modal').css({
+                        //         'position': 'fixed',
+                        //         'top': '0',
+                        //         'left': '0',
+                        //         'width': '100vw',
+                        //         'height': '100vh',
+                        //         'display': 'flex',
+                        //         'align-items': 'center',
+                        //         'justify-content': 'center',
+                        //         'padding': '0',
+                        //         'margin': '0',
+                        //         'box-sizing': 'border-box'
+                        //     });
+
+                        //     // モーダルコンテンツの位置もリセット
+                        //     $('#s2j-alliance-modal .s2j-alliance-modal-content').css({
+                        //         'margin': '24px',
+                        //         'max-width': '600px',
+                        //         'width': 'calc(100vw - 48px)'
+                        //     });
+                        // }, 10);
                     });
 
                     $('.s2j-alliance-modal-close').on('click', function() {
@@ -506,14 +605,51 @@ class S2J_Alliance_Manager_AllianceManager {
             // jQuery を確実に読み込む
             wp_enqueue_script('jquery');
 
-            // フロントエンド用スタイルを読み込む
+            // フロントエンド用スタイルを読み込む (Block と Shortcode で共通)
             wp_enqueue_style(
                 's2j-alliance-manager-gutenberg',
                 S2J_ALLIANCE_MANAGER_PLUGIN_URL . 'dist/css/s2j-alliance-manager-gutenberg.css',
                 array(),
                 S2J_ALLIANCE_MANAGER_VERSION
             );
+
+            // Shortcode が使用されている場合のみ JavaScript を読み込む
+            if ($this->is_shortcode_used()) {
+                wp_enqueue_script(
+                    's2j-alliance-manager-gutenberg',
+                    S2J_ALLIANCE_MANAGER_PLUGIN_URL . 'dist/js/s2j-alliance-manager-gutenberg.js',
+                    array('jquery'),
+                    S2J_ALLIANCE_MANAGER_VERSION,
+                    true
+                );
+            }
         }
+    }
+
+    /**
+     * 現在のページで Shortcode が使用されているかチェックします。
+     * 「enqueue_frontend_assets()」メソッドから呼ばれます。
+     *
+     * @return bool
+     */
+    private function is_shortcode_used() {
+        global $post;
+
+        if (!$post) {
+            return false;
+        }
+
+        // 投稿内容に shortcode が含まれているかチェック
+        if (has_shortcode($post->post_content, 'alliance_banner')) {
+            return true;
+        }
+
+        // Shortcode ブロック内の shortcode もチェック
+        if (strpos($post->post_content, '[alliance_banner') !== false) {
+            return true;
+        }
+
+        return false;
     }
 
     /**
@@ -562,7 +698,7 @@ class S2J_Alliance_Manager_AllianceManager {
 
         // Alliance Manager 関連の管理画面をチェック
         $alliance_manager_pages = array(
-            's2j-alliance-manager',
+            'alliance_banner',
             's2j_am_rank_label',
             'edit-s2j_am_rank_label'
         );
@@ -824,11 +960,16 @@ class S2J_Alliance_Manager_AllianceManager {
      * Classic エディター用のメタボックスを登録します。
      * コンストラクターから呼ばれます。
      * 「init」フックから呼ばれます。
+     * 
+     * Note: Classic Editor は Gutenberg ブロックのフォールバックとして位置づけています。
      *
      * @return void
      */
     public function register_meta_boxes() {
-        add_action('add_meta_boxes', array($this, 'add_alliance_meta_box'));
+        // Gutenberg が利用可能な場合は Classic エディターのメタボックスは登録しない
+        if (function_exists('register_block_type')) {
+            add_action('add_meta_boxes', array($this, 'add_alliance_meta_box'));
+        }
     }
 
     /**
@@ -864,38 +1005,195 @@ class S2J_Alliance_Manager_AllianceManager {
      * @return void
      */
     public function alliance_meta_box_callback($post) {
-        wp_nonce_field('s2j_alliance_manager_meta_box', 's2j_alliance_manager_meta_box_nonce');
-
-        $display_style = get_post_meta($post->ID, '_s2j_alliance_display_style', true);
-
-        if (empty($display_style)) {
-            $settings = get_option('s2j_alliance_manager_settings', array());
-
-            $display_style = $settings['display_style'] ?? 'grid-single';
-        }
-
         ?>
         <div id="s2j-alliance-classic-editor">
             <p>
-                <label for="s2j_alliance_display_style">
-                    <?php _e('Display Style:', 's2j-alliance-manager'); ?>
-                </label>
-                <select name="s2j_alliance_display_style" id="s2j_alliance_display_style">
-                    <option value="grid-single" <?php selected($display_style, 'grid-single'); ?>>
-                        <?php _e('Single Column Grid', 's2j-alliance-manager'); ?>
-                    </option>
-                    <option value="grid-multi" <?php selected($display_style, 'grid-multi'); ?>>
-                        <?php _e('Multi Column Grid', 's2j-alliance-manager'); ?>
-                    </option>
-                    <?php // Masonry Layout will be available in pro version ?>
-                </select>
+                <strong><?php _e('Alliance Banner Shortcode', 's2j-alliance-manager'); ?></strong>
             </p>
             <p>
-                <button type="button" class="button button-primary" id="s2j-insert-alliance-banner">
-                    <?php _e('Insert Alliance Banner', 's2j-alliance-manager'); ?>
-                </button>
+                <?php _e('Use the following shortcode to display alliance banners:', 's2j-alliance-manager'); ?>
+            </p>
+            <p>
+                <code>[alliance_banner displayStyle="grid-single" alignment="center"]</code>
+            </p>
+            <p>
+                <strong><?php _e('Available Attributes:', 's2j-alliance-manager'); ?></strong><br>
+                • <code>displayStyle</code>: <?php _e('grid-single, grid-multi', 's2j-alliance-manager'); ?><br>
+                • <code>alignment</code>: <?php _e('left, center, right', 's2j-alliance-manager'); ?>
+            </p>
+            <p>
+                <em><?php _e('Note: For advanced features, please use the Gutenberg block editor.', 's2j-alliance-manager'); ?></em>
             </p>
         </div>
         <?php
+    }
+
+    /**
+     * Classic エディター用のヘルプタブを追加します。
+     * コンストラクターから呼ばれます。
+     * 「admin_head」フックから呼ばれます。
+     * 
+     * Note: Classic Editor は Gutenberg ブロックのフォールバックとして位置づけています。
+     * 
+     * @return void
+     */
+    public function add_shortcode_help_tab() {
+        $screen = get_current_screen();
+        if (!$screen) {
+            return;
+        }
+
+        // 投稿・ページエディターでのみ表示
+        if (!in_array($screen->id, array('post', 'page'))) {
+            return;
+        }
+
+        // Gutenberg が利用可能な場合は、フォールバックとしての説明を追加
+        $help_title = function_exists('register_block_type') 
+            ? __('Alliance Banner (Classic Editor Fallback)', 's2j-alliance-manager')
+            : __('Alliance Banner Shortcode', 's2j-alliance-manager');
+
+        $screen->add_help_tab(
+            array(
+                'id' => 's2j-alliance-manager-shortcode',
+                'title' => $help_title,
+                'content' => $this->get_shortcode_help_content()
+            )
+        );
+    }
+
+    /**
+     * Shortcode ヘルプのコンテンツを生成します。
+     * 「add_shortcode_help_tab()」メソッドから呼ばれます。
+     * 
+     * @return string
+     */
+    private function get_shortcode_help_content() {
+        $shortcode_title = __('Alliance Banner Shortcode', 's2j-alliance-manager');
+        $description = __('Use the following shortcode to display alliance partner banners in Classic Editor:', 's2j-alliance-manager');
+
+        $basic_usage_title = __('Basic Usage', 's2j-alliance-manager');
+        $basic_usage_code = '[alliance_banner]';
+
+        $advanced_usage_title = __('Advanced Usage with Attributes', 's2j-alliance-manager');
+        $advanced_usage_code = '[alliance_banner displayStyle="grid-single" alignment="center"]';
+
+        $attributes_title = __('Available Attributes', 's2j-alliance-manager');
+        $display_style_label = __('displayStyle', 's2j-alliance-manager');
+        $display_style_values = __('grid-single (default), grid-multi', 's2j-alliance-manager');
+        $alignment_label = __('alignment', 's2j-alliance-manager');
+        $alignment_values = __('left, center (default), right', 's2j-alliance-manager');
+
+        $examples_title = __('Examples', 's2j-alliance-manager');
+        $example1 = '[alliance_banner displayStyle="grid-multi"]';
+        $example2 = '[alliance_banner alignment="left"]';
+
+        $note_title = __('Note', 's2j-alliance-manager');
+        $note_text = function_exists('register_block_type') 
+            ? __('This shortcode is provided as a fallback for Classic Editor. For the best experience, we recommend using the Gutenberg block editor.', 's2j-alliance-manager')
+            : __('For advanced features and better user experience, we recommend using the Gutenberg block editor.', 's2j-alliance-manager');
+
+        $html = <<<HTML
+        <div class="s2j-shortcode-help">
+            <h3>{$shortcode_title}</h3>
+            <p>{$description}</p>
+            <h4>{$basic_usage_title}</h4>
+            <p><code>{$basic_usage_code}</code></p>
+            <h4>{$advanced_usage_title}</h4>
+            <p><code>{$advanced_usage_code}</code></p>
+            <h4>{$attributes_title}</h4>
+            <ul>
+                <li><strong>{$display_style_label}</strong>: {$display_style_values}</li>
+                <li><strong>{$alignment_label}</strong>: {$alignment_values}</li>
+            </ul>
+            <h4>{$examples_title}</h4>
+            <p><code>{$example1}</code></p>
+            <p><code>{$example2}</code></p>
+            <h4>{$note_title}</h4>
+            <p><em>{$note_text}</em></p>
+        </div>
+        HTML;
+
+        return $html;
+    }
+
+    /**
+     * Shortcode ブロックの処理を監視してアセットを読み込みます。
+     * コンストラクターから呼ばれます。
+     * 「render_block」フックから呼ばれます。
+     *
+     * @param string $block_content ブロックのコンテンツ
+     * @param array $block ブロックの配列
+     * @return string $block_content ブロックのコンテンツ
+     */
+    public function handle_shortcode_block($block_content, $block) {
+        // Shortcode ブロックかどうかをチェック
+        if ($block['blockName'] === 'core/shortcode') {
+            // ブロック内に shortcode が含まれているかチェック
+            if (strpos($block_content, '[alliance_banner') !== false || strpos($block_content, '[test_alliance') !== false) {
+                // アセットを強制的に読み込む
+                $this->force_enqueue_assets();
+
+                // ショートコードを実行
+                $block_content = do_shortcode($block_content);
+            }
+        }
+
+        return $block_content;
+    }
+
+    /**
+     * コンテンツ内のショートコードを処理します。
+     * 「the_content」フックから呼ばれます。
+     *
+     * @param string $content 投稿のコンテンツ
+     * @return string $content 処理後のコンテンツ
+     */
+    public function process_shortcodes_in_content($content) {
+        // 管理画面では実行しない
+        if (is_admin()) {
+            return $content;
+        }
+
+        // ショートコードが含まれているかチェック
+        if (strpos($content, '[alliance_banner') !== false || strpos($content, '[test_alliance') !== false) {
+            // アセットを強制的に読み込む
+            $this->force_enqueue_assets();
+            
+            // ショートコードを実行
+            $content = do_shortcode($content);
+        }
+
+        return $content;
+    }
+
+    /**
+     * アセットを強制的に読み込みます。
+     * 「handle_shortcode_block()」メソッドから呼ばれます。
+     *
+     * @return void
+     */
+    private function force_enqueue_assets() {
+        // 既に読み込まれている場合はスキップ
+        if (wp_style_is('s2j-alliance-manager-gutenberg', 'enqueued')) {
+            return;
+        }
+
+        // フロントエンド用スタイルを読み込む
+        wp_enqueue_style(
+            's2j-alliance-manager-gutenberg',
+            S2J_ALLIANCE_MANAGER_PLUGIN_URL . 'dist/css/s2j-alliance-manager-gutenberg.css',
+            array(),
+            S2J_ALLIANCE_MANAGER_VERSION
+        );
+
+        // フロントエンド用スクリプトを読み込む
+        wp_enqueue_script(
+            's2j-alliance-manager-gutenberg',
+            S2J_ALLIANCE_MANAGER_PLUGIN_URL . 'dist/js/s2j-alliance-manager-gutenberg.js',
+            array('jquery'),
+            S2J_ALLIANCE_MANAGER_VERSION,
+            true
+        );
     }
 }

@@ -333,3 +333,83 @@ msgstr ""
 #: src/classic/index.ts:25
 msgid "Alliance banner inserted successfully."
 msgstr ""
+
+#: includes/AllianceManager.php:937
+msgid "Alliance Banner Shortcode"
+msgstr ""
+
+#: includes/AllianceManager.php:940
+msgid "Use the following shortcode to display alliance banners:"
+msgstr ""
+
+#: includes/AllianceManager.php:946
+msgid "Available Attributes:"
+msgstr ""
+
+#: includes/AllianceManager.php:947
+msgid "grid-single, grid-multi"
+msgstr ""
+
+#: includes/AllianceManager.php:948
+msgid "left, center, right"
+msgstr ""
+
+#: includes/AllianceManager.php:951
+msgid "Note: For advanced features, please use the Gutenberg block editor."
+msgstr ""
+
+#: includes/AllianceManager.php:981
+msgid "Alliance Banner Shortcode"
+msgstr ""
+
+#: includes/AllianceManager.php:994
+msgid "Use the following shortcode to display alliance partner banners in Classic Editor:"
+msgstr ""
+
+#: includes/AllianceManager.php:997
+msgid "Basic Usage"
+msgstr ""
+
+#: includes/AllianceManager.php:1000
+msgid "Advanced Usage with Attributes"
+msgstr ""
+
+#: includes/AllianceManager.php:1003
+msgid "Available Attributes"
+msgstr ""
+
+#: includes/AllianceManager.php:1004
+msgid "displayStyle"
+msgstr ""
+
+#: includes/AllianceManager.php:1005
+msgid "grid-single (default), grid-multi"
+msgstr ""
+
+#: includes/AllianceManager.php:1006
+msgid "alignment"
+msgstr ""
+
+#: includes/AllianceManager.php:1007
+msgid "left, center (default), right"
+msgstr ""
+
+#: includes/AllianceManager.php:1009
+msgid "Examples"
+msgstr ""
+
+#: includes/AllianceManager.php:1013
+msgid "Note"
+msgstr ""
+
+#: includes/AllianceManager.php:1014
+msgid "For advanced features and better user experience, we recommend using the Gutenberg block editor."
+msgstr ""
+
+#: includes/AllianceManager.php:987
+msgid "Alliance Banner (Classic Editor Fallback)"
+msgstr ""
+
+#: includes/AllianceManager.php:1027
+msgid "This shortcode is provided as a fallback for Classic Editor. For the best experience, we recommend using the Gutenberg block editor."
+msgstr ""

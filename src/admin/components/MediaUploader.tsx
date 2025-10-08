@@ -51,6 +51,10 @@ export const MediaUploader: React.FC<MediaUploaderProps> = ({
     return mimeType.startsWith('video/');
   };
 
+  /**
+   * メディアを読み込みます。
+   * 「useEffect()」メソッドから呼ばれます。
+   */
   useEffect(() => {
     if (attachmentId > 0) {
       // メディアを読み込みます。
@@ -63,7 +67,10 @@ export const MediaUploader: React.FC<MediaUploaderProps> = ({
     }
   }, [attachmentId]);
 
-  // posterId が変更された時にポスター画像を読み込み
+  /**
+   * posterId が変更された時にポスター画像を読み込み
+   * 「useEffect()」メソッドから呼ばれます。
+   */
   useEffect(() => {
     if (posterId && posterId > 0) {
       loadPosterMedia(posterId);
@@ -72,7 +79,10 @@ export const MediaUploader: React.FC<MediaUploaderProps> = ({
     }
   }, [posterId]);
 
-  // メディアが変更された時にポスター画像をリセット
+  /**
+   * メディアが変更された時にポスター画像をリセット
+   * 「useEffect()」メソッドから呼ばれます。
+   */
   useEffect(() => {
     if (media && isVideo(media.mime_type)) {
       // 動画の場合はポスター画像を検索
@@ -83,7 +93,10 @@ export const MediaUploader: React.FC<MediaUploaderProps> = ({
     }
   }, [media]);
 
-  // ポスターノティスの表示状態を親コンポーネントに通知
+  /**
+   * ポスターノティスの表示状態を親コンポーネントに通知
+   * 「useEffect()」メソッドから呼ばれます。
+   */
   useEffect(() => {
     if (onPosterNoticeChange) {
       const shouldShowNotice = Boolean(media && 
@@ -97,7 +110,7 @@ export const MediaUploader: React.FC<MediaUploaderProps> = ({
 
   /**
    * 動画に対応するポスター画像を検索します。
-   * 
+   * 「findPosterImage()」メソッドから呼ばれます。
    * @param videoId 動画の添付ファイル ID
    */
   const findPosterImage = async (videoId: number) => {
@@ -127,7 +140,6 @@ export const MediaUploader: React.FC<MediaUploaderProps> = ({
   /**
    * メディアを読み込みます。
    * 「useEffect」から呼ばれます。
-   * 
    * @param id 添付ファイルの ID
    */
   const loadMedia = async (id: number) => {
@@ -161,7 +173,7 @@ export const MediaUploader: React.FC<MediaUploaderProps> = ({
 
   /**
    * poster 画像を読み込みます。
-   * 
+   * 「loadPosterMedia()」メソッドから呼ばれます。
    * @param id 添付ファイル ID
    */
   const loadPosterMedia = async (id: number) => {
@@ -194,8 +206,7 @@ export const MediaUploader: React.FC<MediaUploaderProps> = ({
   /**
    * メディア・ライブラリを開きます。
    * 「s2j-media-select-btn.onClick()」メソッドから呼ばれます。
-   * 
-   * @returns 
+   * @returns メディア・ライブラリを開きます。
    */
   const openMediaLibrary = () => {
     if (!window.wp?.media) {
@@ -227,7 +238,6 @@ export const MediaUploader: React.FC<MediaUploaderProps> = ({
 
   /**
    * メディアを削除します。
-   * 「s2j-media-remove-btn.onClick()」メソッドから呼ばれます。
    */
   const removeMedia = () => {
     onSelect(0);
@@ -246,6 +256,7 @@ export const MediaUploader: React.FC<MediaUploaderProps> = ({
   /**
    * 動画からポスター画像を生成します。
    * 「s2j-generate-poster-btn.onClick()」メソッドから呼ばれます。
+   * @returns 動画からポスター画像を生成します。
    */
   const generatePoster = async () => {
     if (!media || !isVideo(media.mime_type)) {
@@ -298,6 +309,7 @@ export const MediaUploader: React.FC<MediaUploaderProps> = ({
   /**
    * ポスター画像を手動でアップロードします。
    * 「s2j-upload-poster-btn.onClick()」メソッドから呼ばれます。
+   * @returns ポスター画像を手動でアップロードします。
    */
   const uploadPoster = () => {
     if (!window.wp?.media) {
@@ -376,6 +388,8 @@ export const MediaUploader: React.FC<MediaUploaderProps> = ({
   /**
    * 表示するメディアを決定します。
    * 動画の場合は常に動画を表示し、poster 画像は別途表示します。
+   * 「getDisplayMedia()」メソッドから呼ばれます。
+   * @returns 表示するメディアを決定します。
    */
   const getDisplayMedia = () => {
     if (!media) return null;

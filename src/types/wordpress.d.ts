@@ -61,6 +61,20 @@ declare global {
   }
 }
 
+// DOM 型定義の追加
+declare global {
+  interface HTMLDivElement extends HTMLElement {}
+  interface HTMLTextAreaElement extends HTMLElement {
+    value: string;
+    focus(): void;
+  }
+  interface KeyboardEvent extends Event {
+    key: string;
+    shiftKey: boolean;
+    preventDefault(): void;
+  }
+}
+
 export interface WordPressMediaFrame {
   on(event: string, callback: () => void): void;
   open(): void;

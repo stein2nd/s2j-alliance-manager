@@ -1171,64 +1171,271 @@
   }
 }
 
-// メッセージモーダル
-.s2j-message-modal {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background: rgba(0, 0, 0, 0.5);
-  z-index: $z-index-modal;
-  display: flex;
+// MessageModal スタイル - 強力なリセット
+// WordPressテーマやプラグインの影響を完全に無効化
+.s2j-message-modal,
+#s2j-alliance-modal,
+div[id*="s2j"][id*="modal"],
+.s2j-alliance-modal {
+  position: fixed !important;
+  top: 0 !important;
+  left: 0 !important;
+  right: 0 !important;
+  bottom: 0 !important;
+  width: 100vw !important;
+  height: 100vh !important;
+  z-index: 999999 !important;
+  display: flex !important;
   align-items: center;
   justify-content: center;
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.3s ease, visibility 0.3s ease;
+  margin: 0 !important;
+  padding: 0 !important;
+  box-sizing: border-box !important;
+  max-width: none !important;
+  max-height: none !important;
+  min-width: 100vw !important;
+  min-height: 100vh !important;
 
-  &-content {
-    background: $white;
-    border-radius: $border-radius-md;
-    padding: $spacing-lg;
-    max-width: 500px;
+  // WordPressテーマの影響を完全に無効化
+  * {
+    margin: 0 !important;
+    padding: 0 !important;
+  }
+
+  &.s2j-modal-open {
+    opacity: 1;
+    visibility: visible;
+  }
+
+  .s2j-modal-overlay,
+  .s2j-alliance-modal-overlay,
+  div[class*="overlay"] {
+    position: fixed !important;
+    top: 0 !important;
+    left: 0 !important;
+    right: 0 !important;
+    bottom: 0 !important;
+    width: 100vw !important;
+    height: 100vh !important;
+    background-color: rgba(0, 0, 0, 0.5) !important;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+    margin: 0 !important;
+    padding: 0 !important;
+    box-sizing: border-box !important;
+    max-width: none !important;
+    max-height: none !important;
+    min-width: 100vw !important;
+    min-height: 100vh !important;
+
+    &.s2j-modal-overlay-visible {
+      opacity: 1;
+    }
+  }
+
+  .s2j-modal-content {
+    position: relative;
+    background: #fff;
+    border-radius: 8px;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+    max-width: 600px;
     width: 90%;
     max-height: 80vh;
     overflow-y: auto;
+    transform: scale(0.9) translateY(-20px);
+    transition: transform 0.3s ease;
 
-    h3 {
-      margin: 0 0 $spacing-md 0;
-      color: $text-color;
+    &.s2j-modal-content-visible {
+      transform: scale(1) translateY(0);
     }
 
-    .form-field {
-      margin-bottom: $spacing-md;
+    &:focus {
+      outline: 2px solid #0073aa;
+      outline-offset: 2px;
+    }
 
-      label {
-        display: block;
-        margin-bottom: $spacing-xs;
+    h3 {
+      margin: 0 0 20px 0;
+      padding: 20px 20px 0 20px;
+      font-size: 1.5em;
+      font-weight: 600;
+    }
+
+    .s2j-modal-description {
+      position: absolute;
+      left: -10000px;
+      width: 1px;
+      height: 1px;
+      overflow: hidden;
+    }
+
+    .s2j-form-field {
+      padding: 0 20px;
+      margin-bottom: 20px;
+
+      .s2j-field-error {
+        color: #d63638;
+        font-size: 0.875em;
+        margin-top: 5px;
         font-weight: 600;
-        color: $text-color;
+        
+        &[role="alert"] {
+          animation: shake 0.5s ease-in-out;
+        }
       }
 
-      textarea {
-        width: 100%;
-        min-height: 100px;
-        padding: $spacing-sm;
-        border: 1px solid $border-color;
-        border-radius: $border-radius-sm;
-        resize: vertical;
+      .s2j-character-count {
+        text-align: right;
+        font-size: 0.875em;
+        color: #666;
+        margin-top: 5px;
+      }
+    }
 
-        &:focus {
-          border-color: $primary-color;
-          outline: none;
-          box-shadow: 0 0 0 1px $primary-color;
+    .s2j-modal-actions {
+      display: flex;
+      justify-content: flex-end;
+      gap: 10px;
+      padding: 0 20px 20px 20px;
+      border-top: 1px solid #e0e0e0;
+      margin-top: 20px;
+      padding-top: 20px;
+    }
+  }
+
+  // レスポンシブ対応
+  @media (width <= 768px) {
+    .s2j-modal-content {
+      width: 95%;
+      margin: 20px;
+      max-height: calc(100vh - 40px);
+    }
+  }
+
+
+  // フォーカス可能要素のフォーカス表示
+  button:focus,
+  textarea:focus {
+    outline: 2px solid #0073aa;
+    outline-offset: 2px;
+  }
+}
+
+// プレビュー機能のスタイル
+.s2j-message-preview {
+  padding: 0 20px;
+  margin-bottom: 20px;
+
+  h4 {
+    margin: 0 0 15px 0;
+    font-size: 1.1em;
+    font-weight: 600;
+    color: #333;
+  }
+
+  .s2j-preview-content {
+    border: 1px solid #e0e0e0;
+    border-radius: 6px;
+    background: #f9f9f9;
+    padding: 15px;
+  }
+
+  .s2j-preview-modal {
+    background: #fff;
+    border-radius: 6px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    overflow: hidden;
+
+    &[role="region"] {
+      border: 2px solid transparent;
+      
+      &:focus-within {
+        border-color: #0073aa;
+      }
+    }
+
+    .s2j-preview-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 15px 20px;
+      background: #f0f0f0;
+      border-bottom: 1px solid #e0e0e0;
+
+      h5 {
+        margin: 0;
+        font-size: 1em;
+        font-weight: 600;
+        color: #333;
+      }
+
+      .s2j-preview-close {
+        background: none;
+        border: none;
+        font-size: 1.5em;
+        color: #666;
+        cursor: pointer;
+        padding: 0;
+        width: 24px;
+        height: 24px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: 3px;
+
+        &:hover {
+          background: #e0e0e0;
+          color: #333;
         }
       }
     }
 
-    .modal-actions {
-      display: flex;
-      gap: $spacing-sm;
-      justify-content: flex-end;
-      margin-top: $spacing-lg;
+    .s2j-preview-body {
+      padding: 20px;
+      min-height: 100px;
+      line-height: 1.6;
+      color: #333;
+      white-space: pre-wrap;
+      overflow-wrap: break-word;
+
+      .s2j-preview-placeholder {
+        color: #999;
+        font-style: italic;
+      }
+    }
+  }
+}
+
+
+// アニメーション効果
+@keyframes shake {
+  0%, 100% { transform: translateX(0); }
+  25% { transform: translateX(-5px); }
+  75% { transform: translateX(5px); }
+}
+
+// 高コントラストモード対応
+@media (prefers-contrast: high) {
+  .s2j-message-modal {
+    .s2j-modal-overlay {
+      background-color: rgba(0, 0, 0, 0.8);
+    }
+    
+    .s2j-modal-content {
+      border: 2px solid #000;
+    }
+  }
+}
+
+// モーション減少設定対応
+@media (prefers-reduced-motion: reduce) {
+  .s2j-message-modal {
+    .s2j-modal-overlay,
+    .s2j-modal-content {
+      transition: none;
     }
   }
 }

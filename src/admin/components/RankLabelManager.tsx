@@ -6,6 +6,8 @@ import { MediaUploader } from './MediaUploader';
 
 /**
  * React.FunctionComponent「ランクラベル管理 UI」インターフェイス
+ * @param param0 React.FunctionComponent「ランクラベル管理 UI」インターフェイス
+ * @returns React.FunctionComponent「ランクラベル管理 UI」インターフェイス
  */
 interface RankLabelManagerProps {
   rankLabels: RankLabel[];
@@ -16,9 +18,8 @@ interface RankLabelManagerProps {
 /**
  * React.FunctionComponent「ランクラベル管理 UI」
  * `src/admin/index.tsx` で呼ばれる。
- * 
- * @param param0 ランクラベル
- * @returns ランクラベル・マネージャー
+ * @param param0 React.FunctionComponent「ランクラベル管理 UI」
+ * @returns React.FunctionComponent「ランクラベル管理 UI」
  */
 export const RankLabelManager: React.FC<RankLabelManagerProps> = ({
   rankLabels: initialRankLabels,
@@ -29,7 +30,10 @@ export const RankLabelManager: React.FC<RankLabelManagerProps> = ({
   const [hasUnsavedChanges, setHasUnsavedChanges] = useState(false);
   const [originalOrder, setOriginalOrder] = useState<number[]>([]);
 
-  // ランクラベルが変更された際に、original order を初期化します。
+  /**
+   * ランクラベルが変更された際に、original order を初期化します。
+   * 「useEffect()」メソッドから呼ばれます。
+   */
   useEffect(() => {
     if (initialRankLabels.length > 0 && originalOrder.length === 0) {
       setOriginalOrder(initialRankLabels.map((_, index) => index));
@@ -39,6 +43,7 @@ export const RankLabelManager: React.FC<RankLabelManagerProps> = ({
   /**
    * ランクラベルを追加します。
    * 「s2j-add-rank-label-btn.onClick()」メソッドから呼ばれます。
+   * @returns ランクラベルを追加します。
    */
   const addNewLabel = () => {
     const newLabel: RankLabel = {
@@ -63,6 +68,7 @@ export const RankLabelManager: React.FC<RankLabelManagerProps> = ({
   /**
    * 変更を保存します。
    * 「s2j-save-rank-labels-btn.onClick()」メソッドから呼ばれます。
+   * @returns 変更を保存します。
    */
   const saveChanges = async () => {
     if (pendingLabels) {
@@ -115,6 +121,7 @@ export const RankLabelManager: React.FC<RankLabelManagerProps> = ({
   /**
    * 変更をキャンセルします。
    * 「s2j-cancel-rank-labels-btn.onClick()」メソッドから呼ばれます。
+   * @returns 変更をキャンセルします。
    */
   const cancelChanges = () => {
     setPendingLabels(null);
@@ -127,10 +134,10 @@ export const RankLabelManager: React.FC<RankLabelManagerProps> = ({
   /**
    * ランクラベルを更新します。
    * 「s2j-label-field title.TextControl.onChange()」メソッド、「s2j-label-field content.TextareaControl.onChange()」メソッド、「s2j-label-field thumbnail.MediaUploader.onSelect()」メソッドから呼ばれます。
-   * 
-   * @param index 
-   * @param field 
-   * @param value 
+   * @param index インデックス
+   * @param field フィールド
+   * @param value 値
+   * @returns ランクラベルを更新します。
    */
   const updateLabel = (index: number, field: keyof RankLabel, value: string | number) => {
     const currentLabels = pendingLabels || initialRankLabels;
@@ -150,9 +157,9 @@ export const RankLabelManager: React.FC<RankLabelManagerProps> = ({
   /**
    * ランクラベルを移動します。
    * 「s2j-move-up-btn.onClick()」メソッド、「s2j-move-down-btn.onClick()」メソッドから呼ばれます。
-   * 
-   * @param index 
-   * @param direction 
+   * @param index インデックス
+   * @param direction 方向
+   * @returns ランクラベルを移動します。
    */
   const moveLabel = (index: number, direction: 'up' | 'down') => {
     const currentLabels = pendingLabels || initialRankLabels;
@@ -175,8 +182,8 @@ export const RankLabelManager: React.FC<RankLabelManagerProps> = ({
   /**
    * ランクラベルを削除します。
    * 「s2j-delete-btn.onClick()」メソッドから呼ばれます。
-   * 
-   * @param index 
+   * @param index インデックス
+   * @returns ランクラベルを削除します。
    */
   const deleteLabel = (index: number) => {
     if (window.confirm(__('Are you sure you want to delete this rank label?', 's2j-alliance-manager'))) {
@@ -195,9 +202,8 @@ export const RankLabelManager: React.FC<RankLabelManagerProps> = ({
   /**
    * 通知を表示します。
    * 「saveChanges()」メソッドから呼ばれます。
-   * 
-   * @param type 
-   * @param message 
+   * @param type タイプ
+   * @param message メッセージ
    */
   const showNotice = (type: 'success' | 'error', message: string) => {
     const notice = document.createElement('div');

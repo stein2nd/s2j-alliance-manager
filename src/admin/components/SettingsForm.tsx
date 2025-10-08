@@ -4,6 +4,8 @@ import { AllianceSettings } from '../../types';
 
 /**
  * React.FunctionComponent「設定フォーム」インターフェイス
+ * @param param0 React.FunctionComponent「設定フォーム」インターフェイス
+ * @returns React.FunctionComponent「設定フォーム」インターフェイス
  */
 interface SettingsFormProps {
   settings: AllianceSettings;
@@ -13,10 +15,9 @@ interface SettingsFormProps {
 
 /**
  * React.FunctionComponent「設定フォーム」
- * `src/admin/index.tsx` で呼ばれる。
- * 
- * @param param0 設定
- * @returns 設定フォーム
+ * `src/admin/index.tsx` で呼ばれます。
+ * @param param0 React.FunctionComponent「設定フォーム」
+ * @returns React.FunctionComponent「設定フォーム」
  */
 export const SettingsForm: React.FC<SettingsFormProps> = ({
   settings,
@@ -25,6 +26,10 @@ export const SettingsForm: React.FC<SettingsFormProps> = ({
 }) => {
   const [, _setFormData] = useState<AllianceSettings>(settings);
 
+  /**
+   * settings が変更された際に、formData を更新します。
+   * 「useEffect()」メソッドから呼ばれます。
+   */
   useEffect(() => {
     _setFormData(settings);
   }, [settings]);

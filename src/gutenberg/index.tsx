@@ -1,12 +1,17 @@
 import { __ } from '@wordpress/i18n';
+// @ts-ignore
 import { useBlockProps, InspectorControls } from '@wordpress/block-editor';
+// @ts-ignore
 import { PanelBody, SelectControl, Placeholder } from '@wordpress/components';
+// @ts-ignore
 import { registerBlockType } from '@wordpress/blocks';
 import { displayStyles, alignmentOptions } from '../admin/data/constants';
 import '@/styles/gutenberg.scss';
 
 /**
- * React.FunctionComponent ブロックの属性「AllianceBanner：Attributes」インターフェイス
+ * React.FunctionComponent ブロックの属性「AllianceBanner：Attributes」インターフェイス (モーダル用)
+ * @param param0 React.FunctionComponent ブロックの属性「AllianceBanner：Attributes」インターフェイス (モーダル用)
+ * @returns React.FunctionComponent ブロックの属性「AllianceBanner：Attributes」インターフェイス (モーダル用)
  */
 interface AllianceBannerAttributes {
   displayStyle: 'grid-single' | 'grid-multi';
@@ -14,7 +19,9 @@ interface AllianceBannerAttributes {
 }
 
 /**
- * React.FunctionComponent ブロックの属性「AllianceBanner：Props」インターフェイス
+ * React.FunctionComponent ブロックの属性「AllianceBanner：Props」インターフェイス (モーダル用)
+ * @param param0 React.FunctionComponent ブロックの属性「AllianceBanner：Props」インターフェイス (モーダル用)
+ * @returns React.FunctionComponent ブロックの属性「AllianceBanner：Props」インターフェイス (モーダル用)
  */
 interface AllianceBannerProps {
   attributes: AllianceBannerAttributes;
@@ -23,11 +30,9 @@ interface AllianceBannerProps {
 }
 
 /**
- * React.FunctionComponent「Gutenberg ブロックの UI ロジック」
- * 「registerBlockType()」メソッドから呼ばれます。
- * 
- * @param param0 ブロックの属性
- * @returns ブロックの UI
+ * React.FunctionComponent「Gutenberg ブロックの UI ロジック」 (モーダル用)
+ * @param param0 React.FunctionComponent「Gutenberg ブロックの UI ロジック」 (モーダル用)
+ * @returns React.FunctionComponent「Gutenberg ブロックの UI ロジック」 (モーダル用)
  */
 const AllianceBannerEdit: React.FC<AllianceBannerProps> = ({
   attributes,
@@ -86,8 +91,10 @@ const AllianceBannerEdit: React.FC<AllianceBannerProps> = ({
   );
 };
 
-// ブロックを登録します (サーバーサイドレンダリングを使用するため、saveはnull)。
-// 「registerBlockType」メソッドから呼ばれます。
+/**
+ * ブロックを登録します (サーバーサイドレンダリングを使用するため、saveはnull)。
+ * 「registerBlockType」メソッドから呼ばれます。
+ */
 registerBlockType(
   's2j-alliance-manager/alliance-banner',
   {
@@ -96,5 +103,7 @@ registerBlockType(
   }
 );
 
-// 編集コンポーネントをエクスポートし、`block.json` で使用できるようにします。
+/**
+ * 編集コンポーナーをエクスポートし、`block.json` で使用できるようにします。
+ */
 export default AllianceBannerEdit;

@@ -8,6 +8,8 @@ import { MessageModal } from './MessageModal';
 
 /**
  * React.FunctionComponent「一覧表 UI」インターフェイス
+ * @param param0 React.FunctionComponent「一覧表 UI」インターフェイス
+ * @returns React.FunctionComponent「一覧表 UI」インターフェイス
  */
 interface ContentListProps {
   contentModels: ContentModel[];
@@ -20,9 +22,8 @@ interface ContentListProps {
 /**
  * React.FunctionComponent「一覧表 UI」
  * `src/admin/index.tsx` で呼ばれる。
- * 
- * @param param0 コンテンツモデル
- * @returns 一覧表 UI
+ * @param param0 React.FunctionComponent「一覧表 UI」
+ * @returns React.FunctionComponent「一覧表 UI」
  */
 export const ContentList: React.FC<ContentListProps> = ({
   contentModels,
@@ -36,7 +37,10 @@ export const ContentList: React.FC<ContentListProps> = ({
   const [hasUnsavedChanges, setHasUnsavedChanges] = useState(false);
   const [originalOrder, setOriginalOrder] = useState<number[]>([]);
 
-  // contentModels が変更された時に、元の順序を初期化
+  /**
+   * contentModels が変更された時に、元の順序を初期化
+   * 「useEffect()」メソッドから呼ばれます。
+   */
   useEffect(() => {
     if (contentModels.length > 0 && originalOrder.length === 0) {
       setOriginalOrder(contentModels.map((_, index) => index));
@@ -46,6 +50,7 @@ export const ContentList: React.FC<ContentListProps> = ({
   /**
    * 新しいモデルを追加します。
    * 「s2j-add-partner-btn.onClick()」メソッドから呼ばれます。
+   * @returns 新しいモデルを追加します。
    */
   const addNewModel = async () => {
     const newModel: ContentModel = {
@@ -71,6 +76,7 @@ export const ContentList: React.FC<ContentListProps> = ({
   /**
    * 変更を保存します。
    * 「s2j-save-changes-btn.onClick()」メソッドから呼ばれます。
+   * @returns 変更を保存します。
    */
   const saveChanges = async () => {
     if (pendingModels) {
@@ -87,10 +93,10 @@ export const ContentList: React.FC<ContentListProps> = ({
   /**
    * モデルを更新します。
    * 「s2j-model-field frontpage.CheckboxControl.onChange()」メソッド、「s2j-model-field rank.SelectControl.onChange()」メソッド、「s2j-model-field logo.MediaUploader.onSelect()」メソッド、「s2j-model-field jump-url.TextControl.onChange()」メソッド、「s2j-model-field behavior.SelectControl.onChange()」メソッドから呼ばれます。
-   * 
    * @param index インデックス
    * @param field フィールド
    * @param value 値
+   * @returns モデルを更新します。
    */
   const updateModel = async (index: number, field: keyof ContentModel, value: string | number) => {
     const currentModels = pendingModels || contentModels;
@@ -107,9 +113,9 @@ export const ContentList: React.FC<ContentListProps> = ({
   /**
    * モデルを移動します。
    * 「s2j-move-up-btn.onClick()」メソッド、「s2j-move-down-btn.onClick()」メソッドから呼ばれます。
-   * 
    * @param index インデックス
    * @param direction 方向
+   * @returns モデルを移動します。
    */
   const moveModel = (index: number, direction: 'up' | 'down') => {
     const currentModels = pendingModels || contentModels;
@@ -126,8 +132,8 @@ export const ContentList: React.FC<ContentListProps> = ({
   /**
    * モデルを削除します。
    * 「s2j-delete-btn.onClick()」メソッドから呼ばれます。
-   * 
    * @param index インデックス
+   * @returns モデルを削除します。
    */
   const deleteModel = async (index: number) => {
     if (window.confirm(__('Are you sure you want to delete this item?', 's2j-alliance-manager'))) {
@@ -148,8 +154,7 @@ export const ContentList: React.FC<ContentListProps> = ({
   /**
    * ランクオプションを生成します。
    * 「s2j-model-field rank.SelectControl.onChange()」メソッドから呼ばれます。
-   * 
-   * @returns ランクオプション
+   * @returns ランクオプションを生成します。
    */
   const getRankOptions = () => {
     const options = rankLabels.map(label => ({
@@ -171,8 +176,8 @@ export const ContentList: React.FC<ContentListProps> = ({
   /**
    * メッセージ・モーダルを開きます。
    * 「s2j-message-btn.onClick()」メソッドから呼ばれます。
-   * 
    * @param index インデックス
+   * @returns メッセージ・モーダルを開きます。
    */
   const openMessageModal = (index: number) => {
     setShowMessageModal(index);
@@ -181,9 +186,9 @@ export const ContentList: React.FC<ContentListProps> = ({
   /**
    * メッセージを更新します。
    * 「s2j-content-models.MessageModal.onSave()」メソッドから呼ばれます。
-   * 
    * @param index インデックス
    * @param message メッセージ
+   * @returns メッセージを更新します。
    */
   const updateMessage = async (index: number, message: string) => {
     await updateModel(index, 'message', message);
@@ -195,6 +200,7 @@ export const ContentList: React.FC<ContentListProps> = ({
   /**
    * メッセージ・モーダルを閉じます。
    * 「updateMessage()」メソッドから呼ばれます。
+   * @returns メッセージ・モーダルを閉じます。
    */
   const closeMessageModal = () => {
     setShowMessageModal(null);
@@ -233,7 +239,6 @@ export const ContentList: React.FC<ContentListProps> = ({
           displayModels.map((model, index) => {
             // 保留中の変更がある場合は元の順序を表示、なければ現在のインデックス+1を表示
             const rowNumber = hasUnsavedChanges && originalOrder.length > index ? originalOrder[index] + 1 : index + 1;
-
             // ポスターノティスの表示状態を取得
             // Behavior が「Show Modal」の場合のみポスターノティスを表示
             // 動画ファイルが選択されていて、ポスター画像が存在しない場合に表示
@@ -352,6 +357,7 @@ export const ContentList: React.FC<ContentListProps> = ({
           message={displayModels[showMessageModal]?.message || ''}
           onSave={(message) => updateMessage(showMessageModal, message)}
           onCancel={closeMessageModal}
+          isOpen={showMessageModal !== null}
         />
       )}
     </div>

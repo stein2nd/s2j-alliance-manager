@@ -28,7 +28,7 @@ class S2J_Alliance_Manager_AllianceManager {
     private static $instance = null;
 
     /**
-     * シングルトンインスタンスを取得
+     * Singleton インスタンスを取得
      */
     public static function get_instance() {
         if (null === self::$instance) {
@@ -127,6 +127,7 @@ class S2J_Alliance_Manager_AllianceManager {
     private function register_block_assets() {
         $js_path = S2J_ALLIANCE_MANAGER_PLUGIN_DIR . 'dist/js/s2j-alliance-manager-gutenberg.js';
         $css_path = S2J_ALLIANCE_MANAGER_PLUGIN_DIR . 'dist/css/s2j-alliance-manager-gutenberg.css';
+        $frontend_js_path = S2J_ALLIANCE_MANAGER_PLUGIN_DIR . 'dist/js/s2j-alliance-manager-frontend.js';
 
         if (file_exists($js_path)) {
             // スクリプトを登録します (block.json で参照されるため必要)
@@ -134,6 +135,17 @@ class S2J_Alliance_Manager_AllianceManager {
                 's2j-alliance-manager-gutenberg',
                 S2J_ALLIANCE_MANAGER_PLUGIN_URL . 'dist/js/s2j-alliance-manager-gutenberg.js',
                 array('wp-blocks', 'wp-element', 'wp-block-editor', 'wp-components', 'wp-i18n'),
+                S2J_ALLIANCE_MANAGER_VERSION,
+                true
+            );
+        }
+
+        if (file_exists($frontend_js_path)) {
+            // フロントエンド用スクリプトを登録します
+            wp_register_script(
+                's2j-alliance-manager-frontend',
+                S2J_ALLIANCE_MANAGER_PLUGIN_URL . 'dist/js/s2j-alliance-manager-frontend.js',
+                array('react', 'react-dom'),
                 S2J_ALLIANCE_MANAGER_VERSION,
                 true
             );
@@ -226,7 +238,7 @@ class S2J_Alliance_Manager_AllianceManager {
      * 「render_alliance_banner_shortcode()」メソッドからも呼ばれます。
      *
      * @param array<string, string> $attributes 属性
-     * @return string $html ブロックのHTML
+     * @return string $html ブロックの HTML
      */
     public function render_alliance_banner_block($attributes) {
         $display_style = $attributes['displayStyle'] ?? 'grid-single';
@@ -235,196 +247,29 @@ class S2J_Alliance_Manager_AllianceManager {
         // コンテンツデータを取得します。
         $alliance_data = $this->get_alliance_data();
 
-        // デバッグ用ログ (一時的)
-        if (defined('WP_DEBUG') && WP_DEBUG) {
-            // 設定データも確認
-            $settings = get_option('s2j_alliance_manager_settings', array());
-
-            // ランクラベルも確認
-            $rank_labels = get_posts(array(
-                'post_type' => 's2j_am_rank_label',
-                'post_status' => 'publish',
-                'numberposts' => -1,
-                'orderby' => 'menu_order',
-                'order' => 'ASC'
-            ));
-        }
-
         if (empty($alliance_data)) {
             return '<p>' . __('No alliance partners found.', 's2j-alliance-manager') . '</p>';
         }
 
+        // React コンポーネント用のデータを準備
+        $content_models = $this->prepare_content_models($alliance_data);
+
         ob_start();
-
-        // クラス名の構築
-        $banner_class = 's2j-alliance-banner s2j-alliance-banner--' . esc_attr($display_style);
-        if ($display_style === 'grid-single') {
-            $banner_class .= ' s2j-alliance-banner--align-' . esc_attr($alignment);
-        }
         ?>
-        <div class="<?php echo $banner_class; ?>">
-            <?php foreach ($alliance_data as $rank => $partners): ?>
-                <div class="s2j-alliance-rank">
-                    <h3 class="s2j-alliance-rank-title"><?php echo esc_html($rank); ?></h3>
-                    <div class="s2j-alliance-partners">
-                        <?php foreach ($partners as $partner): ?>
-                            <div class="s2j-alliance-partner">
-                                <?php if (isset($partner['is_placeholder']) && $partner['is_placeholder']): ?>
-                                    <?php // 該当レコードなしの場合 ?>
-                                    <div class="s2j-alliance-partner-placeholder">
-                                        <?php echo esc_html($partner['message']); ?>
-                                    </div>
-                                <?php else: ?>
-                                    <?php // 通常のパートナーレコード ?>
-                                    <?php 
-                                    $trimmed_jump_url = trim($partner['jump_url']);
-                                    if ($partner['behavior'] === 'jump' && !empty($trimmed_jump_url)): ?>
-                                        <?php // リンクの場合 ?>
-                                        <a href="<?php echo esc_url($trimmed_jump_url); ?>" 
-                                           target="_blank" 
-                                           rel="noopener noreferrer"
-                                           class="s2j-alliance-partner-link">
-                                            <?php echo $this->render_partner_logo($partner); ?>
-                                        </a>
-                                    <?php elseif ($partner['behavior'] === 'modal'): ?>
-                                        <?php // モーダルの場合 ?>
-                                        <div class="s2j-alliance-partner-modal" 
-                                             data-message="<?php echo esc_attr($partner['message']); ?>"
-                                             data-jump-url="<?php echo esc_attr($partner['jump_url']); ?>"
-                                             data-logo-id="<?php echo esc_attr($partner['logo']); ?>">
-                                            <?php echo $this->render_partner_logo($partner); ?>
-                                        </div>
-                                    <?php else: ?>
-                                        <?php // jump_url が空の場合、何もラップしない ?>
-                                        <?php echo $this->render_partner_logo($partner); ?>
-                                    <?php endif; ?>
-                                <?php endif; ?>
-                            </div>
-                        <?php endforeach; ?>
-                    </div>
-                </div>
-            <?php endforeach; ?>
+        <div class="wp-block-s2j-alliance-manager-alliance-banner" 
+             data-display-style="<?php echo esc_attr($display_style); ?>"
+             data-alignment="<?php echo esc_attr($alignment); ?>">
+            <!-- React コンポーネントがここにレンダリングされます -->
         </div>
-        <?php // アライアンスパートナー向けメッセージ用モーダル ?>
-        <div id="s2j-alliance-modal" class="s2j-alliance-modal" style="display: none;">
-            <div class="s2j-alliance-modal-content">
-                <span class="s2j-alliance-modal-close">&times;</span>
-                <div class="s2j-alliance-modal-grid">
-                    <div class="s2j-alliance-modal-cell s2j-alliance-modal-logo-cell">
-                        <div class="s2j-alliance-modal-logo"></div>
-                        <div class="s2j-alliance-modal-jump-url"></div>
-                    </div>
-                    <div class="s2j-alliance-modal-cell s2j-alliance-modal-message-cell">
-                        <div class="s2j-alliance-modal-message"></div>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <?php // アライアンスパートナー向けメッセージ用モーダル・スクリプト ?>
         <script>
-        (function() {
-            function initAllianceModal() {
-                // jQuery が利用可能かチェック
-                if (typeof jQuery === 'undefined') {
-                    // jQuery が利用できない場合は、setTimeout で再試行
-                    setTimeout(initAllianceModal, 100);
-                    return;
-                }
-
-                jQuery(document).ready(function($) {
-                    $('.s2j-alliance-partner-modal').on('click', function() {
-                        var $this = $(this);
-                        var message = $this.data('message');
-                        var jumpUrl = $this.data('jump-url');
-                        var logoId = $this.data('logo-id');
-
-                        // メッセージの処理 (先頭・末尾の改行・TAB 文字をトリム)
-                        var trimmedMessage = message ? message.replace(/^[\n\t\s]+|[\n\t\s]+$/g, '') : '';
-
-                        // ジャンプ URL の処理 (trim して空文字列でない場合のみ表示)
-                        var trimmedJumpUrl = jumpUrl ? jumpUrl.trim() : '';
-
-                        // ロゴの再レンダリング
-                        if (logoId) {
-                            // 既存のロゴ要素を取得
-                            var logoElement = $this.find('.s2j-alliance-partner-logo, .s2j-alliance-partner-placeholder');
-                            var logoHtml;
-
-                            if (logoElement.is('video')) {
-                                // 動画の場合は poster 属性を含む新しい要素を生成
-                                var videoSrc = logoElement.attr('src');
-                                var posterSrc = logoElement.attr('poster');
-                                var posterAttr = posterSrc ? ' poster="' + posterSrc + '"' : '';
-                                logoHtml = '<video src="' + videoSrc + '" class="s2j-alliance-partner-logo" controls' + posterAttr + '></video>';
-                            } else {
-                                // 画像の場合は既存の要素を複製
-                                logoHtml = logoElement.clone();
-                            }
-
-                            $('#s2j-alliance-modal .s2j-alliance-modal-logo').html(logoHtml);
-                        } else {
-                            $('#s2j-alliance-modal .s2j-alliance-modal-logo').html('<div class="s2j-alliance-partner-placeholder">' + '<?php echo esc_js(__("No logo", "s2j-alliance-manager")); ?>' + '</div>');
-                        }
-
-                        // ジャンプ URL の表示
-                        if (trimmedJumpUrl) {
-                            $('#s2j-alliance-modal .s2j-alliance-modal-jump-url').html('<a href="' + trimmedJumpUrl + '" target="_blank" rel="noopener noreferrer" class="s2j-alliance-modal-link">' + trimmedJumpUrl + '</a>');
-                        } else {
-                            $('#s2j-alliance-modal .s2j-alliance-modal-jump-url').empty();
-                        }
-
-                        // メッセージの表示
-                        if (trimmedMessage) {
-                            // 改行を保持して表示
-                            var formattedMessage = trimmedMessage.replace(/\n/g, '<br>');
-                            $('#s2j-alliance-modal .s2j-alliance-modal-message').html(formattedMessage);
-                        } else {
-                            $('#s2j-alliance-modal .s2j-alliance-modal-message').empty();
-                        }
-
-                        // モーダルを表示し、中央配置を確実にする
-                        $('#s2j-alliance-modal').show();
-
-                        // モーダルの位置を強制的に中央にリセット
-                        // setTimeout(function() {
-                        //     $('#s2j-alliance-modal').css({
-                        //         'position': 'fixed',
-                        //         'top': '0',
-                        //         'left': '0',
-                        //         'width': '100vw',
-                        //         'height': '100vh',
-                        //         'display': 'flex',
-                        //         'align-items': 'center',
-                        //         'justify-content': 'center',
-                        //         'padding': '0',
-                        //         'margin': '0',
-                        //         'box-sizing': 'border-box'
-                        //     });
-
-                        //     // モーダルコンテンツの位置もリセット
-                        //     $('#s2j-alliance-modal .s2j-alliance-modal-content').css({
-                        //         'margin': '24px',
-                        //         'max-width': '600px',
-                        //         'width': 'calc(100vw - 48px)'
-                        //     });
-                        // }, 10);
-                    });
-
-                    $('.s2j-alliance-modal-close').on('click', function() {
-                        $('#s2j-alliance-modal').hide();
-                    });
-
-                    $(document).on('click', function(e) {
-                        if ($(e.target).hasClass('s2j-alliance-modal')) {
-                            $('#s2j-alliance-modal').hide();
-                        }
-                    });
-                });
+        // React コンポーネント用のデータを渡す
+        window.s2jAllianceBannerData = {
+            contentModels: <?php echo json_encode($content_models); ?>,
+            attributes: {
+                displayStyle: '<?php echo esc_js($display_style); ?>',
+                alignment: '<?php echo esc_js($alignment); ?>'
             }
-
-            // 初期化を開始
-            initAllianceModal();
-        })();
+        };
         </script>
         <?php
         return ob_get_clean();
@@ -503,6 +348,52 @@ class S2J_Alliance_Manager_AllianceManager {
         }
 
         return $grouped_data;
+    }
+
+    /**
+     * React コンポーネント用のコンテンツモデルを準備します。
+     * 「render_alliance_banner_block()」メソッドから呼ばれます。
+     *
+     * @param array<string, array<string, int|string>> $alliance_data アライアンスデータ
+     * @return array<array<string, int|string>> $content_models コンテンツモデル
+     */
+    private function prepare_content_models($alliance_data) {
+        $content_models = array();
+
+        foreach ($alliance_data as $rank => $partners) {
+            foreach ($partners as $partner) {
+                if (isset($partner['is_placeholder']) && $partner['is_placeholder']) {
+                    continue; // プレースホルダーはスキップ
+                }
+
+                // ロゴ URL を取得
+                $logo_url = '';
+                if (!empty($partner['logo'])) {
+                    $logo_url = wp_get_attachment_url($partner['logo']);
+                }
+
+                // ポスター画像 URL を取得
+                $poster_url = '';
+                if (!empty($partner['poster'])) {
+                    $poster_url = wp_get_attachment_url($partner['poster']);
+                }
+
+                $content_models[] = array(
+                    'rank' => $rank,
+                    'logo' => $partner['logo'] ?? 0,
+                    'logo_url' => $logo_url,
+                    'poster_url' => $poster_url,
+                    'message' => $partner['message'] ?? '',
+                    'jump_url' => $partner['jump_url'] ?? '',
+                    'behavior' => $partner['behavior'] ?? 'modal',
+                    'poster' => $partner['poster'] ?? 0,
+                    'frontpage' => $partner['frontpage'] ?? 'YES',
+                    'index' => $partner['index'] ?? 0
+                );
+            }
+        }
+
+        return $content_models;
     }
 
     /**
@@ -611,6 +502,15 @@ class S2J_Alliance_Manager_AllianceManager {
                 S2J_ALLIANCE_MANAGER_PLUGIN_URL . 'dist/css/s2j-alliance-manager-gutenberg.css',
                 array(),
                 S2J_ALLIANCE_MANAGER_VERSION
+            );
+
+            // フロントエンド用Reactコンポーネントを読み込む
+            wp_enqueue_script(
+                's2j-alliance-manager-frontend',
+                S2J_ALLIANCE_MANAGER_PLUGIN_URL . 'dist/js/s2j-alliance-manager-frontend.js',
+                array('react', 'react-dom'),
+                S2J_ALLIANCE_MANAGER_VERSION,
+                true
             );
 
             // Shortcode が使用されている場合のみ JavaScript を読み込む
@@ -1038,11 +938,6 @@ class S2J_Alliance_Manager_AllianceManager {
     }
 
     /**
-     * Classic エディター用のヘルプタブは管理画面に統合されました。
-     * このメソッドは削除されました。
-     */
-
-    /**
      * Shortcode ヘルプのコンテンツを生成します。
      * 管理画面のヘルプタブから呼ばれます。
      * 
@@ -1137,7 +1032,7 @@ class S2J_Alliance_Manager_AllianceManager {
         if (strpos($content, '[alliance_banner') !== false || strpos($content, '[test_alliance') !== false) {
             // アセットを強制的に読み込む
             $this->force_enqueue_assets();
-            
+
             // ショートコードを実行
             $content = do_shortcode($content);
         }

@@ -302,7 +302,7 @@ class AllianceManagerAdmin {
     // 「ローディング状態を更新する要素」を取得します。
     const elements = document.querySelectorAll('.s2j-admin-loading');
 
-    elements.forEach(el => {
+    elements.forEach((el: Element) => {
       if (this.isLoading) {
         el.classList.add('loading');
       } else {

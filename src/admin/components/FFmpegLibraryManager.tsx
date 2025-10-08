@@ -27,14 +27,18 @@ export const FFmpegLibraryManager: React.FC<FFmpegLibraryManagerProps> = ({
   const [isTesting, setIsTesting] = useState(false);
   const [testResult, setTestResult] = useState<FFmpegTestResult | null>(null);
 
+  /**
+   * FFmpeg パスを設定します。
+   * 「useEffect()」メソッドから呼ばれます。
+   */
   useEffect(() => {
     setFFmpegPath(settings.ffmpeg_path || '');
   }, [settings.ffmpeg_path]);
 
   /**
    * FFmpeg パスを変更します。
-   * 
-   * @param value 値
+   * 「handlePathChange()」メソッドから呼ばれます。
+   * @param value FFmpeg パスを変更します。
    */
   const handlePathChange = (value: string) => {
     setFFmpegPath(value);
@@ -43,6 +47,7 @@ export const FFmpegLibraryManager: React.FC<FFmpegLibraryManagerProps> = ({
 
   /**
    * FFmpeg の利用可能性をテストします。
+   * 「handleTestFFmpeg()」メソッドから呼ばれます。
    */
   const handleTestFFmpeg = async () => {
     setIsTesting(true);
@@ -76,6 +81,7 @@ export const FFmpegLibraryManager: React.FC<FFmpegLibraryManagerProps> = ({
 
   /**
    * 設定を保存します。
+   * 「handleSave()」メソッドから呼ばれます。
    */
   const handleSave = () => {
     onSave(ffmpegPath);

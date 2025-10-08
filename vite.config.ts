@@ -20,6 +20,7 @@ const getBuildTarget = () => {
   if (npmScript?.includes('admin')) return 'admin';
   if (npmScript?.includes('gutenberg')) return 'gutenberg';
   if (npmScript?.includes('classic')) return 'classic';
+  if (npmScript?.includes('frontend')) return 'frontend';
   return 'gutenberg'; // デフォルト
 };
 
@@ -46,6 +47,12 @@ const getBuildConfig = (target: string) => {
               entry: resolve(__dirname, 'src/classic/index.ts'),
               name: 'S2JAllianceManagerClassic',
               scss: resolve(__dirname, 'src/styles/classic.scss')
+          };
+      case 'frontend':
+          return {
+              entry: resolve(__dirname, 'src/frontend/alliance-banner.tsx'),
+              name: 'S2JAllianceManagerFrontend',
+              scss: resolve(__dirname, 'src/styles/gutenberg.scss')
           };
       default:
           return {
@@ -128,7 +135,7 @@ export default defineConfig({
         if (warning.message.includes('"render"')) return;
         if (warning.message.includes('"hydrate"')) return;
         if (warning.message.includes('"unmountComponentAtNode"')) return;
-        
+
         // その他の警告は表示
         warn(warning);
       }

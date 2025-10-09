@@ -35,10 +35,29 @@ export const MediaUploader: React.FC<MediaUploaderProps> = ({
   posterId,
   onPosterSelect
 }) => {
+  /**
+   * メディア
+   */
   const [media, setMedia] = useState<WordPressMedia | null>(null);
+
+  /**
+   * ローディング中かどうか
+   */
   const [isLoading, setIsLoading] = useState(false);
+
+  /**
+   * ポスター生成中かどうか
+   */
   const [isGeneratingPoster, setIsGeneratingPoster] = useState(false);
+
+  /**
+   * ポスター画像の添付ファイル ID
+   */
   const [posterAttachmentId, setPosterAttachmentId] = useState<number | null>(null);
+
+  /**
+   * ポスター画像
+   */
   const [posterMedia, setPosterMedia] = useState<WordPressMedia | null>(null);
 
   /**
@@ -49,6 +68,17 @@ export const MediaUploader: React.FC<MediaUploaderProps> = ({
    */
   const isVideo = (mimeType: string) => {
     return mimeType.startsWith('video/');
+  };
+
+  /**
+   * ポスター画像のURLを取得します。
+   * 
+   * @param posterId ポスター画像のID
+   * @returns ポスター画像のURL
+   */
+  const getPosterImageUrl = (posterId: number): string => {
+    // WordPressのメディアURLを構築
+    return `${window.location.origin}/wp-json/wp/v2/media/${posterId}`;
   };
 
   /**
@@ -423,9 +453,7 @@ export const MediaUploader: React.FC<MediaUploaderProps> = ({
               controls
               className="s2j-logo-preview"
               style={{ maxWidth: '100%', height: 'auto' }}
-            >
-              {__('Your browser does not support the video tag.', 's2j-alliance-manager')}
-            </video>
+            >{__('Your browser does not support the video tag.', 's2j-alliance-manager')}</video>
           ) : displayMedia?.type === 'poster' ? (
             <img
               src={displayMedia.url}
@@ -443,22 +471,31 @@ export const MediaUploader: React.FC<MediaUploaderProps> = ({
           {media && isVideo(media.mime_type) && (posterAttachmentId || posterMedia) && (
             <div className="s2j-poster-preview-container">
               <img
-                src={posterMedia?.url || (posterAttachmentId ? `/wp-json/wp/v2/media/${posterAttachmentId}` : '')}
+                src={posterMedia?.url || (posterAttachmentId ? getPosterImageUrl(posterAttachmentId) : '')}
                 alt={`${posterMedia?.title || media.title} Poster`}
                 className="s2j-poster-preview"
                 style={{ maxWidth: '100%', height: 'auto', marginTop: '0.5rem' }}
                 onError={(e) => {
-                  console.error('Failed to load poster image:', e);
+                  const target = e.target as { src?: string; style?: { display: string } };
+                  const imageUrl = target?.src || 'unknown';
+                  console.error('Failed to load poster image:', {
+                    url: imageUrl,
+                    posterId: posterAttachmentId,
+                    error: e
+                  });
+
                   // エラーが発生した場合、画像を非表示にする
-                  const target = e.target as { style?: { display: string } };
                   if (target && target.style) {
                     target.style.display = 'none';
                   }
+
+                  // ポスター画像の読み込みに失敗した場合、通知を表示
+                  if (onPosterNoticeChange) {
+                    onPosterNoticeChange(true);
+                  }
                 }}
               />
-              <div className="s2j-poster-label">
-                {__('Poster Image', 's2j-alliance-manager')}
-              </div>
+              <div className="s2j-poster-label">{__('Poster Image', 's2j-alliance-manager')}</div>
             </div>
           )}
         </div>
@@ -488,12 +525,7 @@ export const MediaUploader: React.FC<MediaUploaderProps> = ({
                 disabled={isGeneratingPoster}
                 className="s2j-generate-poster-btn"
               >
-                <span>
-                  {isGeneratingPoster 
-                    ? __('Generating...', 's2j-alliance-manager') 
-                    : __('Generate Poster', 's2j-alliance-manager')
-                  }
-                </span>
+                <span>{isGeneratingPoster ? __('Generating...', 's2j-alliance-manager') : __('Generate Poster', 's2j-alliance-manager')}</span>
               </Button>
             )}
             {/* ポスター画像アップロードボタン */}
@@ -502,19 +534,12 @@ export const MediaUploader: React.FC<MediaUploaderProps> = ({
               onClick={uploadPoster}
               className="s2j-upload-poster-btn"
             >
-              <span>
-                {posterAttachmentId 
-                  ? __('Change Poster', 's2j-alliance-manager')
-                  : __('Upload Poster', 's2j-alliance-manager')
-                }
-              </span>
+              <span>{posterAttachmentId ? __('Change Poster', 's2j-alliance-manager') : __('Upload Poster', 's2j-alliance-manager')}</span>
             </Button>
             {/* FFmpeg が利用不可能な場合の注意表示 */}
             {!ffmpegSettings?.ffmpeg_available && (
               <div className="s2j-ffmpeg-notice">
-                <small>
-                  {__('FFmpeg not available. Please upload a poster image manually.', 's2j-alliance-manager')}
-                </small>
+                <small>{__('FFmpeg not available. Please upload a poster image manually.', 's2j-alliance-manager')}</small>
               </div>
             )}
           </>

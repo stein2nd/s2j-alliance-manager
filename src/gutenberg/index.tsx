@@ -58,6 +58,7 @@ const AllianceBannerEdit: React.FC<AllianceBannerProps> = ({
             }))}
             onChange={(value: string) => setAttributes({ displayStyle: value as AllianceBannerAttributes['displayStyle'] })}
             help={__('Choose how alliance banners are displayed.', 's2j-alliance-manager')}
+            __next40pxDefaultSize={true}
           />
           <SelectControl
             label={__('Alignment', 's2j-alliance-manager')}
@@ -69,6 +70,7 @@ const AllianceBannerEdit: React.FC<AllianceBannerProps> = ({
             onChange={(value: string) => setAttributes({ alignment: value as AllianceBannerAttributes['alignment'] })}
             help={__('Choose alignment for Single Column Grid display.', 's2j-alliance-manager')}
             disabled={displayStyle !== 'grid-single'}
+            __next40pxDefaultSize={true}
           />
         </PanelBody>
       </InspectorControls>

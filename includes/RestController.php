@@ -192,6 +192,7 @@ class S2J_Alliance_Manager_RestController {
             's2j_alliance_manager_settings', 
             array(
                 'display_style' => 'grid-single',
+                'alignment' => 'center',
                 'ffmpeg_path' => '',
                 'content_models' => array()
             )
@@ -240,6 +241,7 @@ class S2J_Alliance_Manager_RestController {
 
         $data = array(
             'display_style' => $settings['display_style'] ?? 'grid-single',
+            'alignment' => $settings['alignment'] ?? 'center',
             'ffmpeg_path' => $settings['ffmpeg_path'] ?? '',
             'content_models' => $content_models
         );
@@ -274,6 +276,12 @@ class S2J_Alliance_Manager_RestController {
         if (isset($settings['display_style'])) {
             $allowed_styles = array('grid-single', 'grid-multi', 'masonry');
             $sanitized['display_style'] = in_array($settings['display_style'], $allowed_styles) ? $settings['display_style'] : 'grid-single';
+        }
+
+        // 配置をサニタイズ
+        if (isset($settings['alignment'])) {
+            $allowed_alignments = array('left', 'center', 'right');
+            $sanitized['alignment'] = in_array($settings['alignment'], $allowed_alignments) ? $settings['alignment'] : 'center';
         }
 
         // FFmpeg のパスをサニタイズ
@@ -474,9 +482,7 @@ class S2J_Alliance_Manager_RestController {
         return rest_ensure_response(array(
             'success' => true,
             'available' => $is_available,
-            'message' => $is_available 
-                ? __('FFmpeg is available.', 's2j-alliance-manager')
-                : __('FFmpeg is not available.', 's2j-alliance-manager')
+            'message' => $is_available ? __('FFmpeg is available.', 's2j-alliance-manager') : __('FFmpeg is not available.', 's2j-alliance-manager')
         ));
     }
 

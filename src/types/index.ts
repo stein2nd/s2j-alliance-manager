@@ -5,7 +5,7 @@
  */
 export interface AllianceSettings {
   display_style: 'grid-single' | 'grid-multi';
-  alignment?: 'left' | 'center' | 'right';
+  alignment: 'left' | 'center' | 'right';
   ffmpeg_path?: string;
   content_models: ContentModel[];
 }

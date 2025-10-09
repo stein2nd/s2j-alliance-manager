@@ -14,6 +14,7 @@ class AllianceManagerAdmin {
 
   private settings: AllianceSettings = {
     display_style: 'grid-single',
+    alignment: 'center',
     content_models: []
   };
   private rankLabels: RankLabel[] = [];
@@ -146,6 +147,7 @@ class AllianceManagerAdmin {
             settings={this.settings}
             onSave={this.updateSettings}
             isLoading={this.isLoading}
+            rankLabels={this.rankLabels}
           />,
           displaySettingsContainer
         );
@@ -200,7 +202,7 @@ class AllianceManagerAdmin {
 
     // FFmpeg Library Manager のコンテナを取得します。
     const ffmpegManagerContainer = document.getElementById('s2j-ffmpeg-library-manager');
-    
+
     if (ffmpegManagerContainer && this.isInitialized) {
       try {
         // FFmpegLibraryManager に、FFmpeg Library Manager のコンテナをレンダリングします。
@@ -226,11 +228,11 @@ class AllianceManagerAdmin {
    * 
    * @param settings 
    */
-  private updateSettings = (settings: AllianceSettings) => {
+  private updateSettings = async (settings: AllianceSettings) => {
     this.settings = { ...this.settings, ...settings };
 
     // 設定を保存します。
-    this.saveData();
+    await this.saveData();
   };
 
   /**
@@ -256,6 +258,7 @@ class AllianceManagerAdmin {
           body: JSON.stringify({
             settings: {
               display_style: this.settings.display_style,
+              alignment: this.settings.alignment,
               ffmpeg_path: this.settings.ffmpeg_path || ''
             },
             content_models: this.settings.content_models
@@ -269,23 +272,31 @@ class AllianceManagerAdmin {
 
         if (result.success) {
           // 通知を表示します。
-          this.showNotice('success', result.message || __('Settings saved successfully.', 's2j-alliance-manager'));
-          
+          this.showNotice(
+            'success', result.message || __('Settings saved successfully.', 's2j-alliance-manager')
+          );
+
           // デバッグ情報を自動的にリフレッシュします。
           this.refreshDebugInfo();
         } else {
           // 通知を表示します。
-          this.showNotice('error', result.message || __('Failed to save settings.', 's2j-alliance-manager'));
+          this.showNotice(
+            'error', result.message || __('Failed to save settings.', 's2j-alliance-manager')
+          );
         }
       } else {
         // 通知を表示します。
-        this.showNotice('error', __('Failed to save settings.', 's2j-alliance-manager'));
+        this.showNotice(
+          'error', __('Failed to save settings.', 's2j-alliance-manager')
+        );
       }
     } catch (error) {
       console.error('Error saving settings:', error);
 
       // 通知を表示します。
-      this.showNotice('error', __('Failed to save settings.', 's2j-alliance-manager'));
+      this.showNotice(
+        'error', __('Failed to save settings.', 's2j-alliance-manager')
+      );
     } finally {
       this.isLoading = false;
 
@@ -447,7 +458,10 @@ class AllianceManagerAdmin {
     const observer = new MutationObserver((mutations) => {
       mutations.forEach((mutation) => {
         if (mutation.type === 'attributes' && mutation.attributeName === 'aria-expanded') {
+          // ヘルプパネルのリンク要素を取得
           const target = mutation.target as HTMLElement;
+
+          // aria-expanded 属性の値を取得
           const isExpanded = target.getAttribute('aria-expanded') === 'true';
 
           if (isExpanded) {
@@ -460,7 +474,7 @@ class AllianceManagerAdmin {
       });
     });
 
-    // aria-expanded属性の変更を監視開始
+    // aria-expanded 属性の変更を監視開始
     observer.observe(helpLink, {
       attributes: true,
       attributeFilter: ['aria-expanded']
@@ -577,7 +591,9 @@ class AllianceManagerAdmin {
           }
 
           // 成功通知を表示します。
-          this.showNotice('success', __('Debug information refreshed successfully.', 's2j-alliance-manager'));
+          this.showNotice(
+            'success', __('Debug information refreshed successfully.', 's2j-alliance-manager')
+          );
         } else {
           throw new Error('Invalid response format');
         }
@@ -586,7 +602,10 @@ class AllianceManagerAdmin {
       }
     } catch (error) {
       console.error('Error refreshing debug info:', error);
-      this.showNotice('error', __('Failed to refresh debug information.', 's2j-alliance-manager'));
+
+      this.showNotice(
+        'error', __('Failed to refresh debug information.', 's2j-alliance-manager')
+      );
     } finally {
       // ボタンを有効化し、元のテキストに戻します。
       button.prop('disabled', false);

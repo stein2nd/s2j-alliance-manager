@@ -1237,72 +1237,122 @@ div[id*="s2j"][id*="modal"],
   }
 
   .s2j-modal-content {
-    position: relative;
-    background: #fff;
-    border-radius: 8px;
-    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
-    max-width: 600px;
-    width: 90%;
-    max-height: 80vh;
-    overflow-y: auto;
-    transform: scale(0.9) translateY(-20px);
-    transition: transform 0.3s ease;
+    position: relative !important;
+    background: #fff !important;
+    border-radius: 8px !important;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2) !important;
+    max-width: 600px !important;
+    width: 90% !important;
+    max-height: 80vh !important;
+    overflow-y: auto !important;
+    transform: scale(0.9) translateY(-20px) !important;
+    transition: transform 0.3s ease !important;
+    padding: 20px !important;
+    margin: 0 !important;
+    box-sizing: border-box !important;
 
     &.s2j-modal-content-visible {
-      transform: scale(1) translateY(0);
+      transform: scale(1) translateY(0) !important;
     }
 
     &:focus {
-      outline: 2px solid #0073aa;
-      outline-offset: 2px;
+      outline: 2px solid #0073aa !important;
+      outline-offset: 2px !important;
     }
 
     h3 {
-      margin: 0 0 20px 0;
-      padding: 20px 20px 0 20px;
-      font-size: 1.5em;
-      font-weight: 600;
+      margin: 0 0 20px 0 !important;
+      padding: 0 !important;
+      font-size: 1.5em !important;
+      font-weight: 600 !important;
+      color: #333 !important;
     }
 
     .s2j-modal-description {
-      position: absolute;
-      left: -10000px;
-      width: 1px;
-      height: 1px;
-      overflow: hidden;
+      position: absolute !important;
+      left: -10000px !important;
+      width: 1px !important;
+      height: 1px !important;
+      overflow: hidden !important;
     }
 
     .s2j-form-field {
-      padding: 0 20px;
-      margin-bottom: 20px;
+      padding: 0 !important;
+      margin-bottom: 20px !important;
 
       .s2j-field-error {
-        color: #d63638;
-        font-size: 0.875em;
-        margin-top: 5px;
-        font-weight: 600;
+        color: #d63638 !important;
+        font-size: 0.875em !important;
+        margin-top: 5px !important;
+        font-weight: 600 !important;
         
         &[role="alert"] {
-          animation: shake 0.5s ease-in-out;
+          animation: shake 0.5s ease-in-out !important;
         }
       }
 
       .s2j-character-count {
-        text-align: right;
-        font-size: 0.875em;
-        color: #666;
-        margin-top: 5px;
+        text-align: right !important;
+        font-size: 0.875em !important;
+        color: #666 !important;
+        margin-top: 5px !important;
       }
     }
 
     .s2j-modal-actions {
-      display: flex;
-      justify-content: flex-end;
-      gap: 10px;
-      padding: 0 20px 20px 20px;
-      border-top: 1px solid #e0e0e0;
-      margin-top: 20px;
-      padding-top: 20px;
+      display: flex !important;
+      justify-content: flex-end !important;
+      gap: 10px !important;
+      padding: 20px !important;
+      border-top: 1px solid #e0e0e0 !important;
+      margin-top: 20px !important;
+
+      .components-button {
+        padding: 8px 16px !important;
+        margin: 0 !important;
+        border-radius: 4px !important;
+        font-size: 14px !important;
+        line-height: 1.4 !important;
+        min-height: 36px !important;
+        display: inline-flex !important;
+        align-items: center !important;
+        justify-content: center !important;
+        text-decoration: none !important;
+        cursor: pointer !important;
+        transition: all 0.2s ease !important;
+
+        &.is-secondary {
+          background: #f0f0f0 !important;
+          color: #333 !important;
+          border: 1px solid #ccc !important;
+
+          &:hover {
+            background: #e0e0e0 !important;
+            border-color: #999 !important;
+          }
+
+          &:focus {
+            outline: 2px solid #0073aa !important;
+            outline-offset: 2px !important;
+          }
+        }
+
+        &.is-primary {
+          background: #0073aa !important;
+          color: #fff !important;
+          border: 1px solid #0073aa !important;
+
+          &:hover {
+            background: #005a87 !important;
+            border-color: #005a87 !important;
+          }
+
+          &:focus {
+            outline: 2px solid #0073aa !important;
+            outline-offset: 2px !important;
+          }
+        }
+      }
     }
   }
 
@@ -1326,21 +1376,21 @@ div[id*="s2j"][id*="modal"],
 
 // プレビュー機能のスタイル
 .s2j-message-preview {
-  padding: 0 20px;
-  margin-bottom: 20px;
+  padding: 0 !important;
+  margin-bottom: 20px !important;
 
   h4 {
-    margin: 0 0 15px 0;
-    font-size: 1.1em;
-    font-weight: 600;
-    color: #333;
+    margin: 0 0 15px 0 !important;
+    font-size: 1.1em !important;
+    font-weight: 600 !important;
+    color: #333 !important;
   }
 
   .s2j-preview-content {
-    border: 1px solid #e0e0e0;
-    border-radius: 6px;
-    background: #f9f9f9;
-    padding: 15px;
+    border: 1px solid #e0e0e0 !important;
+    border-radius: 6px !important;
+    background: #f9f9f9 !important;
+    padding: 15px !important;
   }
 
   .s2j-preview-modal {

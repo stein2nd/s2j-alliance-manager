@@ -100,7 +100,7 @@ interface AllianceModalProps {
  * @param param0 フロントエンド用アライアンス・モーダル・コンポーネント (モーダル用)
  * @returns フロントエンド用アライアンス・モーダル・コンポーネント (モーダル用)
  */
-const AllianceModal: React.FC<AllianceModalProps> = ({
+const AllianceModalComponent: React.FC<AllianceModalProps> = ({
   isOpen,
   onClose,
   title = 'Partner Message',
@@ -142,14 +142,14 @@ const AllianceModal: React.FC<AllianceModalProps> = ({
 
   return (
     <ModalPortal>
-      <div className="s2j-alliance-modal">
+      <div className={`s2j-alliance-modal ${isOpen ? 's2j-modal-open' : ''}`}>
         <div 
-          className="s2j-modal-overlay" 
+          className={`s2j-modal-overlay ${isOpen ? 's2j-modal-overlay-visible' : ''}`}
           onClick={handleOverlayClick}
           aria-hidden="true"
         />
         <div 
-          className="s2j-modal-content"
+          className={`s2j-modal-content ${isOpen ? 's2j-modal-content-visible' : ''}`}
           ref={modalRef}
           role="dialog"
           aria-modal="true"
@@ -378,7 +378,7 @@ const AllianceBanner: React.FC<AllianceBannerProps> = ({
         <h3 className="s2j-alliance-rank-title">{rank}</h3>
         <div className={`s2j-alliance-banner ${getDisplayClass()} ${getAlignmentClass()}`}>
           {models.map((model, index) => {
-            if (model.behavior === 'modal' && model.logo > 0) {
+            if (model.behavior === 'modal') {
               // 動画ファイルかどうかを判定
               const isVideo = model.logo_url && /\.(mp4|webm|ogg|mov)$/i.test(model.logo_url);
               // ポスター画像の URL を使用 (PHP 側で準備済み)
@@ -387,65 +387,86 @@ const AllianceBanner: React.FC<AllianceBannerProps> = ({
               return (
                 <div key={`${rank}-${index}`} className="s2j-alliance-item">
                   <button
-                    className="s2j-alliance-logo"
+                    className="s2j-alliance-logo s2j-alliance-logo--modal"
                     onClick={() => handleLogoClick(model.message, isVideo ? model.logo_url : undefined, posterUrl)}
                     aria-label="View partner message"
                   >
-                    {isVideo ? (
-                      <video
-                        poster={posterUrl}
-                        preload="none"
-                        controls={false}
-                        muted
-                        className="s2j-alliance-video"
-                        style={{ pointerEvents: 'none' }}
-                      >
-                        <source src={model.logo_url || ''} type="video/mp4" />
-                      </video>
+                    {model.logo > 0 ? (
+                      isVideo ? (
+                        <video
+                          poster={posterUrl}
+                          preload="none"
+                          controls={false}
+                          muted
+                          className="s2j-alliance-video"
+                          style={{ pointerEvents: 'none' }}
+                        >
+                          <source src={model.logo_url || ''} type="video/mp4" />
+                        </video>
+                      ) : (
+                        <img
+                          src={model.logo_url || ''}
+                          alt="Partner logo"
+                          loading="lazy"
+                        />
+                      )
                     ) : (
-                      <img
-                        src={model.logo_url || ''}
-                        alt="Partner logo"
-                        loading="lazy"
-                      />
+                      <div className="s2j-alliance-placeholder">
+                        <span>No Logo</span>
+                      </div>
                     )}
                   </button>
                 </div>
               );
-            } else if (model.behavior === 'jump' && model.logo > 0 && model.jump_url) {
+            } else if (model.behavior === 'jump') {
               // 動画ファイルかどうかを判定
               const isVideo = model.logo_url && /\.(mp4|webm|ogg|mov)$/i.test(model.logo_url);
               // ポスター画像の URL を使用 (PHP 側で準備済み)
               const posterUrl = model.poster_url || '';
 
+              // URLが設定されている場合はリンク、そうでなければボタンとして表示
+              const content = model.logo > 0 ? (
+                isVideo ? (
+                  <video
+                    poster={posterUrl}
+                    preload="none"
+                    controls={false}
+                    muted
+                    className="s2j-alliance-video"
+                    style={{ pointerEvents: 'none' }}
+                  >
+                    <source src={model.logo_url || ''} type="video/mp4" />
+                  </video>
+                ) : (
+                  <img
+                    src={model.logo_url || ''}
+                    alt="Partner logo"
+                    loading="lazy"
+                  />
+                )
+              ) : (
+                <div className="s2j-alliance-placeholder">
+                  <span>No Logo</span>
+                </div>
+              );
+
               return (
                 <div key={`${rank}-${index}`} className="s2j-alliance-item">
-                  <a
-                    href={model.jump_url}
-                    className="s2j-alliance-logo"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    aria-label="Visit partner website"
-                  >
-                    {isVideo ? (
-                      <video
-                        poster={posterUrl}
-                        preload="none"
-                        controls={false}
-                        muted
-                        className="s2j-alliance-video"
-                        style={{ pointerEvents: 'none' }}
-                      >
-                        <source src={model.logo_url || ''} type="video/mp4" />
-                      </video>
-                    ) : (
-                      <img
-                        src={model.logo_url || ''}
-                        alt="Partner logo"
-                        loading="lazy"
-                      />
-                    )}
-                  </a>
+                  {model.jump_url ? (
+                    <a
+                      href={model.jump_url}
+                      className="s2j-alliance-logo"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      aria-label="Visit partner website"
+                    >
+                      {content}
+                    </a>
+                  ) : (
+                    <div className="s2j-alliance-logo s2j-alliance-logo--disabled">
+                      {content}
+                    </div>
+                  )}
                 </div>
               );
             }
@@ -465,7 +486,7 @@ const AllianceBanner: React.FC<AllianceBannerProps> = ({
           renderRankBanners(rank, models)
         )}
       </div>
-      <AllianceModal
+      <AllianceModalComponent
         isOpen={isOpen}
         onClose={closeModal}
         title="Partner Message"

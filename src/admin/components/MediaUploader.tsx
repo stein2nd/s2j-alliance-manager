@@ -446,7 +446,7 @@ export const MediaUploader: React.FC<MediaUploaderProps> = ({
                 src={posterMedia?.url || (posterAttachmentId ? `/wp-json/wp/v2/media/${posterAttachmentId}` : '')}
                 alt={`${posterMedia?.title || media.title} Poster`}
                 className="s2j-poster-preview"
-                style={{ maxWidth: '100%', height: 'auto', marginTop: '8px' }}
+                style={{ maxWidth: '100%', height: 'auto', marginTop: '0.5rem' }}
                 onError={(e) => {
                   console.error('Failed to load poster image:', e);
                   // エラーが発生した場合、画像を非表示にする

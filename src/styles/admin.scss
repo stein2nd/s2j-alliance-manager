@@ -27,7 +27,7 @@
     background: #f1f1f1;
     padding: 0.9375rem;
     margin: -0.625rem -0.625rem 1.25rem -0.625rem;
-    border-left: 4px solid #0073aa;
+    border-left: 0.25rem solid #0073aa;
     display: flex;
     justify-content: space-between;
     align-items: flex-start;
@@ -71,7 +71,7 @@
   .s2j-debug-section {
     background: $white;
     border: 1px solid #ccd0d4;
-    border-radius: 4px;
+    border-radius: 0.25rem;
     margin-bottom: 1.25rem;
     overflow: hidden;
 
@@ -110,7 +110,7 @@
           background: #e7f3ff;
           color: #0073aa;
           padding: 0.25rem 0.5rem;
-          border-radius: 3px;
+          border-radius: 0.1875rem;
           font-size: 0.8125rem;
 
           &--success {
@@ -142,7 +142,7 @@
         .s2j-debug-url-container {
           background: #f8f9fa;
           padding: 0.5rem;
-          border-radius: 3px;
+          border-radius: 0.1875rem;
           font-family: monospace;
           font-size: 0.75rem;
           word-break: break-all;
@@ -522,7 +522,7 @@
       position: absolute;
       top: 0;
       left: 0;
-      width: 4px;
+      width: 0.25rem;
       height: 100%;
       background: #f0b849;
       border-radius: 2px 0 0 2px;
@@ -536,20 +536,20 @@
 
   .s2j-row-number {
     position: absolute;
-    top: 4px;
-    left: 4px;
+    top: 0.25rem;
+    left: 0.25rem;
     background: $primary-color;
     color: $white;
     font-size: 0.625rem;
     font-weight: bold;
     padding: 0.125rem 0.25rem;
-    border-radius: 2px;
+    border-radius: 0.125rem;
     line-height: 1;
     z-index: 2;
 
     // 保留状態の場合は左側のインジケーターを避ける
     .s2j-pending-changes & {
-      left: 8px;
+      left: 0.5rem;
     }
   }
 
@@ -569,7 +569,7 @@
     &.content {
       textarea {
         width: 100%;
-        min-height: 60px;
+        min-height: 3.75rem;
         padding: $spacing-xs;
         border: 1px solid $border-color;
         border-radius: $border-radius-sm;
@@ -579,16 +579,16 @@
 
     &.thumbnail {
       .s2j-logo-preview {
-        width: 40px;
-        height: 40px;
+        width: 2.5rem;
+        height: 2.5rem;
         border-radius: $border-radius-sm;
         object-fit: cover;
         border: 1px solid $border-color;
       }
 
       .s2j-logo-placeholder {
-        width: 40px;
-        height: 40px;
+        width: 2.5rem;
+        height: 2.5rem;
         background: $background-color;
         border: 1px solid $border-color;
         border-radius: $border-radius-sm;
@@ -642,14 +642,14 @@
 
       .s2j-move-up-btn,
       .s2j-move-down-btn {
-        min-width: 65px;
+        min-width: 4.0625rem;
         padding: 0.25rem 0.375rem;
         font-size: 0.6875rem;
         white-space: nowrap;
       }
 
       .s2j-delete-btn {
-        min-width: 55px;
+        min-width: 3.4375rem;
         padding: 0.25rem 0.375rem;
         font-size: 0.6875rem;
         background: $error-color;
@@ -765,7 +765,7 @@
       position: absolute;
       top: 0;
       left: 0;
-      width: 4px;
+      width: 0.25rem;
       height: 100%;
       background: #f0b849;
       border-radius: 2px 0 0 2px;
@@ -779,20 +779,20 @@
 
   .s2j-row-number {
     position: absolute;
-    top: 4px;
-    left: 4px;
+    top: 0.25rem;
+    left: 0.25rem;
     background: $primary-color;
     color: $white;
     font-size: 0.625rem;
     font-weight: bold;
     padding: 0.125rem 0.25rem;
-    border-radius: 2px;
+    border-radius: 0.125rem;
     line-height: 1;
     z-index: 2;
 
     // 保留状態の場合は左側のインジケーターを避ける
     .s2j-pending-changes & {
-      left: 8px;
+      left: 0.5rem;
     }
   }
 
@@ -808,7 +808,7 @@
 
     &.rank {
       select {
-        min-width: 120px;
+        min-width: 7.5rem;
         padding: $spacing-xs;
         border: 1px solid $border-color;
         border-radius: $border-radius-sm;
@@ -817,16 +817,16 @@
 
     &.logo {
       .s2j-logo-preview {
-        width: 40px;
-        height: 40px;
+        width: 2.5rem;
+        height: 2.5rem;
         border-radius: $border-radius-sm;
         object-fit: cover;
         border: 1px solid $border-color;
       }
 
       .s2j-logo-placeholder {
-        width: 40px;
-        height: 40px;
+        width: 2.5rem;
+        height: 2.5rem;
         background: $background-color;
         border: 1px solid $border-color;
         border-radius: $border-radius-sm;
@@ -840,7 +840,7 @@
 
     &.jump-url {
       input[type="url"] {
-        width: 200px;
+        width: 12.5rem;
         padding: $spacing-xs;
         border: 1px solid $border-color;
         border-radius: $border-radius-sm;
@@ -849,7 +849,7 @@
 
     &.behavior {
       select {
-        min-width: 100px;
+        min-width: 6.25rem;
         padding: $spacing-xs;
         border: 1px solid $border-color;
         border-radius: $border-radius-sm;
@@ -953,16 +953,16 @@
     align-items: flex-start;
 
     img {
-      width: 100px;
-      height: 100px;
+      width: 6.25rem;
+      height: 6.25rem;
       object-fit: cover;
       border-radius: $border-radius-sm;
       border: 1px solid $border-color;
     }
 
     video {
-      width: 100px;
-      height: 100px;
+      width: 6.25rem;
+      height: 6.25rem;
       object-fit: cover;
       border-radius: $border-radius-sm;
       border: 1px solid $border-color;
@@ -977,8 +977,8 @@
     gap: $spacing-xs;
 
     .s2j-poster-preview {
-      width: 100px;
-      height: 100px;
+      width: 6.25rem;
+      height: 6.25rem;
       object-fit: cover;
       border-radius: $border-radius-sm;
       border: 1px solid $border-color;
@@ -1239,15 +1239,15 @@ div[id*="s2j"][id*="modal"],
   .s2j-modal-content {
     position: relative !important;
     background: #fff !important;
-    border-radius: 8px !important;
+    border-radius: 0.5rem !important;
     box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2) !important;
-    max-width: 600px !important;
+    max-width: 37.5rem !important;
     width: 90% !important;
     max-height: 80vh !important;
     overflow-y: auto !important;
-    transform: scale(0.9) translateY(-20px) !important;
+    transform: scale(0.9) translateY(-1.25rem) !important;
     transition: transform 0.3s ease !important;
-    padding: 20px !important;
+    padding: 1.25rem !important;
     margin: 0 !important;
     box-sizing: border-box !important;
 
@@ -1261,7 +1261,7 @@ div[id*="s2j"][id*="modal"],
     }
 
     h3 {
-      margin: 0 0 20px 0 !important;
+      margin: 0 0 1.25rem 0 !important;
       padding: 0 !important;
       font-size: 1.5em !important;
       font-weight: 600 !important;
@@ -1278,12 +1278,12 @@ div[id*="s2j"][id*="modal"],
 
     .s2j-form-field {
       padding: 0 !important;
-      margin-bottom: 20px !important;
+      margin-bottom: 1.25rem !important;
 
       .s2j-field-error {
         color: #d63638 !important;
         font-size: 0.875em !important;
-        margin-top: 5px !important;
+        margin-top: 0.3125rem !important;
         font-weight: 600 !important;
         
         &[role="alert"] {
@@ -1295,25 +1295,25 @@ div[id*="s2j"][id*="modal"],
         text-align: right !important;
         font-size: 0.875em !important;
         color: #666 !important;
-        margin-top: 5px !important;
+        margin-top: 0.3125rem !important;
       }
     }
 
     .s2j-modal-actions {
       display: flex !important;
       justify-content: flex-end !important;
-      gap: 10px !important;
-      padding: 20px !important;
+      gap: 0.625rem !important;
+      padding: 1.25rem !important;
       border-top: 1px solid #e0e0e0 !important;
-      margin-top: 20px !important;
+      margin-top: 1.25rem !important;
 
       .components-button {
-        padding: 8px 16px !important;
+        padding: 0.5rem 1rem !important;
         margin: 0 !important;
-        border-radius: 4px !important;
-        font-size: 14px !important;
+        border-radius: 0.25rem !important;
+        font-size: 0.875rem !important;
         line-height: 1.4 !important;
-        min-height: 36px !important;
+        min-height: 2.25rem !important;
         display: inline-flex !important;
         align-items: center !important;
         justify-content: center !important;
@@ -1360,8 +1360,8 @@ div[id*="s2j"][id*="modal"],
   @media (width <= 768px) {
     .s2j-modal-content {
       width: 95%;
-      margin: 20px;
-      max-height: calc(100vh - 40px);
+      margin: 1.25rem;
+      max-height: calc(100vh - 2.5rem);
     }
   }
 
@@ -1377,10 +1377,10 @@ div[id*="s2j"][id*="modal"],
 // プレビュー機能のスタイル
 .s2j-message-preview {
   padding: 0 !important;
-  margin-bottom: 20px !important;
+    margin-bottom: 1.25rem !important;
 
   h4 {
-    margin: 0 0 15px 0 !important;
+    margin: 0 0 0.9375rem 0 !important;
     font-size: 1.1em !important;
     font-weight: 600 !important;
     color: #333 !important;
@@ -1390,12 +1390,12 @@ div[id*="s2j"][id*="modal"],
     border: 1px solid #e0e0e0 !important;
     border-radius: 6px !important;
     background: #f9f9f9 !important;
-    padding: 15px !important;
+    padding: 0.9375rem !important;
   }
 
   .s2j-preview-modal {
     background: #fff;
-    border-radius: 6px;
+    border-radius: 0.375rem;
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
     overflow: hidden;
 
@@ -1411,7 +1411,7 @@ div[id*="s2j"][id*="modal"],
       display: flex;
       justify-content: space-between;
       align-items: center;
-      padding: 15px 20px;
+      padding: 0.9375rem 1.25rem;
       background: #f0f0f0;
       border-bottom: 1px solid #e0e0e0;
 
@@ -1429,12 +1429,12 @@ div[id*="s2j"][id*="modal"],
         color: #666;
         cursor: pointer;
         padding: 0;
-        width: 24px;
-        height: 24px;
+        width: 1.5rem;
+        height: 1.5rem;
         display: flex;
         align-items: center;
         justify-content: center;
-        border-radius: 3px;
+        border-radius: 0.1875rem;
 
         &:hover {
           background: #e0e0e0;
@@ -1444,8 +1444,8 @@ div[id*="s2j"][id*="modal"],
     }
 
     .s2j-preview-body {
-      padding: 20px;
-      min-height: 100px;
+      padding: 1.25rem;
+      min-height: 6.25rem;
       line-height: 1.6;
       color: #333;
       white-space: pre-wrap;
@@ -1463,8 +1463,8 @@ div[id*="s2j"][id*="modal"],
 // アニメーション効果
 @keyframes shake {
   0%, 100% { transform: translateX(0); }
-  25% { transform: translateX(-5px); }
-  75% { transform: translateX(5px); }
+  25% { transform: translateX(-0.3125rem); }
+  75% { transform: translateX(0.3125rem); }
 }
 
 // 高コントラストモード対応

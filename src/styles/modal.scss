@@ -64,14 +64,14 @@
   .s2j-modal-content {
     position: relative;
     background: #fff;
-    border-radius: 8px;
+    border-radius: 0.5rem;
     box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
-    max-width: 600px;
+    max-width: 37.5rem;
     width: 90%;
     max-height: 80vh;
     overflow-y: auto;
     z-index: 1000000;
-    transform: scale(0.9) translateY(-20px);
+    transform: scale(0.9) translateY(-1.25rem);
     transition: transform 0.3s ease;
 
     &.s2j-modal-content-visible {
@@ -83,7 +83,7 @@
       display: flex;
       justify-content: space-between;
       align-items: center;
-      padding: 20px 20px 0 20px;
+      padding: 1.25rem 1.25rem 0 1.25rem;
       border-bottom: 1px solid #e0e0e0;
 
       h3 {
@@ -100,12 +100,12 @@
         color: #666;
         cursor: pointer;
         padding: 0;
-        width: 32px;
-        height: 32px;
+        width: 2rem;
+        height: 2rem;
         display: flex;
         align-items: center;
         justify-content: center;
-        border-radius: 4px;
+        border-radius: 0.25rem;
         transition: all 0.2s ease;
 
         &:hover {
@@ -122,7 +122,7 @@
 
     // モーダルボディ
     .s2j-modal-body {
-      padding: 20px;
+      padding: 1.25rem;
 
       .s2j-modal-message {
         line-height: 1.6;
@@ -137,11 +137,11 @@
   @media (width <= 768px) {
     .s2j-modal-content {
       width: 95%;
-      margin: 20px;
-      max-height: calc(100vh - 40px);
+      margin: 1.25rem;
+      max-height: calc(100vh - 2.5rem);
 
       .s2j-modal-header {
-        padding: 15px 15px 0 15px;
+        padding: 0.9375rem 0.9375rem 0 0.9375rem;
 
         h3 {
           font-size: 1.25em;
@@ -149,7 +149,7 @@
       }
 
       .s2j-modal-body {
-        padding: 15px;
+        padding: 0.9375rem;
       }
     }
   }

@@ -228,7 +228,7 @@ class S2J_Alliance_Manager_AllianceManager {
      * @return string $html ショートコードの HTML
      */
     public function test_shortcode($atts = array(), $content = '') {
-        return '<div style="background: #f0f0f0; padding: 10px; border: 2px solid #0073aa; margin: 10px 0;">TEST SHORTCODE WORKS! Time: ' . date('Y-m-d H:i:s') . '</div>';
+        return '<div style="background: #f0f0f0; padding: 0.625rem; border: 2px solid #0073aa; margin: 0.625rem 0;">TEST SHORTCODE WORKS! Time: ' . date('Y-m-d H:i:s') . '</div>';
     }
 
     /**
@@ -739,7 +739,7 @@ class S2J_Alliance_Manager_AllianceManager {
                 <h2>{$debug_title}</h2>
                 <p>{$debug_description}</p>
                 <button type="button" id="s2j-refresh-debug-info" class="button button-secondary">
-                    <span class="dashicons dashicons-update" style="vertical-align: middle; margin-right: 5px;"></span>
+                    <span class="dashicons dashicons-update" style="vertical-align: middle; margin-right: 0.3125rem;"></span>
                     <span class="refresh-text">{$refresh_text}</span>
                 </button>
             </div>

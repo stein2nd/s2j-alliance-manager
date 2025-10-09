@@ -426,7 +426,61 @@
 
     .s2j-rank-label-actions {
       display: flex;
-      gap: $spacing-sm;
+      gap: 0.625rem;
+      flex-wrap: wrap;
+      align-items: center;
+      
+      .s2j-toggle-select-mode-btn {
+        background: #f0f0f0;
+        border: 1px solid #ccc;
+        border-radius: 0.25rem;
+        padding: 0.5rem 1rem;
+        cursor: pointer;
+        transition: all 0.2s ease;
+        
+        &.active {
+          background: #0073aa;
+          color: $white;
+          border-color: #0073aa;
+        }
+        
+        &:hover {
+          background: #005a87;
+          color: $white;
+        }
+      }
+      
+      .s2j-bulk-move-up-btn,
+      .s2j-bulk-move-down-btn {
+        background: #f0f0f0;
+        border: 1px solid #ccc;
+        border-radius: 0.25rem;
+        padding: 0.5rem 1rem;
+        cursor: pointer;
+        
+        &:hover:not(:disabled) {
+          background: #e0e0e0;
+        }
+        
+        &:disabled {
+          opacity: 0.5;
+          cursor: not-allowed;
+        }
+      }
+      
+      .s2j-bulk-delete-btn {
+        background: #d63638;
+        color: $white;
+        border: 1px solid #d63638;
+        border-radius: 0.25rem;
+        padding: 0.5rem 1rem;
+        cursor: pointer;
+        
+        &:hover {
+          background: #b32d2e;
+          border-color: #b32d2e;
+        }
+      }
 
       button {
         padding: $spacing-sm $spacing-md;
@@ -505,9 +559,32 @@
   border-radius: $border-radius-sm;
   margin-bottom: $spacing-md;
   background: $white;
+  transition: all 0.2s ease;
 
   &:hover {
     box-shadow: $shadow-sm;
+  }
+
+  &.s2j-selected {
+    background: #f0f8ff;
+    border-color: #0073aa;
+    box-shadow: 0 0 0 2px rgba(0, 115, 170, 0.2);
+  }
+
+  .s2j-selection-checkbox {
+    input[type="checkbox"] {
+      width: 1.125rem;
+      height: 1.125rem;
+      cursor: pointer;
+    }
+  }
+
+  .s2j-label-field.slug {
+    .components-text-control__input {
+      font-family: monospace;
+      background: #f9f9f9;
+      color: #666;
+    }
   }
 
   // 保留中の変更がある場合のスタイル
@@ -1526,6 +1603,71 @@ div[id*="s2j"][id*="modal"],
   p {
     margin: 0;
     font-style: italic;
+  }
+}
+
+// エラーメッセージのスタイル
+.s2j-error-notice {
+  .s2j-error-content {
+    .s2j-error-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 0.625rem;
+      
+      .s2j-error-title {
+        margin: 0;
+        font-size: 1.1em;
+        font-weight: 600;
+        color: #d63638;
+      }
+    }
+    
+    .s2j-error-body {
+      .s2j-error-message {
+        margin: 0 0 0.625rem 0;
+        font-weight: 500;
+      }
+      
+      .s2j-error-suggestion {
+        margin: 0;
+        font-size: 0.9em;
+        color: #666;
+        font-style: italic;
+      }
+    }
+    
+    .s2j-error-actions {
+      margin-top: 0.9375rem;
+      
+      .s2j-error-action-btn {
+        background: #0073aa;
+        color: $white;
+        border: 1px solid #0073aa;
+        border-radius: 0.25rem;
+        padding: 0.5rem 1rem;
+        cursor: pointer;
+        
+        &:hover {
+          background: #005a87;
+          border-color: #005a87;
+        }
+      }
+    }
+  }
+}
+
+.s2j-success-notice {
+  .s2j-success-content {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    
+    p {
+      margin: 0;
+      font-weight: 500;
+      color: #00a32a;
+    }
   }
 }
 

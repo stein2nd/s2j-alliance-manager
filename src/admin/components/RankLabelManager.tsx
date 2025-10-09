@@ -3,6 +3,8 @@ import { __ } from '@wordpress/i18n';
 import { Button, TextControl, TextareaControl } from '@wordpress/components';
 import { RankLabel } from '../../types';
 import { MediaUploader } from './MediaUploader';
+import { SlugGenerator } from '../utils/slugGenerator';
+import { ErrorHandler, ErrorType } from '../utils/errorHandler';
 
 /**
  * React.FunctionComponent「ランクラベル管理 UI」インターフェイス
@@ -26,9 +28,30 @@ export const RankLabelManager: React.FC<RankLabelManagerProps> = ({
   onUpdate,
   isLoading = false
 }) => {
+  /**
+   * 変更保留中のランクラベル
+   */
   const [pendingLabels, setPendingLabels] = useState<RankLabel[] | null>(null);
+
+  /**
+   * 変更保留中かどうか
+   */
   const [hasUnsavedChanges, setHasUnsavedChanges] = useState(false);
+
+  /**
+   * 元の順序
+   */
   const [originalOrder, setOriginalOrder] = useState<number[]>([]);
+
+  /**
+   * 選択されたインデックス
+   */
+  const [selectedIndices, setSelectedIndices] = useState<number[]>([]);
+
+  /**
+   * 選択モードかどうか
+   */
+  const [isSelectMode, setIsSelectMode] = useState(false);
 
   /**
    * ランクラベルが変更された際に、original order を初期化します。
@@ -55,25 +78,49 @@ export const RankLabelManager: React.FC<RankLabelManagerProps> = ({
       slug: ''
     };
 
+    /**
+     * 現在のランクラベル
+     */
     const currentLabels = pendingLabels || initialRankLabels;
+
+    /**
+     * 更新されたランクラベル
+     */
     const updatedLabels = [...currentLabels, newLabel];
 
+    // 変更保留中のランクラベルを更新
     setPendingLabels(updatedLabels);
 
+    // 変更保留中かどうかを更新
     setHasUnsavedChanges(true);
 
+    // 元の順序を更新
     setOriginalOrder([...originalOrder, originalOrder.length]);
   };
 
   /**
-   * 変更を保存します。
+   * 変更を保存します (エラーハンドリング改善版)
    * 「s2j-save-rank-labels-btn.onClick()」メソッドから呼ばれます。
    * @returns 変更を保存します。
    */
   const saveChanges = async () => {
     if (pendingLabels) {
       try {
-        // ランクラベルを保存します。
+        // バリデーションチェック
+        const validationErrors = validateRankLabels(pendingLabels);
+
+        if (validationErrors.length > 0) {
+          // バリデーションエラーを表示
+          ErrorHandler.showError({
+            type: ErrorType.VALIDATION,
+            title: __('Validation Error', 's2j-alliance-manager'),
+            message: __('Please correct the following errors before saving:', 's2j-alliance-manager'),
+            suggestion: validationErrors.join(' ')
+          }, 'rank-label-save');
+          return;
+        }
+
+        // ランクラベルを保存
         const response = await fetch(
           `${window.s2jAllianceManager.apiUrl}rank-labels`,
           {
@@ -90,32 +137,71 @@ export const RankLabelManager: React.FC<RankLabelManagerProps> = ({
           const result = await response.json();
 
           if (result.success) {
-            // 親コンポーネントに、新規ランクラベルを反映します。
+            // 親コンポーネントに反映
             await onUpdate(pendingLabels);
 
+            // 変更保留中のランクラベルをクリア
             setPendingLabels(null);
 
+            // 変更保留中かどうかをクリア
             setHasUnsavedChanges(false);
 
+            // 元の順序を更新
             setOriginalOrder(pendingLabels.map((_, index) => index));
 
-            // 通知を表示します。
-            showNotice('success', result.message || __('Rank labels saved successfully.', 's2j-alliance-manager'));
+            // 成功メッセージを表示
+            ErrorHandler.showSuccess(
+              result.message || __('Rank labels saved successfully.', 's2j-alliance-manager'), 'rank-label-save'
+            );
           } else {
-            // 通知を表示します。
-            showNotice('error', result.message || __('Failed to save rank labels.', 's2j-alliance-manager'));
+            // サーバーエラーを表示
+            ErrorHandler.showError(
+              ErrorHandler.parseError({ status: 500, message: result.message }, 'rank-label-save'), 'rank-label-save');
           }
         } else {
-          // 通知を表示します。
-          showNotice('error', __('Failed to save rank labels.', 's2j-alliance-manager'));
+          // HTTP エラーを表示
+          ErrorHandler.showError(
+            ErrorHandler.parseError({ status: response.status }, 'rank-label-save'), 'rank-label-save'
+          );
         }
       } catch (error) {
         console.error('Error saving rank labels:', error);
-
-        // 通知を表示します。
-        showNotice('error', __('Failed to save rank labels.', 's2j-alliance-manager'));
+        
+        // ネットワークエラーを表示
+        ErrorHandler.showError(
+          ErrorHandler.parseError(error, 'rank-label-save'), 'rank-label-save'
+        );
       }
     }
+  };
+
+  /**
+   * ランクラベルのバリデーション
+   * @param labels バリデーションするラベル一覧
+   * @returns エラーメッセージの配列
+   */
+  const validateRankLabels = (labels: RankLabel[]): string[] => {
+    const errors: string[] = [];
+
+    // タイトルの重複チェック
+    const titles = labels.map(label => label.title.trim()).filter(title => title);
+
+    // タイトルの重複
+    const duplicateTitles = titles.filter((title, index) => titles.indexOf(title) !== index);
+
+    if (duplicateTitles.length > 0) {
+      // エラーメッセージを追加
+      errors.push(__('Duplicate titles found. Please ensure all titles are unique.', 's2j-alliance-manager'));
+    }
+
+    // 必須項目チェック
+    labels.forEach((label) => {
+      if (!label.title.trim()) {
+        errors.push(__('Title is required for all rank labels.', 's2j-alliance-manager'));
+      }
+    });
+
+    return errors;
   };
 
   /**
@@ -144,13 +230,56 @@ export const RankLabelManager: React.FC<RankLabelManagerProps> = ({
     const updated = [...currentLabels];
     updated[index] = { ...updated[index], [field]: value };
 
-    // title 変更時に slug を更新します。
+    // title 変更時にスラッグを自動生成
     if (field === 'title' && typeof value === 'string') {
-      updated[index].slug = value.toLowerCase().replace(/\s+/g, '-');
+      const newSlug = SlugGenerator.generateSlug(value, currentLabels, index);
+      updated[index].slug = newSlug;
+
+      // スラッグの重複警告を表示
+      if (newSlug !== value.toLowerCase().replace(/\s+/g, '-')) {
+        ErrorHandler.showSuccess(
+          __('Slug automatically generated to avoid duplicates.', 's2j-alliance-manager'), 'rank-label-slug'
+        );
+      }
     }
 
     setPendingLabels(updated);
+    setHasUnsavedChanges(true);
+  };
 
+  /**
+   * スラッグを手動で更新します
+   * @param index インデックス
+   * @param slug スラッグ
+   */
+  const updateSlug = (index: number, slug: string) => {
+    const currentLabels = pendingLabels || initialRankLabels;
+    const updated = [...currentLabels];
+
+    // スラッグの妥当性をチェック
+    const validation = SlugGenerator.validateSlug(slug);
+    if (!validation.isValid) {
+      ErrorHandler.showError({
+        type: ErrorType.VALIDATION,
+        title: __('Validation Error', 's2j-alliance-manager'),
+        message: validation.message || __('Invalid slug format.', 's2j-alliance-manager')
+      }, 'rank-label-slug');
+      return;
+    }
+
+    // 重複チェック
+    const isDuplicate = SlugGenerator.isSlugDuplicate(slug, currentLabels, index);
+    if (isDuplicate) {
+      ErrorHandler.showError({
+        type: ErrorType.VALIDATION,
+        title: __('Validation Error', 's2j-alliance-manager'),
+        message: __('This slug is already in use. Please choose a different one.', 's2j-alliance-manager')
+      }, 'rank-label-slug');
+      return;
+    }
+
+    updated[index].slug = slug;
+    setPendingLabels(updated);
     setHasUnsavedChanges(true);
   };
 
@@ -200,27 +329,101 @@ export const RankLabelManager: React.FC<RankLabelManagerProps> = ({
   };
 
   /**
-   * 通知を表示します。
-   * 「saveChanges()」メソッドから呼ばれます。
-   * @param type タイプ
-   * @param message メッセージ
+   * 選択モードを切り替えます
    */
-  const showNotice = (type: 'success' | 'error', message: string) => {
-    const notice = document.createElement('div');
-    notice.className = `notice notice-${type} is-dismissible`;
-    notice.innerHTML = `<p>${message}</p>`;
+  const toggleSelectMode = () => {
+    setIsSelectMode(!isSelectMode);
+    setSelectedIndices([]);
+  };
 
-    const container = document.querySelector('.wrap');
-    if (container) {
-      container.insertBefore(notice, container.firstChild);
-
-      // 5秒後に自動で消えます。
-      setTimeout(() => {
-        if (notice.parentNode) {
-          notice.parentNode.removeChild(notice);
-        }
-      }, 5000);
+  /**
+   * 個別選択を切り替えます
+   * @param index インデックス
+   */
+  const toggleSelection = (index: number) => {
+    if (selectedIndices.includes(index)) {
+      setSelectedIndices(selectedIndices.filter(i => i !== index));
+    } else {
+      setSelectedIndices([...selectedIndices, index]);
     }
+  };
+
+  /**
+   * 全選択を切り替えます
+   */
+  const toggleSelectAll = () => {
+    const displayLabels = pendingLabels || initialRankLabels;
+    if (selectedIndices.length === displayLabels.length) {
+      setSelectedIndices([]);
+    } else {
+      setSelectedIndices(displayLabels.map((_, index) => index));
+    }
+  };
+
+  /**
+   * 選択した項目を一括削除します
+   */
+  const bulkDelete = () => {
+    if (selectedIndices.length === 0) return;
+
+    // 確認メッセージ
+    const confirmMessage = selectedIndices.length === 1 ? __('Are you sure you want to delete the selected rank label?', 's2j-alliance-manager') : __('Are you sure you want to delete the selected rank labels?', 's2j-alliance-manager');
+
+    if (window.confirm(confirmMessage)) {
+      // 現在のランクラベル
+      const currentLabels = pendingLabels || initialRankLabels;
+
+      // 更新されたランクラベル
+      const updated = currentLabels.filter((_, i) => !selectedIndices.includes(i));
+
+      setPendingLabels(updated);
+      setHasUnsavedChanges(true);
+      setSelectedIndices([]);
+
+      // original order を更新
+      const newOriginalOrder = originalOrder.filter((_, i) => !selectedIndices.includes(i));
+      setOriginalOrder(newOriginalOrder);
+
+      ErrorHandler.showSuccess(
+        selectedIndices.length === 1 ? __('Rank label deleted successfully.', 's2j-alliance-manager') : __('Rank labels deleted successfully.', 's2j-alliance-manager'), 'rank-label-bulk-delete'
+      );
+    }
+  };
+
+  /**
+   * 選択した項目を一括移動します
+   * @param direction 移動方向
+   */
+  const bulkMove = (direction: 'up' | 'down') => {
+    if (selectedIndices.length === 0) return;
+
+    const currentLabels = pendingLabels || initialRankLabels;
+    const updated = [...currentLabels];
+    const step = direction === 'up' ? -1 : 1;
+
+    // 選択された項目を移動
+    const sortedIndices = [...selectedIndices].sort((a, b) => 
+      direction === 'up' ? a - b : b - a
+    );
+
+    for (const index of sortedIndices) {
+      const newIndex = index + step;
+      if (newIndex >= 0 && newIndex < updated.length) {
+        [updated[index], updated[newIndex]] = [updated[newIndex], updated[index]];
+      }
+    }
+
+    // menu_order を更新
+    updated.forEach((label, idx) => {
+      label.menu_order = idx;
+    });
+
+    setPendingLabels(updated);
+    setHasUnsavedChanges(true);
+
+    ErrorHandler.showSuccess(
+      selectedIndices.length === 1 ? __('Rank label moved successfully.', 's2j-alliance-manager') : __('Rank labels moved successfully.', 's2j-alliance-manager'), 'rank-label-bulk-move'
+    );
   };
 
   // 表示ラベル (変更保留中と保存済み)
@@ -232,6 +435,49 @@ export const RankLabelManager: React.FC<RankLabelManagerProps> = ({
       <div className="s2j-rank-label-header">
         <h3>{__('Rank Label Management', 's2j-alliance-manager')}</h3>
         <div className="s2j-rank-label-actions">
+          {/* 選択モード切り替えボタン */}
+          <button
+            onClick={toggleSelectMode}
+            className={`s2j-toggle-select-mode-btn ${isSelectMode ? 'active' : ''}`}
+          >
+            <span className="s2j-button-text">{isSelectMode ? __('Exit Select Mode', 's2j-alliance-manager') : __('Select Mode', 's2j-alliance-manager')}</span>
+          </button>
+          {/* 一括操作ボタン（選択モード時のみ表示） */}
+          {isSelectMode && (
+            <>
+              <button
+                onClick={toggleSelectAll}
+                className="s2j-select-all-btn"
+              >
+                <span className="s2j-button-text">{selectedIndices.length === (pendingLabels || initialRankLabels).length ? __('Deselect All', 's2j-alliance-manager') : __('Select All', 's2j-alliance-manager') }</span>
+              </button>
+              {selectedIndices.length > 0 && (
+                <>
+                  <button
+                    onClick={() => bulkMove('up')}
+                    disabled={selectedIndices.some(i => i === 0)}
+                    className="s2j-bulk-move-up-btn"
+                  >
+                    <span className="s2j-button-text">▲ {__('Move Up', 's2j-alliance-manager')}</span>
+                  </button>
+                  <button
+                    onClick={() => bulkMove('down')}
+                    disabled={selectedIndices.some(i => i === (pendingLabels || initialRankLabels).length - 1)}
+                    className="s2j-bulk-move-down-btn"
+                  >
+                    <span className="s2j-button-text">▼ {__('Move Down', 's2j-alliance-manager')}</span>
+                  </button>
+                  <button
+                    onClick={bulkDelete}
+                    className="s2j-bulk-delete-btn destructive"
+                  >
+                    <span className="s2j-button-text">{selectedIndices.length === 1 ? __('Delete Selected', 's2j-alliance-manager') : __('Delete Selected', 's2j-alliance-manager') }</span>
+                  </button>
+                </>
+              )}
+            </>
+          )}
+          {/* 既存のボタン */}
           <button
             onClick={addNewLabel}
             disabled={isLoading}
@@ -266,11 +512,26 @@ export const RankLabelManager: React.FC<RankLabelManagerProps> = ({
           </div>
         ) : (
           displayLabels.map((label: RankLabel, index: number) => {
-            // Show original order number when there are unsaved changes
+            // 変更保留中の場合は、元の順番を表示、なければ現在のインデックス+1を表示
             const rowNumber = hasUnsavedChanges && originalOrder.length > index ? originalOrder[index] + 1 : index + 1;
+            const isSelected = selectedIndices.includes(index);
 
             return (
-              <div key={`label-${index}-${label.id}`} className={`s2j-rank-label ${hasUnsavedChanges ? 's2j-pending-changes' : ''}`}>
+              <div 
+                key={`label-${index}-${label.id}`} 
+                className={`s2j-rank-label ${hasUnsavedChanges ? 's2j-pending-changes' : ''} ${isSelected ? 's2j-selected' : ''}`}
+              >
+                {/* 選択チェックボックス（選択モード時のみ表示） */}
+                {isSelectMode && (
+                  <div className="s2j-selection-checkbox">
+                    <input
+                      type="checkbox"
+                      checked={isSelected}
+                      onChange={() => toggleSelection(index)}
+                      aria-label={__('Select this rank label', 's2j-alliance-manager')}
+                    />
+                  </div>
+                )}
                 <div className="s2j-row-number">#{rowNumber}</div>
                 <div className="s2j-label-field title">
                   <TextControl
@@ -280,6 +541,19 @@ export const RankLabelManager: React.FC<RankLabelManagerProps> = ({
                     placeholder={__('Enter rank label title', 's2j-alliance-manager')}
                     __next40pxDefaultSize={true}
                     __nextHasNoMarginBottom={true}
+                  />
+                </div>
+                {/* スラッグ入力フィールド */}
+                <div className="s2j-label-field slug">
+                  <TextControl
+                    value={label.slug}
+                    onChange={(value: string) => updateSlug(index, value)}
+                    label={__('Slug', 's2j-alliance-manager')}
+                    placeholder={__('Enter slug (lowercase letters, numbers, hyphens only)', 's2j-alliance-manager')}
+                    help={__('This slug will be used in URLs. Only lowercase letters, numbers, and hyphens are allowed.', 's2j-alliance-manager')}
+                    __next40pxDefaultSize={true}
+                    __nextHasNoMarginBottom={true}
+                    className="s2j-slug-input"
                   />
                 </div>
                 <div className="s2j-label-field content">

@@ -528,16 +528,6 @@ function initializeBannerElement(element: HTMLElement) {
   const displayStyle = (element.dataset.displayStyle as 'grid-single' | 'grid-multi') || 'grid-single';
   const alignment = (element.dataset.alignment as 'left' | 'center' | 'right') || 'center';
 
-  // デバッグ用ログ
-  console.log('S2J Alliance Manager: Frontend reading attributes:', {
-    fromDataset: element.dataset.displayStyle,
-    finalDisplayStyle: displayStyle,
-    finalAlignment: alignment,
-    contentModelsCount: contentModels.length,
-    elementId: element.id || 'no-id',
-    elementClass: element.className
-  });
-
   // React コンポーネントをレンダリング
   const root = createRoot(element);
   root.render(
@@ -579,7 +569,6 @@ function setupMutationObserver() {
     }
 
     debounceTimer = window.setTimeout(() => {
-      console.log('S2J Alliance Manager: MutationObserver triggered, processing DOM changes...');
       mutations.forEach((mutation) => {
         // 追加されたノードをチェック
         mutation.addedNodes.forEach((node) => {
@@ -588,14 +577,12 @@ function setupMutationObserver() {
             
             // 追加された要素自体がアライアンス・バナー要素の場合
             if (element.classList.contains('wp-block-s2j-alliance-manager-alliance-banner')) {
-              console.log('S2J Alliance Manager: Found new alliance banner element directly');
               initializeBannerElement(element as HTMLElement);
             }
             
             // 追加された要素の子要素にアライアンス・バナー要素がある場合
             const bannerElements = element.querySelectorAll('.wp-block-s2j-alliance-manager-alliance-banner');
             if (bannerElements.length > 0) {
-              console.log(`S2J Alliance Manager: Found ${bannerElements.length} alliance banner elements in subtree`);
               bannerElements.forEach((bannerElement: Element) => {
                 initializeBannerElement(bannerElement as HTMLElement);
               });

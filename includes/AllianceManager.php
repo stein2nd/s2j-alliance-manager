@@ -189,16 +189,6 @@ class S2J_Alliance_Manager_AllianceManager {
      * @return string $html ショートコードの HTML
      */
     public function render_alliance_banner_shortcode($atts = array(), $content = '') {
-        // デバッグ用ログ
-        error_log('S2J Alliance Manager: Shortcode called with atts: ' . print_r($atts, true));
-
-        // ファイルに直接書き込み
-        file_put_contents(
-            WP_CONTENT_DIR . '/debug.log',
-            '[' . date('Y-m-d H:i:s') . '] S2J Alliance Manager: Shortcode called with atts: ' . print_r($atts, true) . PHP_EOL,
-            FILE_APPEND | LOCK_EX
-        );
-
         // パラメーター名を正規化（小文字からキャメルケースに変換）
         $normalized_atts = array();
         foreach ($atts as $key => $value) {
@@ -210,9 +200,6 @@ class S2J_Alliance_Manager_AllianceManager {
                 $normalized_atts[$key] = $value;
             }
         }
-
-        // デバッグ用ログ: 正規化されたパラメーターを確認
-        error_log('S2J Alliance Manager: Normalized atts: ' . print_r($normalized_atts, true));
 
         // block.json の attributes に合わせてデフォルト値を設定
         $atts = shortcode_atts(
@@ -256,14 +243,8 @@ class S2J_Alliance_Manager_AllianceManager {
      * @return string $html ブロックの HTML
      */
     public function render_alliance_banner_block($attributes) {
-        // デバッグ用ログ: 受け取った属性を確認
-        error_log('S2J Alliance Manager: render_alliance_banner_block called with attributes: ' . print_r($attributes, true));
-
         $display_style = $attributes['displayStyle'] ?? 'grid-single';
         $alignment = $attributes['alignment'] ?? 'center';
-
-        // デバッグ用ログ: 最終的な値を確認
-        error_log('S2J Alliance Manager: Final values - display_style: ' . $display_style . ', alignment: ' . $alignment);
 
         // コンテンツデータを取得します。
         $alliance_data = $this->get_alliance_data();
@@ -284,12 +265,7 @@ class S2J_Alliance_Manager_AllianceManager {
             <!-- React コンポーネントがここにレンダリングされます -->
         </div>
         <?php
-        $html = ob_get_clean();
-        
-        // デバッグ用ログ: 生成されたHTMLを確認
-        error_log('S2J Alliance Manager: Generated HTML: ' . $html);
-        
-        return $html;
+        return ob_get_clean();
     }
 
     /**

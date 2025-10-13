@@ -2,6 +2,7 @@ import { defineConfig } from 'vite';
 import { resolve } from 'path';
 import { rmSync } from 'fs';
 import { viteStaticCopy } from 'vite-plugin-static-copy';
+import autoprefixer from 'autoprefixer';
 
 // FLUSH_DIST 環境変数が true の場合、dist ディレクトリを削除
 if (process.env.FLUSH_DIST === 'true') {
@@ -163,6 +164,19 @@ export default defineConfig({
       scss: {
         // @useを使用するため、additionalDataは不要
       }
+    },
+    postcss: {
+      plugins: [
+        // 自動プレフィックス機能を有効化 (ブラウザ間対応のため)
+        autoprefixer({
+          overrideBrowserslist: [
+            'last 2 versions',
+            '> 1%',
+            'not dead',
+            'not ie 11'
+          ]
+        })
+      ]
     }
   },
   resolve: {

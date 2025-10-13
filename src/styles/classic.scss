@@ -1,6 +1,10 @@
 @use 'variables' as *;
+@use 'frontend' as *;
 
-// Classic エディター用スタイル定義
+/***
+ * Classic エディター用スタイル定義
+ * フロントページ出力用のスタイルは frontend.scss で管理
+ */
 
 #s2j-alliance-classic-editor {
   .form-field {

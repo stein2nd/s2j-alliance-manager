@@ -498,9 +498,62 @@ const AllianceBanner: React.FC<AllianceBannerProps> = ({
   );
 };
 
+// 初期化済みの要素を追跡するSet
+const initializedElements = new Set<HTMLElement>();
+
 /**
- * フロントエンド用アライアンス・バナーの初期化 (モーダル用)
- * @returns フロントエンド用アライアンス・バナーの初期化 (モーダル用)
+ * アライアンス・バナー要素を初期化します
+ * @param element 初期化する要素
+ */
+function initializeBannerElement(element: HTMLElement) {
+  // 既に初期化済みの場合はスキップ
+  if (initializedElements.has(element)) {
+    return;
+  }
+
+  // コンテンツデータを取得 (DOM 属性から)
+  let contentModels: ContentModel[] = [];
+  try {
+    const contentModelsData = element.dataset.contentModels;
+    if (contentModelsData) {
+      contentModels = JSON.parse(contentModelsData);
+    }
+  } catch (error) {
+    console.error('S2J Alliance Manager: Error parsing content models:', error);
+    // フォールバックとして window オブジェクトから取得
+    contentModels = window.s2jAllianceBannerData?.contentModels || [];
+  }
+  
+  // 属性を取得 (DOM 属性から直接取得)
+  const displayStyle = (element.dataset.displayStyle as 'grid-single' | 'grid-multi') || 'grid-single';
+  const alignment = (element.dataset.alignment as 'left' | 'center' | 'right') || 'center';
+
+  // デバッグ用ログ
+  console.log('S2J Alliance Manager: Frontend reading attributes:', {
+    fromDataset: element.dataset.displayStyle,
+    finalDisplayStyle: displayStyle,
+    finalAlignment: alignment,
+    contentModelsCount: contentModels.length,
+    elementId: element.id || 'no-id',
+    elementClass: element.className
+  });
+
+  // React コンポーネントをレンダリング
+  const root = createRoot(element);
+  root.render(
+    <AllianceBanner
+      contentModels={contentModels}
+      displayStyle={displayStyle}
+      alignment={alignment}
+    />
+  );
+
+  // 初期化済みとしてマーク
+  initializedElements.add(element);
+}
+
+/**
+ * すべてのアライアンス・バナー・ブロックを初期化します
  */
 function initAllianceBanners() {
   // すべてのアライアンス・バナー・ブロックを取得
@@ -508,31 +561,69 @@ function initAllianceBanners() {
 
   bannerBlocks.forEach((block: Element) => {
     const blockElement = block as HTMLElement;
-
-    // ブロックの属性を取得
-    const displayStyle = blockElement.dataset.displayStyle as 'grid-single' | 'grid-multi' || 'grid-single';
-    const alignment = blockElement.dataset.alignment as 'left' | 'center' | 'right' || 'center';
-
-    // コンテンツデータを取得 (WordPress から渡される)
-    const contentModels = window.s2jAllianceBannerData?.contentModels || [];
-
-    // React コンポーネントをレンダリング
-    const root = createRoot(blockElement);
-    root.render(
-      <AllianceBanner
-        contentModels={contentModels}
-        displayStyle={displayStyle}
-        alignment={alignment}
-      />
-    );
+    initializeBannerElement(blockElement);
   });
+}
+
+/**
+ * MutationObserverを使用してDOM変更を監視し、新しいアライアンス・バナー要素を初期化します
+ */
+function setupMutationObserver() {
+  // デバウンス用のタイマー
+  let debounceTimer: number | null = null;
+
+  const observer = new MutationObserver((mutations) => {
+    // デバウンス処理: 短時間に複数の変更があった場合は最後の変更のみを処理
+    if (debounceTimer) {
+      clearTimeout(debounceTimer);
+    }
+
+    debounceTimer = window.setTimeout(() => {
+      console.log('S2J Alliance Manager: MutationObserver triggered, processing DOM changes...');
+      mutations.forEach((mutation) => {
+        // 追加されたノードをチェック
+        mutation.addedNodes.forEach((node) => {
+          if (node.nodeType === 1) { // Node.ELEMENT_NODE
+            const element = node as Element;
+            
+            // 追加された要素自体がアライアンス・バナー要素の場合
+            if (element.classList.contains('wp-block-s2j-alliance-manager-alliance-banner')) {
+              console.log('S2J Alliance Manager: Found new alliance banner element directly');
+              initializeBannerElement(element as HTMLElement);
+            }
+            
+            // 追加された要素の子要素にアライアンス・バナー要素がある場合
+            const bannerElements = element.querySelectorAll('.wp-block-s2j-alliance-manager-alliance-banner');
+            if (bannerElements.length > 0) {
+              console.log(`S2J Alliance Manager: Found ${bannerElements.length} alliance banner elements in subtree`);
+              bannerElements.forEach((bannerElement: Element) => {
+                initializeBannerElement(bannerElement as HTMLElement);
+              });
+            }
+          }
+        });
+      });
+    }, 100); // 100ms後に実行
+  });
+
+  // ドキュメント全体の変更を監視
+  observer.observe(document.body, {
+    childList: true,
+    subtree: true
+  });
+
+  return observer;
 }
 
 // DOM が読み込まれた後に初期化
 if (document.readyState === 'loading') {
-  document.addEventListener('DOMContentLoaded', initAllianceBanners);
+  document.addEventListener('DOMContentLoaded', () => {
+    initAllianceBanners();
+    setupMutationObserver();
+  });
 } else {
   initAllianceBanners();
+  setupMutationObserver();
 }
 
 // WordPress のブロックエディター用の初期化 (フロントエンドでは不要)

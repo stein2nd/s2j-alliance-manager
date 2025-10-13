@@ -199,13 +199,28 @@ class S2J_Alliance_Manager_AllianceManager {
             FILE_APPEND | LOCK_EX
         );
 
+        // パラメーター名を正規化（小文字からキャメルケースに変換）
+        $normalized_atts = array();
+        foreach ($atts as $key => $value) {
+            if ($key === 'displaystyle') {
+                $normalized_atts['displayStyle'] = $value;
+            } elseif ($key === 'alignment') {
+                $normalized_atts['alignment'] = $value;
+            } else {
+                $normalized_atts[$key] = $value;
+            }
+        }
+
+        // デバッグ用ログ: 正規化されたパラメーターを確認
+        error_log('S2J Alliance Manager: Normalized atts: ' . print_r($normalized_atts, true));
+
         // block.json の attributes に合わせてデフォルト値を設定
         $atts = shortcode_atts(
             array(
                 'displayStyle' => 'grid-single',
                 'alignment' => 'center',
             ),
-            $atts,
+            $normalized_atts,
             'alliance_banner'
         );
 
@@ -241,8 +256,14 @@ class S2J_Alliance_Manager_AllianceManager {
      * @return string $html ブロックの HTML
      */
     public function render_alliance_banner_block($attributes) {
+        // デバッグ用ログ: 受け取った属性を確認
+        error_log('S2J Alliance Manager: render_alliance_banner_block called with attributes: ' . print_r($attributes, true));
+
         $display_style = $attributes['displayStyle'] ?? 'grid-single';
         $alignment = $attributes['alignment'] ?? 'center';
+
+        // デバッグ用ログ: 最終的な値を確認
+        error_log('S2J Alliance Manager: Final values - display_style: ' . $display_style . ', alignment: ' . $alignment);
 
         // コンテンツデータを取得します。
         $alliance_data = $this->get_alliance_data();
@@ -258,21 +279,17 @@ class S2J_Alliance_Manager_AllianceManager {
         ?>
         <div class="wp-block-s2j-alliance-manager-alliance-banner" 
              data-display-style="<?php echo esc_attr($display_style); ?>"
-             data-alignment="<?php echo esc_attr($alignment); ?>">
+             data-alignment="<?php echo esc_attr($alignment); ?>"
+             data-content-models="<?php echo esc_attr(json_encode($content_models)); ?>">
             <!-- React コンポーネントがここにレンダリングされます -->
         </div>
-        <script>
-        // React コンポーネント用のデータを渡す
-        window.s2jAllianceBannerData = {
-            contentModels: <?php echo json_encode($content_models); ?>,
-            attributes: {
-                displayStyle: '<?php echo esc_js($display_style); ?>',
-                alignment: '<?php echo esc_js($alignment); ?>'
-            }
-        };
-        </script>
         <?php
-        return ob_get_clean();
+        $html = ob_get_clean();
+        
+        // デバッグ用ログ: 生成されたHTMLを確認
+        error_log('S2J Alliance Manager: Generated HTML: ' . $html);
+        
+        return $html;
     }
 
     /**

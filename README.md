@@ -11,14 +11,14 @@
 
 S2J Alliance Manager は、ロゴや動画付きの提携パートナーバナーを管理するために設計された、包括的な WordPress プラグインです。Gutenberg ブロックと Classic エディターの両方をサポートし、バナーとランクの直感的で柔軟な管理のためのモダンな React ベースの管理インターフェースを提供します。
 
-このプラグインは、React 18.2、TypeScript 5.9、Vite 7.1などの現代的なウェブ技術で構築されており、最適なパフォーマンスと保守性を実現しています。
+このプラグインは、React18.2、TypeScript5.9、Vite7.1などの現代的な Web 技術で構築されており、最適なパフォーマンスと保守性を実現しています。
 
 ### 特徴
 
 #### 🎯 コア機能
 
-* **Gutenberg ブロック対応**: カスタマイズ可能な表示オプションを備えた、モダンなブロックエディタとの統合
-* **Classic エディタ対応**: 従来の WordPress 編集体験を実現する、MetaBox との統合
+* **Gutenberg ブロック対応**: カスタマイズ可能な表示オプションを備えた、モダンなブロック・エディターとの統合
+* **Classic エディター対応**: 従来の WordPress 編集体験を実現する、MetaBox との統合
 * **動的ランク管理**: カスタム投稿タイプベースのランクラベルシステム (リアルタイム更新対応)
 * **メディア管理**: 画像と動画の両方に対応し、自動ポスター生成機能を搭載
 * **レスポンシブ・デザイン**: あらゆるデバイスと画面サイズに最適化された表示
@@ -63,15 +63,15 @@ S2J Alliance Manager は、ロゴや動画付きの提携パートナーバナ�
 
 ### 前提条件
 
-* WordPress 6.3 以降 (Gutenberg 15.2.0対応のため)
-* PHP 7.4 以降
-* JavaScript が有効な最新のウェブブラウザ
-* Node.js 18 以降 (React 18.2.0対応のため)
+* WordPress 6.3以降 (Gutenberg 15.2.0対応のため)
+* PHP 7.4以降
+* JavaScript が有効な最新の Web ブラウザ
+* Node.js18以降 (React18.2.0対応のため)
 * npm または yarn
 
 ### 簡単インストール
 
-1. プラグインフォルダを WordPress の `/wp-content/plugins/` ディレクトリにアップロードします。
+1. プラグイン・フォルダーを WordPress の `/wp-content/plugins/` ディレクトリにアップロードします。
 2. WordPress 管理画面の「プラグイン」メニューから有効化します。
 3. 「設定」→「S2J Alliance Manager」から設定を開始します。
 
@@ -111,14 +111,14 @@ npm run build:production
 
 ### Gutenberg ブロックの使用方法
 
-1. ブロックエディタで投稿またはページを編集します。
+1. ブロック・エディターで投稿またはページを編集します。
 2. **+** ボタンをクリックして、ブロックインサーターで、**"Alliance Banner"** を検索して、新しいブロックを追加します。
 3. 希望の表示スタイルを選択します。
 4. コンテンツを公開または更新します。
 
-### Classic エディタでの使用方法
+### Classic エディターでの使用方法
 
-1. Classic エディタで投稿またはページを編集します。
+1. Classic エディターで投稿またはページを編集します。
 2. サイドバーにある **Alliance Banner** メタボックスを探します。
 3. 希望の表示スタイルを選択します。
 4. **Insert Alliance Banner** をクリックします。
@@ -126,13 +126,13 @@ npm run build:production
 
 ## FAQ
 
-### Q: このプラグインは、ページビルダーと互換性がありますか ?
+### Q: このプラグインは、ページビルダと互換性がありますか ?
 
-A: はい、このプラグインは Gutenberg ブロックとショートコードの両方をサポートしているため、ほとんどのページビルダーと互換性があります。
+A: はい、このプラグインは Gutenberg ブロックとショートコードの両方をサポートしているため、ほとんどのページビルダと互換性があります。
 
 ### Q: 動画をパートナーロゴとして使用できますか ?
 
-A: はい、このプラグインは画像と動画の両方をサポートしています。動画の場合、(FFmpeg 導入可能環境では) FFmpeg を使用して自動的にポスター画像を生成できます。
+A: はい、このプラグインは画像と動画の両方をサポートしています。動画の場合、(FFmpeg 導入可能な環境では) FFmpeg を使用して自動的にポスター画像を生成できます。
 
 ### Q: プラグインは翻訳対応済みですか ?
 
@@ -140,7 +140,7 @@ A: はい、プラグインは完全に翻訳対応済みで、`.pot` ファイ�
 
 ### Q: 必要な WordPress のバージョンは ?
 
-A: Gutenberg ブロックエディタとの最適な互換性のため、WordPress 6.3以降が必要です。
+A: Gutenberg ブロック・エディターとの最適な互換性のため、WordPress 6.3以降が必要です。
 
 ### Q: パートナーランクはどのように管理しますか ? =
 
@@ -184,17 +184,17 @@ A: はい、シングル・カラム・グリッド、マルチ・カラム・�
 ### 技術スタック
 
 * **フロントエンド**:
-  * React 18.2
-  * TypeScript 5.9
-  * SCSS 1.93
+  * React18.2
+  * TypeScript5.9
+  * SCSS1.93
 * **ビルドツール**:
-  * Vite 7.1
+  * Vite7.1
 * **コード品質**:
-  * ESLint 9.36
-  * Stylelint 16.24
+  * ESLint9.36
+  * Stylelint16.24
 * **WordPress**:
   * Gutenberg
-  * API Fetch 7.29, Block Editor 15.2, Blocks 15.2, Component Reference 30.2, Data 10.29, Element 6.29, Internationalization (i18n) 6.2, Scripts 30.22, URL 4.29
+  * API Fetch7.29, Block Editor15.2, Blocks15.2, Component Reference30.2, Data10.29, Element6.29, Internationalization (i18n) 6.2, Scripts30.22, URL4.29
 
 ### プロジェクト構造
 
@@ -287,7 +287,7 @@ npm run build:production
 * 基本設定の管理には、`manage_options` 権限が必要です。
 * ランクラベル管理には `edit_s2j_am_rank_labels` 権限が必要です (管理者に自動付与)。
 
-### データフローと状態管理 (アーキテクチャ)
+### データフローと状態管理 (アーキテクチャー)
 
 * **親コンポーネント管理**: AllianceManagerAdmin クラスで、ランクラベルデータを一元管理
 * **リアルタイム同期**: ランクラベル保存後、ContentList の rank 選択肢を即座に更新
@@ -377,11 +377,11 @@ interface ContentModel {
 
 ## Changelog
 
-### Version 1.0.0
+### Version1.0.0
 
 * 初回リリース
 * Gutenberg ブロック対応
-* Classic エディタ統合
+* Classic エディター統合
 * React ベースの管理インターフェース
 * ランクラベル管理システム
 * メディア・アップロードと管理

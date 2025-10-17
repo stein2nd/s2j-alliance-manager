@@ -90,6 +90,7 @@
 │├┬─ styles/  # プラグイン用のスタイル定義
 ││├─ `admin.scss`  # 設定画面用 (✅ 100% 実装完了)
 ││├─ `gutenberg.scss`  # Gutenberg ブロック用 (✅ 100% 実装完了)
+││├─ `frontend.scss`  # (✅ 100% 実装完了)
 ││├─ `classic.scss`  # MetaBox 用 (✅ 100% 実装完了)
 ││├─ `modal.scss`  # モーダル用 (✅ 100% 実装完了)
 ││└─ `variables.scss`  # SCSS 変数定義 (✅ 100% 実装完了)

@@ -25,6 +25,7 @@
     "lint:ts:fix": "eslint src/**/*.{ts,tsx} --ext .ts,.tsx --fix",
     "lint:scss": "stylelint src/**/*.scss",
     "lint:scss:fix": "stylelint src/**/*.scss --fix",
+    "lint:docs": "textlint --config ./tools/docs-linter/wordpress/.textlintrc.wp.json ./README.md ./docs/**/*.md",
     "build:dev": "FLUSH_DIST=true npm run build:dev:admin && npm run build:dev:gutenberg && npm run build:dev:classic && npm run build:dev:frontend",
     "build:dev:admin": "FLUSH_DIST=false VITE_LOG_LEVEL=error vite build --mode development",
     "build:dev:gutenberg": "FLUSH_DIST=false VITE_LOG_LEVEL=error vite build --mode development",
@@ -47,7 +48,7 @@
   },
   "devDependencies": {
     "@types/jquery": "^3.5.33",
-    "@types/node": "^24.7.2",
+    "@types/node": "^24.8.1",
     "@types/react": "^18.2.0",
     "@types/react-dom": "^18.2.0",
     "@typescript-eslint/eslint-plugin": "^8.46.1",
@@ -69,8 +70,9 @@
     "sass": "^1.93.2",
     "stylelint": "^16.25.0",
     "stylelint-config-standard-scss": "^16.0.0",
+    "textlint": "^15.2.3",
     "typescript": "^5.9.3",
-    "vite": "^7.1.9",
-    "vite-plugin-static-copy": "^3.1.3"
+    "vite": "^7.1.10",
+    "vite-plugin-static-copy": "^3.1.4"
   }
 }

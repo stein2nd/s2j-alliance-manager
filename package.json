@@ -25,7 +25,8 @@
     "lint:ts:fix": "eslint src/**/*.{ts,tsx} --ext .ts,.tsx --fix",
     "lint:scss": "stylelint src/**/*.scss",
     "lint:scss:fix": "stylelint src/**/*.scss --fix",
-    "lint:docs": "textlint --config ./tools/docs-linter/wordpress/.textlintrc.wp.json ./README.md ./docs/**/*.md",
+    "postinstall": "cd tools/docs-linter && npm install",
+    "lint:docs": "NODE_PATH=./tools/docs-linter/node_modules textlint --config ./tools/docs-linter/wordpress/.textlintrc.wp.json ./README.md ./docs/**/*.md",
     "build:dev": "FLUSH_DIST=true npm run build:dev:admin && npm run build:dev:gutenberg && npm run build:dev:classic && npm run build:dev:frontend",
     "build:dev:admin": "FLUSH_DIST=false VITE_LOG_LEVEL=error vite build --mode development",
     "build:dev:gutenberg": "FLUSH_DIST=false VITE_LOG_LEVEL=error vite build --mode development",
@@ -44,7 +45,7 @@
     "react-dom": "^18.2.0"
   },
   "overrides": {
-    "rollup": "^4.52.4"
+    "rollup": "^4.52.5"
   },
   "devDependencies": {
     "@types/jquery": "^3.5.33",
@@ -66,15 +67,10 @@
     "eslint": "^9.38.0",
     "eslint-plugin-react": "^7.37.5",
     "eslint-plugin-react-hooks": "^7.0.0",
-    "rollup": "^4.52.4",
+    "rollup": "^4.52.5",
     "sass": "^1.93.2",
     "stylelint": "^16.25.0",
     "stylelint-config-standard-scss": "^16.0.0",
-    "textlint": "^15.2.3",
-    "textlint-rule-no-dead-link": "^6.0.1",
-    "textlint-rule-preset-ja-technical-writing": "^12.0.2",
-    "textlint-rule-preset-jtf-style": "^3.0.3",
-    "textlint-rule-preset-wp-docs-ja": "github:jawordpressorg/textlint-rule-preset-wp-docs-ja",
     "typescript": "^5.9.3",
     "vite": "^7.1.10",
     "vite-plugin-static-copy": "^3.1.4"

@@ -4,7 +4,7 @@
 
 * 本ドキュメントでは、WordPress プラグイン「s2j-alliance-manager」の専用仕様を定義します。
 * 本プラグインの設計は、以下の共通 SPEC に準拠します。
-    * [WP_PLUGIN_SPEC.md (共通仕様)](https://github.com/stein2nd/wp-plugin-spec/blob/main/WP_PLUGIN_SPEC.md)
+    * [WP_PLUGIN_SPEC.md (共通仕様)](https://github.com/stein2nd/wp-plugin-spec/blob/main/docs/WP_PLUGIN_SPEC.md)
 * 以下は、本プラグイン固有の仕様をまとめたものです。
 
 ---

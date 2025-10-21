@@ -11,7 +11,7 @@
 
 S2J Alliance Manager は、ロゴや動画付きの提携パートナーバナーを管理するために設計された、包括的な WordPress プラグインです。Gutenberg ブロックと Classic エディターの両方をサポートし、バナーとランクの直感的で柔軟な管理のためのモダンな React ベースの管理インターフェースを提供します。
 
-このプラグインは、React18.2、TypeScript5.9、Vite7.1などの現代的な Web 技術で構築されており、最適なパフォーマンスと保守性を実現しています。
+このプラグインは、React v18.2、TypeScript v5.9、Vite v7.1などの現代的な Web 技術で構築されており、最適なパフォーマンスと保守性を実現しています。
 
 ### 特徴
 
@@ -66,7 +66,7 @@ S2J Alliance Manager は、ロゴや動画付きの提携パートナーバナ�
 * WordPress 6.3以降 (Gutenberg 15.2.0対応のため)
 * PHP 7.4以降
 * JavaScript が有効な最新の Web ブラウザ
-* Node.js18以降 (React18.2.0対応のため)
+* Node.js v18以降 (React v18.2.0対応のため)
 * npm または yarn
 
 ### 簡単インストール
@@ -184,17 +184,17 @@ A: はい、シングル・カラム・グリッド、マルチ・カラム・�
 ### 技術スタック
 
 * **フロントエンド**:
-  * React18.2
-  * TypeScript5.9
-  * SCSS1.93
+  * React v18.2
+  * TypeScript v5.9
+  * SCSS v1.93
 * **ビルドツール**:
-  * Vite7.1
+  * Vite v7.1
 * **コード品質**:
-  * ESLint9.36
-  * Stylelint16.24
+  * ESLint v9.36
+  * Stylelint v16.24
 * **WordPress**:
   * Gutenberg
-  * API Fetch7.29, Block Editor15.2, Blocks15.2, Component Reference30.2, Data10.29, Element6.29, Internationalization (i18n) 6.2, Scripts30.22, URL4.29
+  * API Fetch v7.29, Block Editor v15.2, Blocks v15.2, Component Reference v30.2, Data v10.29, Element v6.29, Internationalization (i18n) v6.2, Scripts v30.22, URL v4.29
 
 ### プロジェクト構造
 
@@ -377,7 +377,7 @@ interface ContentModel {
 
 ## Changelog
 
-### Version1.0.0
+### v1.0.0
 
 * 初回リリース
 * Gutenberg ブロック対応

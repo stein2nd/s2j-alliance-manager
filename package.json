@@ -26,6 +26,7 @@
     "lint:scss": "stylelint src/**/*.scss",
     "lint:scss:fix": "stylelint src/**/*.scss --fix",
     "postinstall": "cd tools/docs-linter && npm install",
+    "prelint:docs": "git submodule update --remote --merge && cd tools/docs-linter && npm ci && npm run build",
     "lint:docs": "NODE_PATH=./tools/docs-linter/node_modules textlint --config ./tools/docs-linter/wordpress/.textlintrc.wp.json ./README.md ./docs/**/*.md",
     "build:dev": "FLUSH_DIST=true npm run build:dev:admin && npm run build:dev:gutenberg && npm run build:dev:classic && npm run build:dev:frontend",
     "build:dev:admin": "FLUSH_DIST=false VITE_LOG_LEVEL=error vite build --mode development",

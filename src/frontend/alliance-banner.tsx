@@ -393,7 +393,7 @@ const AllianceBanner: React.FC<AllianceBannerProps> = ({
     return (
       <div key={rank} className={`s2j-alliance-rank`}>
         <h3 className="s2j-alliance-rank-title">{rank}</h3>
-        <div className={`s2j-alliance-banner ${getDisplayClass()} ${getAlignmentClass()}`}>
+        <ul className={`s2j-alliance-banner ${getDisplayClass()} ${getAlignmentClass()}`}>
           {models.map((model, index) => {
             if (model.behavior === 'modal') {
               // 動画ファイルかどうかを判定
@@ -402,7 +402,7 @@ const AllianceBanner: React.FC<AllianceBannerProps> = ({
               const posterUrl = model.poster_url || '';
 
               return (
-                <div key={`${rank}-${index}`} className="s2j-alliance-item">
+                <li key={`${rank}-${index}`} className="s2j-alliance-item">
                   <button
                     className="s2j-alliance-logo s2j-alliance-logo--modal"
                     onClick={() => handleLogoClick(model.message, model.jump_url, isVideo ? model.logo_url : undefined, posterUrl)}
@@ -433,7 +433,7 @@ const AllianceBanner: React.FC<AllianceBannerProps> = ({
                       </div>
                     )}
                   </button>
-                </div>
+                </li>
               );
             } else if (model.behavior === 'jump') {
               // 動画ファイルかどうかを判定
@@ -468,7 +468,7 @@ const AllianceBanner: React.FC<AllianceBannerProps> = ({
               );
 
               return (
-                <div key={`${rank}-${index}`} className="s2j-alliance-item">
+                <li key={`${rank}-${index}`} className="s2j-alliance-item">
                   {model.jump_url ? (
                     <a
                       href={model.jump_url}
@@ -484,12 +484,12 @@ const AllianceBanner: React.FC<AllianceBannerProps> = ({
                       {content}
                     </div>
                   )}
-                </div>
+                </li>
               );
             }
             return null;
           })}
-        </div>
+        </ul>
       </div>
     );
   };

@@ -91,6 +91,7 @@ interface AllianceModalProps {
   onClose: () => void;
   title?: string;
   content: string;
+  jumpUrl?: string;
   video?: {url: string, poster: string} | null;
   showCloseButton?: boolean;
 }
@@ -105,6 +106,7 @@ const AllianceModalComponent: React.FC<AllianceModalProps> = ({
   onClose,
   title = 'Partner Message',
   content,
+  jumpUrl,
   video,
   showCloseButton = true
 }) => {
@@ -189,6 +191,18 @@ const AllianceModalComponent: React.FC<AllianceModalProps> = ({
             >
               {content}
             </div>
+            {jumpUrl && (
+              <div className="s2j-modal-jump-url">
+                <a
+                  href={jumpUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="s2j-jump-link"
+                >
+                  Visit Partner Website
+                </a>
+              </div>
+            )}
           </div>
         </div>
       </div>
@@ -303,18 +317,21 @@ const AllianceBanner: React.FC<AllianceBannerProps> = ({
 }) => {
   const { isOpen, openModal, closeModal } = useModal();
   const [selectedMessage, setSelectedMessage] = useState('');
+  const [selectedJumpUrl, setSelectedJumpUrl] = useState('');
   const [selectedVideo, setSelectedVideo] = useState<{url: string, poster: string} | null>(null);
 
   /**
    * ロゴをクリックしたときにモーダルを開きます。
    * 「handleLogoClick()」メソッドから呼ばれます。
    * @param message
+   * @param jumpUrl
    * @param videoUrl
    * @param posterUrl
    */
-  const handleLogoClick = (message: string, videoUrl?: string, posterUrl?: string) => {
-    console.log('Logo clicked, message:', message, 'videoUrl:', videoUrl);
+  const handleLogoClick = (message: string, jumpUrl?: string, videoUrl?: string, posterUrl?: string) => {
+    console.log('Logo clicked, message:', message, 'jumpUrl:', jumpUrl, 'videoUrl:', videoUrl);
     setSelectedMessage(message || '動画を再生するにはモーダルを開いてください。');
+    setSelectedJumpUrl(jumpUrl || '');
     if (videoUrl) {
       setSelectedVideo({ url: videoUrl, poster: posterUrl || '' });
     } else {
@@ -388,7 +405,7 @@ const AllianceBanner: React.FC<AllianceBannerProps> = ({
                 <div key={`${rank}-${index}`} className="s2j-alliance-item">
                   <button
                     className="s2j-alliance-logo s2j-alliance-logo--modal"
-                    onClick={() => handleLogoClick(model.message, isVideo ? model.logo_url : undefined, posterUrl)}
+                    onClick={() => handleLogoClick(model.message, model.jump_url, isVideo ? model.logo_url : undefined, posterUrl)}
                     aria-label="View partner message"
                   >
                     {model.logo > 0 ? (
@@ -491,6 +508,7 @@ const AllianceBanner: React.FC<AllianceBannerProps> = ({
         onClose={closeModal}
         title="Partner Message"
         content={selectedMessage}
+        jumpUrl={selectedJumpUrl}
         video={selectedVideo}
         showCloseButton={true}
       />

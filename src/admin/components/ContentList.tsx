@@ -355,6 +355,7 @@ export const ContentList: React.FC<ContentListProps> = ({
       {showMessageModal !== null && (
         <MessageModal
           message={displayModels[showMessageModal]?.message || ''}
+          jumpUrl={displayModels[showMessageModal]?.jump_url || ''}
           onSave={(message) => updateMessage(showMessageModal, message)}
           onCancel={closeMessageModal}
           isOpen={showMessageModal !== null}

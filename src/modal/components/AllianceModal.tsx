@@ -12,6 +12,7 @@ interface AllianceModalProps {
   onClose: () => void;
   title?: string;
   content: string;
+  jumpUrl?: string;
   showCloseButton?: boolean;
 }
 
@@ -25,6 +26,7 @@ export const AllianceModal: React.FC<AllianceModalProps> = ({
   onClose,
   title = __('Partner Message', 's2j-alliance-manager'),
   content,
+  jumpUrl,
   showCloseButton = true
 }) => {
   const modalRef = useRef<any>(null);
@@ -93,6 +95,18 @@ export const AllianceModal: React.FC<AllianceModalProps> = ({
             >
               {content}
             </div>
+            {jumpUrl && (
+              <div className="s2j-modal-jump-url">
+                <a
+                  href={jumpUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="s2j-jump-link"
+                >
+                  {__('Visit Partner Website', 's2j-alliance-manager')}
+                </a>
+              </div>
+            )}
           </div>
         </div>
       </div>

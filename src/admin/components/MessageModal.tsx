@@ -9,6 +9,7 @@ import { Button, TextareaControl } from '@wordpress/components';
  */
 interface MessageModalProps {
   message: string;
+  jumpUrl: string;
   onSave: (message: string) => void;
   onCancel: () => void;
   isOpen: boolean; // モーダル表示状態を制御
@@ -22,6 +23,7 @@ interface MessageModalProps {
  */
 export const MessageModal: React.FC<MessageModalProps> = ({
   message,
+  jumpUrl,
   onSave,
   onCancel,
   isOpen
@@ -30,7 +32,6 @@ export const MessageModal: React.FC<MessageModalProps> = ({
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isAnimating, setIsAnimating] = useState(false);
-  
   const modalRef = useRef<any>(null);
   const textareaRef = useRef<any>(null);
 
@@ -86,7 +87,7 @@ export const MessageModal: React.FC<MessageModalProps> = ({
   }, [isOpen, handleCancel]);
 
   /**
-   * フォーカストラップの実装
+   * フォーカス・トラップの実装
    * 「useEffect()」メソッドから呼ばれます。
    */
   useEffect(() => {
@@ -139,9 +140,9 @@ export const MessageModal: React.FC<MessageModalProps> = ({
   };
 
   /**
-   * リアルタイョン
+   * リアルタイム・バリデーション
    * 「handleMessageChange()」メソッドから呼ばれます。
-   * @param value リアルタイョン
+   * @param value リアルタイム・バリデーション
    */
   const handleMessageChange = (value: string) => {
     setFormMessage(value);
@@ -246,10 +247,26 @@ export const MessageModal: React.FC<MessageModalProps> = ({
                 </button>
               </div>
               <div className="s2j-preview-body">
-                {formMessage || (
+                {formMessage ? (
+                  <div className="s2j-preview-message">
+                    {formMessage}
+                  </div>
+                ) : (
                   <em className="s2j-preview-placeholder">
                     {__('Enter your message to see preview', 's2j-alliance-manager')}
                   </em>
+                )}
+                {jumpUrl && (
+                  <div className="s2j-preview-jump-url">
+                    <a
+                      href={jumpUrl}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="s2j-preview-jump-link"
+                    >
+                      {__('Visit Partner Website', 's2j-alliance-manager')}
+                    </a>
+                  </div>
                 )}
               </div>
             </div>

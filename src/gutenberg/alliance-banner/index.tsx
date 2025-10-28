@@ -26,15 +26,18 @@ export const AllianceBanner: React.FC<AllianceBannerProps> = ({
 }) => {
   const { isOpen, openModal, closeModal } = useModal();
   const [selectedMessage, setSelectedMessage] = useState('');
+  const [selectedJumpUrl, setSelectedJumpUrl] = useState('');
 
   /**
    * ロゴクリック
    * 「handleLogoClick」メソッドから呼ばれます。
    * @param message ロゴクリック
+   * @param jumpUrl ジャンプURL
    */
-  const handleLogoClick = (message: string) => {
+  const handleLogoClick = (message: string, jumpUrl?: string) => {
     if (message && message.trim()) {
       setSelectedMessage(message);
+      setSelectedJumpUrl(jumpUrl || '');
       openModal();
     }
   };
@@ -69,7 +72,7 @@ export const AllianceBanner: React.FC<AllianceBannerProps> = ({
               <div key={index} className="s2j-alliance-item">
                 <button
                   className="s2j-alliance-logo"
-                  onClick={() => handleLogoClick(model.message)}
+                  onClick={() => handleLogoClick(model.message, model.jump_url)}
                   aria-label={__('View partner message', 's2j-alliance-manager')}
                 >
                   <img
@@ -107,6 +110,7 @@ export const AllianceBanner: React.FC<AllianceBannerProps> = ({
         onClose={closeModal}
         title={__('Partner Message', 's2j-alliance-manager')}
         content={selectedMessage}
+        jumpUrl={selectedJumpUrl}
         showCloseButton={true}
       />
     </>

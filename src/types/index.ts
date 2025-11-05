@@ -23,6 +23,8 @@ export interface ContentModel {
   jump_url: string;
   behavior: 'jump' | 'modal';
   message: string;
+  logo_size_type?: 'none' | 'width' | 'height'; // ロゴサイズの指定タイプ
+  logo_size_value?: number; // ロゴサイズの値（width または height）
 }
 
 /**
@@ -111,6 +113,8 @@ export interface RankLabel {
   thumbnail_id: number;
   menu_order: number;
   slug: string;
+  logo_size_type?: 'none' | 'width' | 'height'; // ロゴサイズの指定タイプ
+  logo_size_value?: number; // ロゴサイズの値（width または height）
 }
 
 /**

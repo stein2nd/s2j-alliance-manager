@@ -381,6 +381,31 @@ const AllianceBanner: React.FC<AllianceBannerProps> = ({
   };
 
   /**
+   * ロゴサイズ属性を取得します。
+   * 「getLogoSizeAttributes()」メソッドから呼ばれます。
+   * @param model コンテンツモデル
+   * @returns ロゴサイズ属性とスタイルオブジェクト
+   */
+  const getLogoSizeAttributes = (model: ContentModel) => {
+    const attributes: { width?: number; height?: number } = {};
+    const style: React.CSSProperties = {};
+
+    if (model.logo_size_type === 'width' && model.logo_size_value && model.logo_size_value > 0) {
+      attributes.width = model.logo_size_value;
+      style.width = `${model.logo_size_value}px`;
+      style.maxWidth = `${model.logo_size_value}px`;
+      style.height = 'auto';
+    } else if (model.logo_size_type === 'height' && model.logo_size_value && model.logo_size_value > 0) {
+      attributes.height = model.logo_size_value;
+      style.height = `${model.logo_size_value}px`;
+      style.width = 'auto';
+      style.maxHeight = `${model.logo_size_value}px`;
+    }
+
+    return { attributes, style };
+  };
+
+  /**
    * ランク別のバナーをレンダリングします。
    * 「renderRankBanners()」メソッドから呼ばれます。
    * @param rank ランク名
@@ -395,6 +420,9 @@ const AllianceBanner: React.FC<AllianceBannerProps> = ({
         <h3 className="s2j-alliance-rank-title">{rank}</h3>
         <ul className={`s2j-alliance-banner ${getDisplayClass()} ${getAlignmentClass()}`}>
           {models.map((model, index) => {
+            // ロゴサイズ属性を取得
+            const logoSizeData = getLogoSizeAttributes(model);
+
             if (model.behavior === 'modal') {
               // 動画ファイルかどうかを判定
               const isVideo = model.logo_url && /\.(mp4|webm|ogg|mov)$/i.test(model.logo_url);
@@ -425,6 +453,8 @@ const AllianceBanner: React.FC<AllianceBannerProps> = ({
                           src={model.logo_url || ''}
                           alt="Partner logo"
                           loading="lazy"
+                          {...logoSizeData.attributes}
+                          style={logoSizeData.style}
                         />
                       )
                     ) : (
@@ -459,6 +489,8 @@ const AllianceBanner: React.FC<AllianceBannerProps> = ({
                     src={model.logo_url || ''}
                     alt="Partner logo"
                     loading="lazy"
+                    {...logoSizeData.attributes}
+                    style={logoSizeData.style}
                   />
                 )
               ) : (

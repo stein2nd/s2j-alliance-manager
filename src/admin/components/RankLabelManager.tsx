@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { __ } from '@wordpress/i18n';
-import { Button, TextControl, TextareaControl } from '@wordpress/components';
+import { Button, TextControl, TextareaControl, RadioControl } from '@wordpress/components';
 import { RankLabel } from '../../types';
 import { MediaUploader } from './MediaUploader';
 import { SlugGenerator } from '../utils/slugGenerator';
@@ -75,7 +75,9 @@ export const RankLabelManager: React.FC<RankLabelManagerProps> = ({
       content: '',
       thumbnail_id: 0,
       menu_order: initialRankLabels.length,
-      slug: ''
+      slug: '',
+      logo_size_type: 'none',
+      logo_size_value: 0
     };
 
     /**
@@ -572,6 +574,47 @@ export const RankLabelManager: React.FC<RankLabelManagerProps> = ({
                     onSelect={(attachmentId) => updateLabel(index, 'thumbnail_id', attachmentId)}
                     label={__('Thumbnail', 's2j-alliance-manager')}
                   />
+                </div>
+                <div className="s2j-label-field logo-size">
+                  <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
+                    <label style={{ fontSize: '13px', fontWeight: 500, marginBottom: '4px' }}>
+                      {__('Logo Size', 's2j-alliance-manager')}
+                    </label>
+                    <RadioControl
+                      selected={(label.logo_size_type === 'none' || label.logo_size_type === 'width' || label.logo_size_type === 'height') ? label.logo_size_type : 'none'}
+                      options={[
+                        { label: __('No size specification (current output)', 's2j-alliance-manager'), value: 'none' },
+                        { label: __('Set width for this rank', 's2j-alliance-manager'), value: 'width' },
+                        { label: __('Set height for this rank', 's2j-alliance-manager'), value: 'height' },
+                      ]}
+                      onChange={(value: string) => {
+                        const sizeType = (value === 'none' || value === 'width' || value === 'height') ? value : 'none';
+                        const currentLabels = pendingLabels || initialRankLabels;
+                        const updated = [...currentLabels];
+                        updated[index] = { 
+                          ...updated[index], 
+                          logo_size_type: sizeType,
+                          logo_size_value: sizeType === 'none' ? 0 : (updated[index].logo_size_value || 0)
+                        };
+                        setPendingLabels(updated);
+                        setHasUnsavedChanges(true);
+                      }}
+                    />
+                    {(label.logo_size_type === 'width' || label.logo_size_type === 'height') && (
+                      <TextControl
+                        type="number"
+                        value={label.logo_size_value?.toString() || ''}
+                        onChange={(value: string) => {
+                          const numValue = parseInt(value, 10) || 0;
+                          updateLabel(index, 'logo_size_value', numValue);
+                        }}
+                        label={label.logo_size_type === 'width' ? __('Width (px)', 's2j-alliance-manager') : __('Height (px)', 's2j-alliance-manager')}
+                        min={1}
+                        __next40pxDefaultSize={true}
+                        __nextHasNoMarginBottom={true}
+                      />
+                    )}
+                  </div>
                 </div>
                 <div className="s2j-label-field actions">
                   <Button

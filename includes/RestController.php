@@ -379,6 +379,8 @@ class S2J_Alliance_Manager_RestController {
                 'thumbnail_id' => get_post_thumbnail_id($post->ID),
                 'menu_order' => $post->menu_order,
                 'slug' => $post->post_name,
+                'logo_size_type' => get_post_meta($post->ID, '_logo_size_type', true) ?: 'none',
+                'logo_size_value' => intval(get_post_meta($post->ID, '_logo_size_value', true)) ?: 0,
             );
         }
 
@@ -420,6 +422,20 @@ class S2J_Alliance_Manager_RestController {
                 if (isset($rank_label['thumbnail_id']) && $rank_label['thumbnail_id'] > 0) {
                     set_post_thumbnail($post_id, intval($rank_label['thumbnail_id']));
                 }
+
+                // Save logo size type
+                if (isset($rank_label['logo_size_type'])) {
+                    $logo_size_type = sanitize_text_field($rank_label['logo_size_type']);
+                    if (in_array($logo_size_type, array('none', 'width', 'height'), true)) {
+                        update_post_meta($post_id, '_logo_size_type', $logo_size_type);
+                    }
+                }
+
+                // Save logo size value
+                if (isset($rank_label['logo_size_value'])) {
+                    $logo_size_value = intval($rank_label['logo_size_value']);
+                    update_post_meta($post_id, '_logo_size_value', $logo_size_value);
+                }
             }
         }
 
@@ -459,6 +475,16 @@ class S2J_Alliance_Manager_RestController {
 
             // title から slug を生成
             $sanitized_label['slug'] = sanitize_title($sanitized_label['title']);
+
+            // logo_size_type をサニタイズ
+            $logo_size_type = sanitize_text_field($rank_label['logo_size_type'] ?? 'none');
+            if (!in_array($logo_size_type, array('none', 'width', 'height'), true)) {
+                $logo_size_type = 'none';
+            }
+            $sanitized_label['logo_size_type'] = $logo_size_type;
+
+            // logo_size_value をサニタイズ
+            $sanitized_label['logo_size_value'] = intval($rank_label['logo_size_value'] ?? 0);
 
             $sanitized[] = $sanitized_label;
         }

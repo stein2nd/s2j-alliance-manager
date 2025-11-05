@@ -353,6 +353,35 @@ class S2J_Alliance_Manager_AllianceManager {
     private function prepare_content_models($alliance_data) {
         $content_models = array();
 
+        // ランクラベル情報を取得してマッピングを作成（パフォーマンス向上のため）
+        $rank_labels_map = array();
+        $rank_labels = get_posts(array(
+            'post_type' => 's2j_am_rank_label',
+            'post_status' => 'publish',
+            'numberposts' => -1,
+            'orderby' => 'menu_order',
+            'order' => 'ASC'
+        ));
+
+        foreach ($rank_labels as $rank_label) {
+            $rank_title = $rank_label->post_title;
+            $rank_slug = $rank_label->post_name;
+            $logo_size_type = get_post_meta($rank_label->ID, '_logo_size_type', true) ?: 'none';
+            $logo_size_value = intval(get_post_meta($rank_label->ID, '_logo_size_value', true)) ?: 0;
+
+            // タイトルとスラッグの両方でマッピング
+            $rank_labels_map[$rank_title] = array(
+                'logo_size_type' => $logo_size_type,
+                'logo_size_value' => $logo_size_value
+            );
+            if ($rank_slug !== $rank_title) {
+                $rank_labels_map[$rank_slug] = array(
+                    'logo_size_type' => $logo_size_type,
+                    'logo_size_value' => $logo_size_value
+                );
+            }
+        }
+
         foreach ($alliance_data as $rank => $partners) {
             foreach ($partners as $partner) {
                 if (isset($partner['is_placeholder']) && $partner['is_placeholder']) {
@@ -371,6 +400,12 @@ class S2J_Alliance_Manager_AllianceManager {
                     $poster_url = wp_get_attachment_url($partner['poster']);
                 }
 
+                // ランクに対応するロゴサイズ情報を取得
+                $logo_size_info = $rank_labels_map[$rank] ?? array(
+                    'logo_size_type' => 'none',
+                    'logo_size_value' => 0
+                );
+
                 $content_models[] = array(
                     'rank' => $rank,
                     'logo' => $partner['logo'] ?? 0,
@@ -381,7 +416,9 @@ class S2J_Alliance_Manager_AllianceManager {
                     'behavior' => $partner['behavior'] ?? 'modal',
                     'poster' => $partner['poster'] ?? 0,
                     'frontpage' => $partner['frontpage'] ?? 'YES',
-                    'index' => $partner['index'] ?? 0
+                    'index' => $partner['index'] ?? 0,
+                    'logo_size_type' => $logo_size_info['logo_size_type'],
+                    'logo_size_value' => $logo_size_info['logo_size_value']
                 );
             }
         }

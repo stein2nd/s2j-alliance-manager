@@ -551,7 +551,7 @@
 .s2j-rank-label {
   position: relative;
   display: grid;
-  grid-template-columns: auto 1fr 1fr auto auto;
+  grid-template-columns: auto 1fr 1fr auto auto auto;
   gap: $spacing-md;
   align-items: center;
   padding: $spacing-md;
@@ -636,6 +636,27 @@
 
     &.title {
       input[type="text"] {
+        width: 100%;
+        padding: $spacing-xs;
+        border: 1px solid $border-color;
+        border-radius: $border-radius-sm;
+      }
+    }
+
+    &.logo-size {
+      flex-direction: column;
+      align-items: flex-start;
+      min-width: 12.5rem;
+
+      .components-base-control {
+        width: 100%;
+      }
+
+      .components-radio-control__option {
+        margin-bottom: $spacing-xs;
+      }
+
+      input[type="number"] {
         width: 100%;
         padding: $spacing-xs;
         border: 1px solid $border-color;

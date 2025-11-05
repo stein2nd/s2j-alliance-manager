@@ -297,6 +297,18 @@
   * **jump 動作**: `target='_blank' rel='noopener noreferrer'` でのジャンプ
   * **modal 動作**: モーダル表示機能 (`logo` に `text` を添える) 
 * **レスポンシブ対応**: モバイル環境での適切な表示
+* **ロゴサイズ指定機能** (**実装状況**: ✅100% 完了):
+  * **ランク別ロゴサイズ指定**: 管理画面で各ランクラベルに対してロゴサイズを指定可能
+  * **横幅指定**: `logo_size_type='width'` の場合、指定した `logo_size_value` の横幅 (ピクセル) でスケーリング表示
+  * **縦高指定**: `logo_size_type='height'` の場合、指定した `logo_size_value` の縦高 (ピクセル) でスケーリング表示
+  * **サイズ指定なし**: `logo_size_type='none'` の場合、既存のCSS (`max-width: 100%`, `height: auto`) に従ってスケーリング表示
+  * **インライン・スタイル適用**: 指定されたサイズは `img` 要素の `width`/`height` 属性とインライン・スタイル (`style` 属性) の両方で適用され、CSS を上書き
+  * **スケーリング基準 (サイズ指定なしの場合)**:
+    * ロゴサイズが指定されていない (`logo_size_type='none'`) 場合、フロントエンドでは以下の CSS ルールに従ってスケーリングされます:
+      * `max-width: 100%` - 親要素の幅を超えないように制限
+      * `height: auto` - アスペクト比を維持しながら高さを自動調整
+      * `object-fit: contain` - 画像のアスペクト比を維持しつつ、コンテナ内に収まるようにスケーリング
+    * このため、親要素 (`.s2j-alliance-logo`) の幅に応じて、画像の元のアスペクト比を保ったまま適切にスケーリングされます。
 
 *改善が必要な機能*:
 
@@ -452,6 +464,16 @@
   * **TextControl**: `slug`
   * **TextareaControl**: `content` (説明)
   * **MediaUploader**: `thumbnail` (サムネイル画像)
+  * **ロゴサイズ指定フィールド** (`logo-size`): (**実装状況**: ✅100% 完了)
+    * **RadioControl**: `logo_size_type` (サイズ指定タイプ)
+      * 選択肢: `none` - サイズ指定なし (現在の出力)
+      * 選択肢: `width` - 横幅を揃える
+      * 選択肢: `height` - 縦高を揃える
+    * **TextControl (NumberInput)**: `logo_size_value` (サイズ値)
+      * `logo_size_type` が `width` または `height` の場合に表示
+      * ピクセル単位で数値を入力
+      * 横幅指定の場合: 指定したピクセル値が、横幅として適用
+      * 縦高指定の場合: 指定したピクセル値が、縦高として適用
 * 並び替えは「Up」「Down」ボタンで行い、`row-number` を更新可能にします。
   * 将来的にドラッグ & ドロップ機能の追加を検討します。
 * 変更内容は、メインコンテンツ (ContentList) とは別にローカル state 保持とします。
@@ -476,6 +498,13 @@
     * 手動スラッグ編集機能
     * リアルタイム・バリデーション
     * スラッグ入力フィールドの UI 実装
+
+* **ロゴサイズ指定機能** (**実装状況**: ✅100% 完了):
+    * **RadioControl によるサイズ指定タイプ選択**: 横幅/縦高/指定なしの選択
+    * **NumberInput によるサイズ値入力**: ピクセル単位での数値入力
+    * **条件付き表示**: サイズ指定タイプが `width` または `height` の場合のみ、サイズ値入力フィールドを表示
+    * **データ保存**: ランクラベル保存時に `_logo_size_type` と `_logo_size_value` のメタデータとして保存
+    * **フロントエンド反映**: フロントエンドでロゴ表示時に、指定されたサイズを適用
 
 * **一括操作**: インライン編集機能
     * 選択モード切り替えボタン
@@ -781,9 +810,62 @@
   * `FFmpegTestResult`: FFmpeg テスト結果用インターフェイス
   * `WordPressMedia`: WordPress メディア情報用インターフェイス
 
+* **RankLabel 型定義の詳細** (**実装状況**: ✅100% 完了):
+
+  ```typescript
+  export interface RankLabel {
+    id: number;
+    title: string;
+    content: string;
+    thumbnail_id: number;
+    menu_order: number;
+    slug: string;
+    logo_size_type?: 'none' | 'width' | 'height'; // ロゴサイズの指定タイプ
+    logo_size_value?: number; // ロゴサイズの値 (width または height)
+  }
+  ```
+
+  * `logo_size_type`: ロゴサイズの指定タイプ
+    * `'none'`: サイズ指定なし (既存の CSS に従う)
+    * `'width'`: 横幅を指定
+    * `'height'`: 縦高を指定
+  * `logo_size_value`: ロゴサイズの値 (ピクセル単位)
+    * `logo_size_type` が `'width'` の場合: 横幅のピクセル値
+    * `logo_size_type` が `'height'` の場合: 縦高のピクセル値
+    * `logo_size_type` が `'none'` の場合: `0` または未設定
+
 * **ContentModel 型定義の詳細**:
+
+  ```typescript
+  export interface ContentModel {
+    frontpage: 'YES' | 'NO';
+    rank: string;
+    logo: number; // WordPress attachment ID
+    logo_url?: string; // WordPress attachment URL
+    poster: number; // WordPress attachment ID for video poster
+    poster_url?: string; // WordPress attachment URL for video poster
+    jump_url: string;
+    behavior: 'jump' | 'modal';
+    message: string;
+    logo_size_type?: 'none' | 'width' | 'height'; // ロゴサイズの指定タイプ (ランクから継承)
+    logo_size_value?: number; // ロゴサイズの値 (ランクから継承)
+  }
+  ```
+
+  * `logo_size_type`: ランクラベルから継承されるロゴサイズの指定タイプ
+  * `logo_size_value`: ランクラベルから継承されるロゴサイズの値
+  * PHP 側の `prepare_content_models()` メソッドで、各コンテンツモデルの `rank` に対応するランクラベルからロゴサイズ情報を取得し、ContentModel に追加
   * `poster: number` - ポスター画像の添付ファイル ID (0 = 未選択)
   * ポスターノティス表示判定に使用される重要なフィールド
+
+* **データ保存**:
+  * ランクラベルのロゴサイズ情報は、カスタム投稿タイプ `s2j_am_rank_label` のメタデータとして保存されます:
+    * `_logo_size_type`: サイズ指定タイプ (`'none'`, `'width'`, `'height'`)
+    * `_logo_size_value`: サイズ値 (整数、ピクセル単位)
+
+* **データ取得**:
+  * REST API エンドポイント `GET /wp-json/s2j-alliance-manager/v1/rank-labels` でランクラベル情報とともにロゴサイズ情報を取得
+  * フロントエンド表示時、PHP 側でコンテンツモデルを準備する際に、各ランクに対応するロゴサイズ情報を取得し、ContentModel に追加
 
 ### 9.2. データフローと状態管理 (**実装状況**: ✅完全実装済み - すべての状態管理の機能が実装済み)
 
@@ -791,6 +873,7 @@
 * **リアルタイム連携**: ランクラベル保存後、即座に ContentList の rank 選択肢が更新されます。
 * **状態管理**: ランクラベル管理とメインコンテンツ管理は、独立した状態管理とし、保留中の変更は視覚的にハイライト表示され、保存・キャンセル操作が可能です。
 * **権限管理**: 管理者権限に `edit_s2j_am_rank_labels` 権限を自動付与します。
+* **ロゴサイズ情報の伝播**: ランクラベルで設定されたロゴサイズ情報は、フロントエンド表示時に自動的に各コンテンツモデルに反映されます。
 
 ### 9.3. REST API 仕様 (**実装状況**: ✅完全実装済み)
 
@@ -807,9 +890,11 @@
 
 * `GET /wp-json/s2j-alliance-manager/v1/rank-labels`
   * ランクラベル一覧取得
+  * レスポンスに `logo_size_type` と `logo_size_value` を含む
 
 * `POST /wp-json/s2j-alliance-manager/v1/rank_labels`
   * ランクラベル一括保存
+  * リクエストボディに `logo_size_type` と `logo_size_value` を含む
 
 * `GET /wp-json/s2j-alliance-manager/v1/ffmpeg/settings`
   * FFmpeg 設定取得

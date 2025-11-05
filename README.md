@@ -5,13 +5,13 @@
 [![React](https://img.shields.io/badge/React-18.2-blue.svg)](https://reactjs.org/)
 [![TypeScript](https://img.shields.io/badge/TypeScript-5.9-blue.svg)](https://www.typescriptlang.org/)
 [![Dart SASS](https://img.shields.io/badge/SCSS-1.9-blue.svg)](https://sass-lang.com/dart-sass/)
-[![Vite](https://img.shields.io/badge/vite-7.1-blue.svg)](https://vite.dev)
+[![Vite](https://img.shields.io/badge/vite-7.2-blue.svg)](https://vite.dev)
 
 ## Description
 
 S2J Alliance Manager は、ロゴや動画付きの提携パートナーバナーを管理するために設計された、包括的な WordPress プラグインです。Gutenberg ブロックと Classic エディターの両方をサポートし、バナーとランクの直感的で柔軟な管理のためのモダンな React ベースの管理インターフェースを提供します。
 
-このプラグインは、React v18.2、TypeScript v5.9、Vite v7.1などの現代的な Web 技術で構築されており、最適なパフォーマンスと保守性を実現しています。
+このプラグインは、React v18.2、TypeScript v5.9、Vite v7.2などの現代的な Web 技術で構築されており、最適なパフォーマンスと保守性を実現しています。
 
 ### 特徴
 
@@ -205,7 +205,7 @@ A: はい、ランクラベル設定画面で、各ランクに対してロゴ�
   * TypeScript v5.9
   * SCSS v1.93
 * **ビルドツール**:
-  * Vite v7.1
+  * Vite v7.2
 * **コード品質**:
   * ESLint v9.36
   * Stylelint v16.24

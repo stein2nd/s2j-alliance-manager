@@ -862,9 +862,12 @@
 .s2j-content-model {
   position: relative;
   display: grid;
-  grid-template-columns: auto 1fr auto auto auto auto auto auto;
+
+  // 幅広画面: 左列 (row-number、frontpage、rank) + 右列 (logo、jump-url/behavior、actions)
+  grid-template-columns: auto 1fr 1fr;
+  grid-template-rows: auto auto auto auto;
   gap: $spacing-md;
-  align-items: center;
+  align-items: start;
   padding: $spacing-md;
   border: 1px solid $border-color;
   border-radius: $border-radius-sm;
@@ -873,7 +876,7 @@
 
   // メッセージ表示時の柔軟なレイアウト
   &.s2j-has-poster-notice {
-    grid-template-rows: auto auto;
+    grid-template-rows: auto auto auto auto auto;
   }
 
   &:hover {
@@ -905,9 +908,8 @@
   }
 
   .s2j-row-number {
-    position: absolute;
-    top: 0.25rem;
-    left: 0.25rem;
+    grid-column: 1;
+    grid-row: 1;
     background: $primary-color;
     color: $white;
     font-size: 0.625rem;
@@ -916,24 +918,26 @@
     border-radius: 0.125rem;
     line-height: 1;
     z-index: 2;
-
-    // 保留状態の場合は左側のインジケーターを避ける
-    .s2j-pending-changes & {
-      left: 0.5rem;
-    }
+    align-self: start;
   }
 
   .s2j-model-field {
     display: flex;
-    align-items: center;
+    align-items: flex-start;
 
     &.frontpage {
+      grid-column: 1;
+      grid-row: 2;
+
       input[type="checkbox"] {
         margin: 0;
       }
     }
 
     &.rank {
+      grid-column: 1;
+      grid-row: 3;
+
       select {
         min-width: 7.5rem;
         padding: $spacing-xs;
@@ -943,6 +947,9 @@
     }
 
     &.logo {
+      grid-column: 2;
+      grid-row: 1 / 4; // 1行目から3行目まで縦3セル連結
+
       .s2j-logo-preview {
         width: 2.5rem;
         height: 2.5rem;
@@ -966,8 +973,12 @@
     }
 
     &.jump-url {
+      grid-column: 3;
+      grid-row: 1;
+
       input[type="url"] {
-        width: 12.5rem;
+        width: 100%;
+        max-width: 12.5rem;
         padding: $spacing-xs;
         border: 1px solid $border-color;
         border-radius: $border-radius-sm;
@@ -975,6 +986,9 @@
     }
 
     &.behavior {
+      grid-column: 3;
+      grid-row: 2;
+
       select {
         min-width: 6.25rem;
         padding: $spacing-xs;
@@ -984,10 +998,13 @@
     }
 
     &.actions {
+      grid-column: 2 / 4;
+      grid-row: 4;
       display: flex;
-      flex-direction: column; // 縦方向にグループを配置
+      flex-direction: row; // 横方向にグループを配置
       gap: $spacing-xs;
       min-width: 0;
+      align-self: start;
 
       .s2j-navigation-actions,
       .s2j-management-actions {
@@ -1245,8 +1262,8 @@
 
 // グリッドレイアウト内のポスターノティス
 .s2j-content-model.s2j-has-poster-notice .s2j-poster-notice {
-  grid-column: 2 / 8; // 2列目から8列目まで結合 (ロゴ列から Actions 列まで)
-  grid-row: 2;
+  grid-column: 2 / 4; // 2列目から4列目まで結合 (右側の列全体)
+  grid-row: 5;
   margin-top: $spacing-sm;
   margin-left: 0;
   margin-right: 0;
@@ -1969,12 +1986,59 @@ div[id*="s2j"][id*="modal"],
 
   .s2j-content-model {
     grid-template-columns: 1fr;
+    grid-template-rows: auto;
     gap: $spacing-sm;
 
+    .s2j-row-number {
+      position: absolute;
+      top: 0.25rem;
+      left: 0.25rem;
+      grid-column: 1;
+      grid-row: 1;
+
+      .s2j-pending-changes & {
+        left: 0.5rem;
+      }
+    }
+
     .s2j-model-field {
+      grid-column: 1;
+      grid-row: auto;
+
+      &.frontpage {
+        grid-row: auto;
+      }
+
+      &.rank {
+        grid-row: auto;
+      }
+
+      &.logo {
+        grid-row: auto;
+      }
+
+      &.jump-url {
+        grid-row: auto;
+
+        input[type="url"] {
+          width: 100%;
+        }
+      }
+
+      &.behavior {
+        grid-row: auto;
+      }
+
       &.actions {
+        grid-column: 1;
+        grid-row: auto;
         justify-content: flex-end;
       }
+    }
+
+    &.s2j-has-poster-notice .s2j-poster-notice {
+      grid-column: 1;
+      grid-row: auto;
     }
   }
 }

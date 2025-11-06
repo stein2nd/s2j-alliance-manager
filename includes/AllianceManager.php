@@ -256,12 +256,16 @@ class S2J_Alliance_Manager_AllianceManager {
         // React コンポーネント用のデータを準備
         $content_models = $this->prepare_content_models($alliance_data);
 
+        // ランク別の carousel_enabled 情報を取得
+        $rank_carousel_map = $this->get_rank_carousel_map();
+
         ob_start();
         ?>
         <div class="wp-block-s2j-alliance-manager-alliance-banner" 
              data-display-style="<?php echo esc_attr($display_style); ?>"
              data-alignment="<?php echo esc_attr($alignment); ?>"
-             data-content-models="<?php echo esc_attr(json_encode($content_models)); ?>">
+             data-content-models="<?php echo esc_attr(json_encode($content_models)); ?>"
+             data-rank-carousel-map="<?php echo esc_attr(json_encode($rank_carousel_map)); ?>">
             <!-- React コンポーネントがここにレンダリングされます -->
         </div>
         <?php
@@ -368,16 +372,19 @@ class S2J_Alliance_Manager_AllianceManager {
             $rank_slug = $rank_label->post_name;
             $logo_size_type = get_post_meta($rank_label->ID, '_logo_size_type', true) ?: 'none';
             $logo_size_value = intval(get_post_meta($rank_label->ID, '_logo_size_value', true)) ?: 0;
+            $carousel_enabled = (bool) get_post_meta($rank_label->ID, '_carousel_enabled', true);
 
             // タイトルとスラッグの両方でマッピング
             $rank_labels_map[$rank_title] = array(
                 'logo_size_type' => $logo_size_type,
-                'logo_size_value' => $logo_size_value
+                'logo_size_value' => $logo_size_value,
+                'carousel_enabled' => $carousel_enabled
             );
             if ($rank_slug !== $rank_title) {
                 $rank_labels_map[$rank_slug] = array(
                     'logo_size_type' => $logo_size_type,
-                    'logo_size_value' => $logo_size_value
+                    'logo_size_value' => $logo_size_value,
+                    'carousel_enabled' => $carousel_enabled
                 );
             }
         }
@@ -424,6 +431,39 @@ class S2J_Alliance_Manager_AllianceManager {
         }
 
         return $content_models;
+    }
+
+    /**
+     * ランク別の carousel_enabled 情報を取得します。
+     * 「render_alliance_banner_block()」メソッドから呼ばれます。
+     *
+     * @return array<string, bool> $rank_carousel_map ランク別の carousel_enabled 情報
+     */
+    private function get_rank_carousel_map() {
+        $rank_carousel_map = array();
+
+        // ランクラベルを取得
+        $rank_labels = get_posts(array(
+            'post_type' => 's2j_am_rank_label',
+            'post_status' => 'publish',
+            'numberposts' => -1,
+            'orderby' => 'menu_order',
+            'order' => 'ASC'
+        ));
+
+        foreach ($rank_labels as $rank_label) {
+            $rank_title = $rank_label->post_title;
+            $rank_slug = $rank_label->post_name;
+            $carousel_enabled = (bool) get_post_meta($rank_label->ID, '_carousel_enabled', true);
+
+            // タイトルとスラッグの両方でマッピング
+            $rank_carousel_map[$rank_title] = $carousel_enabled;
+            if ($rank_slug !== $rank_title) {
+                $rank_carousel_map[$rank_slug] = $carousel_enabled;
+            }
+        }
+
+        return $rank_carousel_map;
     }
 
     /**

@@ -303,6 +303,7 @@ interface AllianceBannerProps {
   contentModels: ContentModel[];
   displayStyle: 'grid-single' | 'grid-multi';
   alignment?: 'left' | 'center' | 'right';
+  rankCarouselMap?: { [key: string]: boolean };
 }
 
 /**
@@ -313,7 +314,8 @@ interface AllianceBannerProps {
 const AllianceBanner: React.FC<AllianceBannerProps> = ({
   contentModels,
   displayStyle,
-  alignment = 'center'
+  alignment = 'center',
+  rankCarouselMap = {}
 }) => {
   const { isOpen, openModal, closeModal } = useModal();
   const [selectedMessage, setSelectedMessage] = useState('');
@@ -355,9 +357,21 @@ const AllianceBanner: React.FC<AllianceBannerProps> = ({
   /**
    * アライアンス・バナーの表示スタイルを取得します。
    * 「getDisplayClass()」メソッドから呼ばれます。
+   * @param rank ランク名
+   * @param modelsCount そのランクのコンテンツモデル数
    * @returns アライアンス・バナーの表示スタイル
    */
-  const getDisplayClass = () => {
+  const getDisplayClass = (rank?: string, modelsCount?: number) => {
+    // Carousel 表示の条件をチェック
+    if (rank && modelsCount !== undefined) {
+      const carouselEnabled = rankCarouselMap[rank] || false;
+      const canUseCarousel = modelsCount >= 4 && modelsCount <= 8;
+
+      if (carouselEnabled && canUseCarousel) {
+        return 's2j-alliance-banner--carousel';
+      }
+    }
+
     return `s2j-alliance-banner--${displayStyle}`;
   };
 
@@ -406,6 +420,117 @@ const AllianceBanner: React.FC<AllianceBannerProps> = ({
   };
 
   /**
+   * 個別のバナー項目をレンダリングします。
+   * 「renderBannerItem()」メソッドから呼ばれます。
+   * @param model コンテンツモデル
+   * @param rank ランク名
+   * @param index インデックス
+   * @returns バナー項目要素
+   */
+  const renderBannerItem = (model: ContentModel, rank: string, index: number) => {
+    // ロゴサイズ属性を取得
+    const logoSizeData = getLogoSizeAttributes(model);
+
+    if (model.behavior === 'modal') {
+      // 動画ファイルかどうかを判定
+      const isVideo = model.logo_url && /\.(mp4|webm|ogg|mov)$/i.test(model.logo_url);
+      // ポスター画像の URL を使用 (PHP 側で準備済み)
+      const posterUrl = model.poster_url || '';
+
+      return (
+        <li key={`${rank}-${index}`} className="s2j-alliance-item">
+          <button
+            className="s2j-alliance-logo s2j-alliance-logo--modal"
+            onClick={() => handleLogoClick(model.message, model.jump_url, isVideo ? model.logo_url : undefined, posterUrl)}
+            aria-label="View partner message"
+          >
+            {model.logo > 0 ? (
+              isVideo ? (
+                <video
+                  poster={posterUrl}
+                  preload="none"
+                  controls={false}
+                  muted
+                  className="s2j-alliance-video"
+                  style={{ pointerEvents: 'none' }}
+                >
+                  <source src={model.logo_url || ''} type="video/mp4" />
+                </video>
+              ) : (
+                <img
+                  src={model.logo_url || ''}
+                  alt="Partner logo"
+                  loading="lazy"
+                  {...logoSizeData.attributes}
+                  style={logoSizeData.style}
+                />
+              )
+            ) : (
+              <div className="s2j-alliance-placeholder">
+                <span>No Logo</span>
+              </div>
+            )}
+          </button>
+        </li>
+      );
+    } else if (model.behavior === 'jump') {
+      // 動画ファイルかどうかを判定
+      const isVideo = model.logo_url && /\.(mp4|webm|ogg|mov)$/i.test(model.logo_url);
+      // ポスター画像の URL を使用 (PHP 側で準備済み)
+      const posterUrl = model.poster_url || '';
+
+      // URLが設定されている場合はリンク、そうでなければボタンとして表示
+      const content = model.logo > 0 ? (
+        isVideo ? (
+          <video
+            poster={posterUrl}
+            preload="none"
+            controls={false}
+            muted
+            className="s2j-alliance-video"
+            style={{ pointerEvents: 'none' }}
+          >
+            <source src={model.logo_url || ''} type="video/mp4" />
+          </video>
+        ) : (
+          <img
+            src={model.logo_url || ''}
+            alt="Partner logo"
+            loading="lazy"
+            {...logoSizeData.attributes}
+            style={logoSizeData.style}
+          />
+        )
+      ) : (
+        <div className="s2j-alliance-placeholder">
+          <span>No Logo</span>
+        </div>
+      );
+
+      return (
+        <li key={`${rank}-${index}`} className="s2j-alliance-item">
+          {model.jump_url ? (
+            <a
+              href={model.jump_url}
+              className="s2j-alliance-logo"
+              target="_blank"
+              rel="noopener noreferrer"
+              aria-label="Visit partner website"
+            >
+              {content}
+            </a>
+          ) : (
+            <div className="s2j-alliance-logo s2j-alliance-logo--disabled">
+              {content}
+            </div>
+          )}
+        </li>
+      );
+    }
+    return null;
+  };
+
+  /**
    * ランク別のバナーをレンダリングします。
    * 「renderRankBanners()」メソッドから呼ばれます。
    * @param rank ランク名
@@ -415,113 +540,24 @@ const AllianceBanner: React.FC<AllianceBannerProps> = ({
   const renderRankBanners = (rank: string, models: ContentModel[]) => {
     if (models.length === 0) return null;
 
+    const modelsCount = models.length;
+    const displayClass = getDisplayClass(rank, modelsCount);
+    const isCarousel = displayClass === 's2j-alliance-banner--carousel';
+
+    // Carousel 表示の場合、コンテンツを複製して無限ループを作成
+    // より滑らかな連続スクロールのため、3倍に複製
+    const itemsToRender = isCarousel ? [...models, ...models, ...models] : models;
+
     return (
       <div key={rank} className={`s2j-alliance-rank`}>
         <h3 className="s2j-alliance-rank-title">{rank}</h3>
-        <ul className={`s2j-alliance-banner ${getDisplayClass()} ${getAlignmentClass()}`}>
-          {models.map((model, index) => {
-            // ロゴサイズ属性を取得
-            const logoSizeData = getLogoSizeAttributes(model);
-
-            if (model.behavior === 'modal') {
-              // 動画ファイルかどうかを判定
-              const isVideo = model.logo_url && /\.(mp4|webm|ogg|mov)$/i.test(model.logo_url);
-              // ポスター画像の URL を使用 (PHP 側で準備済み)
-              const posterUrl = model.poster_url || '';
-
-              return (
-                <li key={`${rank}-${index}`} className="s2j-alliance-item">
-                  <button
-                    className="s2j-alliance-logo s2j-alliance-logo--modal"
-                    onClick={() => handleLogoClick(model.message, model.jump_url, isVideo ? model.logo_url : undefined, posterUrl)}
-                    aria-label="View partner message"
-                  >
-                    {model.logo > 0 ? (
-                      isVideo ? (
-                        <video
-                          poster={posterUrl}
-                          preload="none"
-                          controls={false}
-                          muted
-                          className="s2j-alliance-video"
-                          style={{ pointerEvents: 'none' }}
-                        >
-                          <source src={model.logo_url || ''} type="video/mp4" />
-                        </video>
-                      ) : (
-                        <img
-                          src={model.logo_url || ''}
-                          alt="Partner logo"
-                          loading="lazy"
-                          {...logoSizeData.attributes}
-                          style={logoSizeData.style}
-                        />
-                      )
-                    ) : (
-                      <div className="s2j-alliance-placeholder">
-                        <span>No Logo</span>
-                      </div>
-                    )}
-                  </button>
-                </li>
-              );
-            } else if (model.behavior === 'jump') {
-              // 動画ファイルかどうかを判定
-              const isVideo = model.logo_url && /\.(mp4|webm|ogg|mov)$/i.test(model.logo_url);
-              // ポスター画像の URL を使用 (PHP 側で準備済み)
-              const posterUrl = model.poster_url || '';
-
-              // URLが設定されている場合はリンク、そうでなければボタンとして表示
-              const content = model.logo > 0 ? (
-                isVideo ? (
-                  <video
-                    poster={posterUrl}
-                    preload="none"
-                    controls={false}
-                    muted
-                    className="s2j-alliance-video"
-                    style={{ pointerEvents: 'none' }}
-                  >
-                    <source src={model.logo_url || ''} type="video/mp4" />
-                  </video>
-                ) : (
-                  <img
-                    src={model.logo_url || ''}
-                    alt="Partner logo"
-                    loading="lazy"
-                    {...logoSizeData.attributes}
-                    style={logoSizeData.style}
-                  />
-                )
-              ) : (
-                <div className="s2j-alliance-placeholder">
-                  <span>No Logo</span>
-                </div>
-              );
-
-              return (
-                <li key={`${rank}-${index}`} className="s2j-alliance-item">
-                  {model.jump_url ? (
-                    <a
-                      href={model.jump_url}
-                      className="s2j-alliance-logo"
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      aria-label="Visit partner website"
-                    >
-                      {content}
-                    </a>
-                  ) : (
-                    <div className="s2j-alliance-logo s2j-alliance-logo--disabled">
-                      {content}
-                    </div>
-                  )}
-                </li>
-              );
-            }
-            return null;
-          })}
-        </ul>
+        <div className={`s2j-alliance-banner-wrapper ${isCarousel ? 's2j-alliance-banner-wrapper--carousel' : ''}`}>
+          <ul className={`s2j-alliance-banner ${displayClass} ${getAlignmentClass()}`}>
+            {itemsToRender.map((model, index) => 
+              renderBannerItem(model, rank, index)
+            )}
+          </ul>
+        </div>
       </div>
     );
   };
@@ -574,6 +610,17 @@ function initializeBannerElement(element: HTMLElement) {
     contentModels = window.s2jAllianceBannerData?.contentModels || [];
   }
   
+  // ランク別の carousel_enabled 情報を取得
+  let rankCarouselMap: { [key: string]: boolean } = {};
+  try {
+    const rankCarouselMapData = element.dataset.rankCarouselMap;
+    if (rankCarouselMapData) {
+      rankCarouselMap = JSON.parse(rankCarouselMapData);
+    }
+  } catch (error) {
+    console.error('S2J Alliance Manager: Error parsing rank carousel map:', error);
+  }
+
   // 属性を取得 (DOM 属性から直接取得)
   const displayStyle = (element.dataset.displayStyle as 'grid-single' | 'grid-multi') || 'grid-single';
   const alignment = (element.dataset.alignment as 'left' | 'center' | 'right') || 'center';
@@ -585,6 +632,7 @@ function initializeBannerElement(element: HTMLElement) {
       contentModels={contentModels}
       displayStyle={displayStyle}
       alignment={alignment}
+      rankCarouselMap={rankCarouselMap}
     />
   );
 

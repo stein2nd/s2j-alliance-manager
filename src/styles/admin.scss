@@ -551,10 +551,17 @@
 .s2j-rank-label {
   position: relative;
   display: grid;
-  grid-template-columns: auto 1fr 1fr auto auto auto;
+
+  // 幅広画面: row-number は position: absolute で配置、右側に複数列のグリッド
+  // 1行目: title、slug、thumbnail、logo-size を横並び
+  // 2行目: content、carousel を横並び
+  // 3行目: actions
+  grid-template-columns: repeat(4, 1fr);
+  grid-template-rows: auto auto auto;
   gap: $spacing-md;
-  align-items: center;
+  align-items: start;
   padding: $spacing-md;
+  padding-left: 3rem; // row-number のスペースを確保
   border: 1px solid $border-color;
   border-radius: $border-radius-sm;
   margin-bottom: $spacing-md;
@@ -576,14 +583,6 @@
       width: 1.125rem;
       height: 1.125rem;
       cursor: pointer;
-    }
-  }
-
-  .s2j-label-field.slug {
-    .components-text-control__input {
-      font-family: monospace;
-      background: #f9f9f9;
-      color: #666;
     }
   }
 
@@ -632,9 +631,13 @@
 
   .s2j-label-field {
     display: flex;
-    align-items: center;
+    align-items: flex-start;
 
+    // 幅広画面での配置とスタイル定義
     &.title {
+      grid-column: 1;
+      grid-row: 1;
+
       input[type="text"] {
         width: 100%;
         padding: $spacing-xs;
@@ -643,7 +646,20 @@
       }
     }
 
+    &.slug {
+      grid-column: 2;
+      grid-row: 1;
+
+      .components-text-control__input {
+        font-family: monospace;
+        background: #f9f9f9;
+        color: #666;
+      }
+    }
+
     &.logo-size {
+      grid-column: 4;
+      grid-row: 1;
       flex-direction: column;
       align-items: flex-start;
       min-width: 12.5rem;
@@ -665,6 +681,9 @@
     }
 
     &.content {
+      grid-column: 1 / 3; // 2列分
+      grid-row: 2;
+
       textarea {
         width: 100%;
         min-height: 3.75rem;
@@ -675,7 +694,15 @@
       }
     }
 
+    &.carousel {
+      grid-column: 3 / 5; // 2列分
+      grid-row: 2;
+    }
+
     &.thumbnail {
+      grid-column: 3;
+      grid-row: 1;
+
       .s2j-logo-preview {
         width: 2.5rem;
         height: 2.5rem;
@@ -699,6 +726,8 @@
     }
 
     &.actions {
+      grid-column: 1 / 5; // 全列
+      grid-row: 3;
       display: flex;
       gap: $spacing-xs;
       flex-wrap: wrap;
@@ -1566,30 +1595,31 @@ div[id*="s2j"][id*="modal"],
       .s2j-preview-jump-url {
         margin-top: 0;
         padding-top: 0;
-
-        .s2j-preview-jump-link {
-          display: inline-block;
-          padding: 0.5rem 1rem;
-          background-color: #0073aa;
-          color: #fff;
-          text-decoration: none;
-          border-radius: 0.25rem;
-          font-weight: 500;
-          transition: background-color 0.2s ease;
-
-          &:hover {
-            background-color: #005a87;
-            color: #fff;
-            text-decoration: none;
-          }
-
-          &:focus {
-            outline: 2px solid #0073aa;
-            outline-offset: 2px;
-          }
-        }
       }
     }
+  }
+}
+
+// プレビュー・ジャンプリンクのスタイル (複合セレクターを避けるため独立定義)
+.s2j-preview-jump-link {
+  display: inline-block;
+  padding: 0.5rem 1rem;
+  background-color: #0073aa;
+  color: #fff;
+  text-decoration: none;
+  border-radius: 0.25rem;
+  font-weight: 500;
+  transition: background-color 0.2s ease;
+
+  &:hover {
+    background-color: #005a87;
+    color: #fff;
+    text-decoration: none;
+  }
+
+  &:focus {
+    outline: 2px solid #0073aa;
+    outline-offset: 2px;
   }
 }
 
@@ -1893,10 +1923,45 @@ div[id*="s2j"][id*="modal"],
 @media (max-width: $breakpoint-md) {
   .s2j-rank-label {
     grid-template-columns: 1fr;
+    grid-template-rows: auto;
+    padding-left: 3rem; // row-number のスペースを確保
     gap: $spacing-sm;
 
+    // 幅狭画面での表示順序を制御
     .s2j-label-field {
+      grid-column: 1;
+      grid-row: auto;
+      display: flex;
+      width: 100%;
+      margin-right: 0;
+
+      // 表示順序: row-number、title、slug、thumbnail、logo-size、content、carousel、actions
+      &.title {
+        order: 1;
+      }
+
+      &.slug {
+        order: 2;
+      }
+
+      &.thumbnail {
+        order: 3;
+      }
+
+      &.logo-size {
+        order: 4;
+      }
+
+      &.content {
+        order: 5;
+      }
+
+      &.carousel {
+        order: 6;
+      }
+
       &.actions {
+        order: 7;
         justify-content: flex-end;
       }
     }

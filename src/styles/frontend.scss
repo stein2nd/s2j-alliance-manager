@@ -1,3 +1,4 @@
+@use 'sass:color';
 @use 'variables' as *;
 @use 'modal' as *;
 
@@ -83,7 +84,38 @@
     }
   }
 
-  // Masonry Layout
+  // Carousel 表示
+  &.s2j-alliance-banner--carousel {
+    display: flex;
+    overflow-x: hidden;
+    overflow-y: hidden;
+    gap: $spacing-md;
+    padding: $spacing-sm 0;
+    margin: $spacing-lg 0;
+    animation: carousel-scroll 30s linear infinite;
+    will-change: transform;
+    width: max-content;
+    min-width: 100%;
+    scrollbar-width: none; // Firefox
+    -ms-overflow-style: none; // IE/Edge
+
+    &::-webkit-scrollbar {
+      display: none; // Chrome/Safari
+    }
+
+    .s2j-alliance-item {
+      flex: 0 0 auto;
+      min-width: 200px;
+      max-width: 300px;
+    }
+
+    // ホバー時にアニメーションを一時停止
+    &:hover {
+      animation-play-state: paused;
+    }
+  }
+
+  // Masonry レイアウト
   &.s2j-alliance-banner--masonry {
     display: block;
     column-count: 3;
@@ -243,6 +275,34 @@
         opacity: 0.6;
       }
     }
+  }
+}
+
+/***
+ * Carousel ラッパー用のスタイル
+ */
+.s2j-alliance-banner-wrapper {
+  &--carousel {
+    overflow: hidden;
+    position: relative;
+    width: 100%;
+    max-width: 100%;
+  }
+}
+
+/***
+ * Carousel 自動スクロールアニメーション
+ * シームレスな無限ループを実現するため、コンテンツを3倍に複製し、
+ * 33.333%移動することで、最初の位置に戻ったように見える
+ * これにより、より滑らかな連続スクロールが実現される
+ */
+@keyframes carousel-scroll {
+  0% {
+    transform: translateX(0);
+  }
+
+  100% {
+    transform: translateX(-33.333%);
   }
 }
 

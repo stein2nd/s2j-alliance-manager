@@ -165,6 +165,7 @@ class AllianceManagerAdmin {
         render(
           <RankLabelManager 
             rankLabels={this.rankLabels}
+            contentModels={this.settings.content_models}
             onUpdate={this.updateRankLabels}
             isLoading={this.isLoading} 
           />,

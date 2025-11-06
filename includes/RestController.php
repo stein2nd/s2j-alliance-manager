@@ -381,6 +381,7 @@ class S2J_Alliance_Manager_RestController {
                 'slug' => $post->post_name,
                 'logo_size_type' => get_post_meta($post->ID, '_logo_size_type', true) ?: 'none',
                 'logo_size_value' => intval(get_post_meta($post->ID, '_logo_size_value', true)) ?: 0,
+                'carousel_enabled' => (bool) get_post_meta($post->ID, '_carousel_enabled', true),
             );
         }
 
@@ -436,6 +437,15 @@ class S2J_Alliance_Manager_RestController {
                     $logo_size_value = intval($rank_label['logo_size_value']);
                     update_post_meta($post_id, '_logo_size_value', $logo_size_value);
                 }
+
+                // Save carousel enabled
+                if (isset($rank_label['carousel_enabled'])) {
+                    $carousel_enabled = (bool) $rank_label['carousel_enabled'];
+                    update_post_meta($post_id, '_carousel_enabled', $carousel_enabled);
+                } else {
+                    // 未設定の場合は false を保存
+                    update_post_meta($post_id, '_carousel_enabled', false);
+                }
             }
         }
 
@@ -485,6 +495,9 @@ class S2J_Alliance_Manager_RestController {
 
             // logo_size_value をサニタイズ
             $sanitized_label['logo_size_value'] = intval($rank_label['logo_size_value'] ?? 0);
+
+            // carousel_enabled をサニタイズ
+            $sanitized_label['carousel_enabled'] = (bool) ($rank_label['carousel_enabled'] ?? false);
 
             $sanitized[] = $sanitized_label;
         }

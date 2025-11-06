@@ -1,7 +1,7 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo, useCallback } from 'react';
 import { __ } from '@wordpress/i18n';
-import { Button, TextControl, TextareaControl, RadioControl } from '@wordpress/components';
-import { RankLabel } from '../../types';
+import { Button, TextControl, TextareaControl, RadioControl, CheckboxControl } from '@wordpress/components';
+import { RankLabel, ContentModel } from '../../types';
 import { MediaUploader } from './MediaUploader';
 import { SlugGenerator } from '../utils/slugGenerator';
 import { ErrorHandler, ErrorType } from '../utils/errorHandler';
@@ -13,6 +13,7 @@ import { ErrorHandler, ErrorType } from '../utils/errorHandler';
  */
 interface RankLabelManagerProps {
   rankLabels: RankLabel[];
+  contentModels: ContentModel[];
   onUpdate: (rankLabels: RankLabel[]) => Promise<void>;
   isLoading?: boolean;
 }
@@ -25,6 +26,7 @@ interface RankLabelManagerProps {
  */
 export const RankLabelManager: React.FC<RankLabelManagerProps> = ({
   rankLabels: initialRankLabels,
+  contentModels,
   onUpdate,
   isLoading = false
 }) => {
@@ -77,7 +79,8 @@ export const RankLabelManager: React.FC<RankLabelManagerProps> = ({
       menu_order: initialRankLabels.length,
       slug: '',
       logo_size_type: 'none',
-      logo_size_value: 0
+      logo_size_value: 0,
+      carousel_enabled: false
     };
 
     /**
@@ -122,6 +125,20 @@ export const RankLabelManager: React.FC<RankLabelManagerProps> = ({
           return;
         }
 
+        // Carousel 設定のバリデーション: 子要素数が4〜8の範囲外の場合、Carousel 設定を無効化
+        const validatedLabels = pendingLabels.map(label => {
+          const childrenCount = childrenCountByRank[label.slug] || childrenCountByRank[label.title] || 0;
+          const canEnableCarousel = childrenCount >= 4 && childrenCount <= 8;
+
+          // carousel_enabled を明示的に設定（false の場合も含む）
+          const carouselEnabled = canEnableCarousel && (label.carousel_enabled === true) ? true : false;
+
+          return { 
+            ...label, 
+            carousel_enabled: carouselEnabled
+          };
+        });
+
         // ランクラベルを保存
         const response = await fetch(
           `${window.s2jAllianceManager.apiUrl}rank-labels`,
@@ -131,7 +148,7 @@ export const RankLabelManager: React.FC<RankLabelManagerProps> = ({
               'Content-Type': 'application/json',
               'X-WP-Nonce': window.s2jAllianceManager.nonce
             },
-            body: JSON.stringify({rank_labels: pendingLabels})
+            body: JSON.stringify({rank_labels: validatedLabels})
           }
         );
 
@@ -140,7 +157,7 @@ export const RankLabelManager: React.FC<RankLabelManagerProps> = ({
 
           if (result.success) {
             // 親コンポーネントに反映
-            await onUpdate(pendingLabels);
+            await onUpdate(validatedLabels);
 
             // 変更保留中のランクラベルをクリア
             setPendingLabels(null);
@@ -149,7 +166,7 @@ export const RankLabelManager: React.FC<RankLabelManagerProps> = ({
             setHasUnsavedChanges(false);
 
             // 元の順序を更新
-            setOriginalOrder(pendingLabels.map((_, index) => index));
+            setOriginalOrder(validatedLabels.map((_, index) => index));
 
             // 成功メッセージを表示
             ErrorHandler.showSuccess(
@@ -432,6 +449,43 @@ export const RankLabelManager: React.FC<RankLabelManagerProps> = ({
   const displayLabels = pendingLabels || initialRankLabels;
   const displayLabelsLength = displayLabels.length;
 
+  /**
+   * 各ランクの子要素数 (コンテンツモデル数) をカウントします。
+   * @param rankTitle ランクのタイトルまたはスラッグ
+   * @param isFirstRank 最初のランクかどうか
+   * @returns 子要素数
+   */
+  const countChildrenByRank = useCallback((rankTitle: string, isFirstRank: boolean): number => {
+    return contentModels.filter(model => {
+      const modelRank = model.rank || '';
+      const rankTitleLower = rankTitle.toLowerCase();
+      const modelRankLower = modelRank.toLowerCase();
+
+      // default は最初のランクにのみマッチ
+      if (modelRank === 'default') {
+        return isFirstRank && model.frontpage === 'YES';
+      }
+
+      // 通常のランクマッチング
+      return (modelRankLower === rankTitleLower) && model.frontpage === 'YES';
+    }).length;
+  }, [contentModels]);
+
+  /**
+   * 各ランクの子要素数をメモ化します。
+   */
+  const childrenCountByRank = useMemo(() => {
+    const counts: { [key: string]: number } = {};
+    displayLabels.forEach((label, index) => {
+      const isFirstRank = index === 0;
+      const slugCount = countChildrenByRank(label.slug, isFirstRank);
+      const titleCount = countChildrenByRank(label.title, isFirstRank);
+      counts[label.slug] = slugCount;
+      counts[label.title] = titleCount;
+    });
+    return counts;
+  }, [displayLabels, countChildrenByRank]);
+
   return (
     <div className="s2j-rank-label-manager">
       <div className="s2j-rank-label-header">
@@ -615,6 +669,35 @@ export const RankLabelManager: React.FC<RankLabelManagerProps> = ({
                       />
                     )}
                   </div>
+                </div>
+                <div className="s2j-label-field carousel">
+                  {(() => {
+                    const childrenCount = childrenCountByRank[label.slug] || childrenCountByRank[label.title] || 0;
+                    const canEnableCarousel = childrenCount >= 4 && childrenCount <= 8;
+                    const helpText = canEnableCarousel 
+                      ? __('Carousel display can be enabled when there are 4-8 child elements.', 's2j-alliance-manager')
+                      : __('Carousel display is only available when there are 4-8 child elements (current: %d).', 's2j-alliance-manager').replace('%d', childrenCount.toString());
+
+                    return (
+                      <CheckboxControl
+                        label={__('Enable Carousel Display', 's2j-alliance-manager')}
+                        checked={label.carousel_enabled || false}
+                        onChange={(checked: boolean) => {
+                          const currentLabels = pendingLabels || initialRankLabels;
+                          const updated = [...currentLabels];
+                          updated[index] = { 
+                            ...updated[index], 
+                            carousel_enabled: canEnableCarousel ? checked : false
+                          };
+                          setPendingLabels(updated);
+                          setHasUnsavedChanges(true);
+                        }}
+                        disabled={!canEnableCarousel}
+                        help={helpText}
+                        __nextHasNoMarginBottom={true}
+                      />
+                    );
+                  })()}
                 </div>
                 <div className="s2j-label-field actions">
                   <Button

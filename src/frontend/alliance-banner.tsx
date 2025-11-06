@@ -531,6 +531,355 @@ const AllianceBanner: React.FC<AllianceBannerProps> = ({
   };
 
   /**
+   * Carousel コンポーネント
+   * ナビゲーション、インジケータ、タッチスワイプ対応を含む
+   */
+  interface CarouselProps {
+    rank: string;
+    models: ContentModel[];
+    displayClass: string;
+  }
+
+  const Carousel: React.FC<CarouselProps> = ({ rank, models, displayClass }) => {
+    const carouselRef = useRef<HTMLUListElement>(null);
+    const [currentIndex, setCurrentIndex] = useState(0);
+    const [isAutoPlaying, setIsAutoPlaying] = useState(true);
+    const [touchStart, setTouchStart] = useState<number | null>(null);
+    const [touchEnd, setTouchEnd] = useState<number | null>(null);
+    const autoPlayIntervalRef = useRef<number | null>(null);
+    const isTransitioningRef = useRef(false);
+    const minSwipeDistance = 50;
+
+    const modelsCount = models.length;
+
+    /**
+     * 次のスライドに移動
+     */
+    const goToNext = useCallback(() => {
+      if (isTransitioningRef.current) return;
+
+      setCurrentIndex((prev) => {
+        const nextIndex = prev + 1;
+
+        // 最後のスライドに達したら、アニメーションなしで最初に戻す
+        if (nextIndex >= modelsCount) {
+          isTransitioningRef.current = true;
+
+          // アニメーション完了後に、アニメーションなしで2番目のセットの最初に移動
+          setTimeout(() => {
+            if (carouselRef.current) {
+              const firstItem = carouselRef.current.querySelector('.s2j-alliance-item') as HTMLElement;
+              if (firstItem) {
+                const itemWidth = firstItem.offsetWidth;
+                const gap = parseInt(window.getComputedStyle(carouselRef.current).gap) || 16;
+                const itemWidthWithGap = itemWidth + gap;
+                const baseOffset = -modelsCount * itemWidthWithGap; // 2番目のセットの開始位置
+
+                // アニメーションなしで2番目のセットの最初に移動
+                carouselRef.current.style.transition = 'none';
+                carouselRef.current.style.transform = `translateX(${baseOffset}px)`;
+
+                // 次のフレームでアニメーションを復元し、最初のスライドに設定
+                requestAnimationFrame(() => {
+                  requestAnimationFrame(() => {
+                    if (carouselRef.current) {
+                      carouselRef.current.style.transition = 'transform 0.5s ease-in-out';
+                      setCurrentIndex(0);
+                      isTransitioningRef.current = false;
+                    }
+                  });
+                });
+              }
+            }
+          }, 500);
+
+          return modelsCount - 1; // 最後の位置を返す
+        }
+
+        return nextIndex;
+      });
+      setIsAutoPlaying(false);
+    }, [modelsCount]);
+
+    /**
+     * 前のスライドに移動
+     */
+    const goToPrevious = useCallback(() => {
+      if (isTransitioningRef.current) return;
+
+      setCurrentIndex((prev) => {
+        const prevIndex = prev - 1;
+
+        // 最初のスライドから前へ移動したら、アニメーションなしで最後に戻す
+        if (prevIndex < 0) {
+          isTransitioningRef.current = true;
+
+          // アニメーション完了後に、アニメーションなしで2番目のセットの最後に移動
+          setTimeout(() => {
+            if (carouselRef.current) {
+              const firstItem = carouselRef.current.querySelector('.s2j-alliance-item') as HTMLElement;
+              if (firstItem) {
+                const itemWidth = firstItem.offsetWidth;
+                const gap = parseInt(window.getComputedStyle(carouselRef.current).gap) || 16;
+                const itemWidthWithGap = itemWidth + gap;
+                const baseOffset = -modelsCount * itemWidthWithGap; // 2番目のセットの開始位置
+                const lastOffset = baseOffset - (modelsCount - 1) * itemWidthWithGap; // 2番目のセットの最後
+
+                // アニメーションなしで2番目のセットの最後に移動
+                carouselRef.current.style.transition = 'none';
+                carouselRef.current.style.transform = `translateX(${lastOffset}px)`;
+
+                // 次のフレームでアニメーションを復元し、最後のスライドに設定
+                requestAnimationFrame(() => {
+                  requestAnimationFrame(() => {
+                    if (carouselRef.current) {
+                      carouselRef.current.style.transition = 'transform 0.5s ease-in-out';
+                      setCurrentIndex(modelsCount - 1);
+                      isTransitioningRef.current = false;
+                    }
+                  });
+                });
+              }
+            }
+          }, 500);
+
+          return 0; // 最初の位置を返す
+        }
+
+        return prevIndex;
+      });
+      setIsAutoPlaying(false);
+    }, [modelsCount]);
+
+    /**
+     * 指定されたインデックスに移動
+     */
+    const goToSlide = useCallback((index: number) => {
+      if (isTransitioningRef.current) return;
+      setCurrentIndex(index);
+      setIsAutoPlaying(false);
+    }, []);
+
+    /**
+     * タッチ開始時の処理
+     */
+    const handleTouchStart = useCallback((e: React.TouchEvent) => {
+      setTouchEnd(null);
+      setTouchStart(e.targetTouches[0].clientX);
+    }, []);
+
+    /**
+     * タッチ移動時の処理
+     */
+    const handleTouchMove = useCallback((e: React.TouchEvent) => {
+      setTouchEnd(e.targetTouches[0].clientX);
+    }, []);
+
+    /**
+     * タッチ終了時の処理（スワイプ判定）
+     */
+    const handleTouchEnd = useCallback(() => {
+      if (!touchStart || !touchEnd) return;
+
+      const distance = touchStart - touchEnd;
+      const isLeftSwipe = distance > minSwipeDistance;
+      const isRightSwipe = distance < -minSwipeDistance;
+
+      if (isLeftSwipe) {
+        goToNext();
+      } else if (isRightSwipe) {
+        goToPrevious();
+      }
+    }, [touchStart, touchEnd, goToNext, goToPrevious]);
+
+    /**
+     * 自動再生の制御
+     */
+    useEffect(() => {
+      if (isAutoPlaying && modelsCount > 0) {
+        autoPlayIntervalRef.current = window.setInterval(() => {
+          setCurrentIndex((prev) => {
+            const nextIndex = prev + 1;
+            // 最後のスライドに達したら、アニメーションなしで最初に戻す
+            if (nextIndex >= modelsCount) {
+              isTransitioningRef.current = true;
+              setTimeout(() => {
+                if (carouselRef.current) {
+                  carouselRef.current.style.transition = 'none';
+                  const firstItem = carouselRef.current.querySelector('.s2j-alliance-item') as HTMLElement;
+                  if (firstItem) {
+                    const itemWidth = firstItem.offsetWidth;
+                    const gap = parseInt(window.getComputedStyle(carouselRef.current).gap) || 16;
+                    const itemWidthWithGap = itemWidth + gap;
+                    const baseOffset = -modelsCount * itemWidthWithGap;
+                    carouselRef.current.style.transform = `translateX(${baseOffset}px)`;
+
+                    requestAnimationFrame(() => {
+                      if (carouselRef.current) {
+                        carouselRef.current.style.transition = 'transform 0.5s ease-in-out';
+                        setCurrentIndex(0);
+                        isTransitioningRef.current = false;
+                      }
+                    });
+                  }
+                }
+              }, 500);
+              return modelsCount; // 一時的に最後の位置を返す
+            }
+            return nextIndex;
+          });
+        }, 3000); // 3秒ごとに自動スライド
+      } else {
+        if (autoPlayIntervalRef.current) {
+          clearInterval(autoPlayIntervalRef.current);
+          autoPlayIntervalRef.current = null;
+        }
+      }
+
+      return () => {
+        if (autoPlayIntervalRef.current) {
+          clearInterval(autoPlayIntervalRef.current);
+        }
+      };
+    }, [isAutoPlaying, modelsCount]);
+
+    /**
+     * スライド位置の更新
+     * 無限ループを実現するため、2番目のセット (modelsCount から 2 * modelsCount - 1) を使用
+     */
+    const updateSlidePosition = useCallback(() => {
+      if (carouselRef.current && modelsCount > 0) {
+        // 最初のアイテムの幅を取得（gap を含む）
+        const firstItem = carouselRef.current.querySelector('.s2j-alliance-item') as HTMLElement;
+        if (firstItem) {
+          const itemWidth = firstItem.offsetWidth;
+          const gap = parseInt(window.getComputedStyle(carouselRef.current).gap) || 16; // デフォルト gap
+          const itemWidthWithGap = itemWidth + gap;
+
+          // currentIndex が範囲外の場合は処理しない (遷移中)
+          if (currentIndex < 0 || currentIndex >= modelsCount) {
+            return;
+          }
+
+          // 2番目のセット (modelsCount から 2 * modelsCount - 1) の位置を使用
+          // これにより、最初と最後のスライドで無限ループを実現
+          const baseOffset = -modelsCount * itemWidthWithGap; // 2番目のセットの開始位置
+          const translateX = baseOffset - (currentIndex * itemWidthWithGap);
+
+          // 遷移中でない場合のみアニメーションを適用
+          if (!isTransitioningRef.current) {
+            carouselRef.current.style.transition = 'transform 0.5s ease-in-out';
+          }
+          carouselRef.current.style.transform = `translateX(${translateX}px)`;
+        }
+      }
+    }, [currentIndex, modelsCount]);
+
+    useEffect(() => {
+      updateSlidePosition();
+    }, [updateSlidePosition]);
+
+    /**
+     * 初期化時に2番目のセットの位置から開始
+     */
+    useEffect(() => {
+      if (carouselRef.current && modelsCount > 0) {
+        const firstItem = carouselRef.current.querySelector('.s2j-alliance-item') as HTMLElement;
+        if (firstItem) {
+          const itemWidth = firstItem.offsetWidth;
+          const gap = parseInt(window.getComputedStyle(carouselRef.current).gap) || 16;
+          const itemWidthWithGap = itemWidth + gap;
+          const baseOffset = -modelsCount * itemWidthWithGap; // 2番目のセットの開始位置
+
+          // 初期化時はアニメーションなしで2番目のセットの最初に移動
+          carouselRef.current.style.transition = 'none';
+          carouselRef.current.style.transform = `translateX(${baseOffset}px)`;
+
+          // 次のフレームでアニメーションを有効化
+          requestAnimationFrame(() => {
+            if (carouselRef.current) {
+              carouselRef.current.style.transition = 'transform 0.5s ease-in-out';
+            }
+          });
+        }
+      }
+    }, [modelsCount]); // 初期化時のみ実行
+
+    /**
+     * ウィンドウサイズ変更時の処理
+     */
+    useEffect(() => {
+      const handleResize = () => {
+        updateSlidePosition();
+      };
+
+      window.addEventListener('resize', handleResize);
+      return () => {
+        window.removeEventListener('resize', handleResize);
+      };
+    }, [updateSlidePosition]);
+
+    /**
+     * ホバー時の自動再生一時停止
+     */
+    const handleMouseEnter = useCallback(() => {
+      setIsAutoPlaying(false);
+    }, []);
+
+    const handleMouseLeave = useCallback(() => {
+      setIsAutoPlaying(true);
+    }, []);
+
+    // Carousel 表示の場合、コンテンツを複製して無限ループを作成
+    // より滑らかな連続スクロールのため、3倍に複製
+    const itemsToRender = [...models, ...models, ...models];
+
+    return (
+      <div 
+        className="s2j-alliance-banner-wrapper s2j-alliance-banner-wrapper--carousel"
+        onMouseEnter={handleMouseEnter}
+        onMouseLeave={handleMouseLeave}
+      >
+        <button
+          className="s2j-alliance-carousel-nav s2j-alliance-carousel-nav--prev"
+          onClick={goToPrevious}
+          aria-label="Previous slide"
+        >
+          <span>◀</span>
+        </button>
+        <ul
+          ref={carouselRef}
+          className={`s2j-alliance-banner ${displayClass} ${getAlignmentClass()}`}
+          onTouchStart={handleTouchStart}
+          onTouchMove={handleTouchMove}
+          onTouchEnd={handleTouchEnd}
+        >
+          {itemsToRender.map((model, index) => 
+            renderBannerItem(model, rank, index)
+          )}
+        </ul>
+        <button
+          className="s2j-alliance-carousel-nav s2j-alliance-carousel-nav--next"
+          onClick={goToNext}
+          aria-label="Next slide"
+        >
+          <span>▶</span>
+        </button>
+        <div className="s2j-alliance-carousel-indicators">
+          {models.map((_, index) => (
+            <button
+              key={index}
+              className={`s2j-alliance-carousel-indicator ${index === currentIndex ? 's2j-alliance-carousel-indicator--active' : ''}`}
+              onClick={() => goToSlide(index)}
+              aria-label={`Go to slide ${index + 1}`}
+            />
+          ))}
+        </div>
+      </div>
+    );
+  };
+
+  /**
    * ランク別のバナーをレンダリングします。
    * 「renderRankBanners()」メソッドから呼ばれます。
    * @param rank ランク名
@@ -544,20 +893,20 @@ const AllianceBanner: React.FC<AllianceBannerProps> = ({
     const displayClass = getDisplayClass(rank, modelsCount);
     const isCarousel = displayClass === 's2j-alliance-banner--carousel';
 
-    // Carousel 表示の場合、コンテンツを複製して無限ループを作成
-    // より滑らかな連続スクロールのため、3倍に複製
-    const itemsToRender = isCarousel ? [...models, ...models, ...models] : models;
-
     return (
       <div key={rank} className={`s2j-alliance-rank`}>
         <h3 className="s2j-alliance-rank-title">{rank}</h3>
-        <div className={`s2j-alliance-banner-wrapper ${isCarousel ? 's2j-alliance-banner-wrapper--carousel' : ''}`}>
-          <ul className={`s2j-alliance-banner ${displayClass} ${getAlignmentClass()}`}>
-            {itemsToRender.map((model, index) => 
-              renderBannerItem(model, rank, index)
-            )}
-          </ul>
-        </div>
+        {isCarousel ? (
+          <Carousel rank={rank} models={models} displayClass={displayClass} />
+        ) : (
+          <div className="s2j-alliance-banner-wrapper">
+            <ul className={`s2j-alliance-banner ${displayClass} ${getAlignmentClass()}`}>
+              {models.map((model, index) => 
+                renderBannerItem(model, rank, index)
+              )}
+            </ul>
+          </div>
+        )}
       </div>
     );
   };

@@ -92,12 +92,12 @@
     gap: $spacing-md;
     padding: $spacing-sm 0;
     margin: $spacing-lg 0;
-    animation: carousel-scroll 30s linear infinite;
     will-change: transform;
     width: max-content;
     min-width: 100%;
     scrollbar-width: none; // Firefox
     -ms-overflow-style: none; // IE/Edge
+    touch-action: pan-y pinch-zoom; // タッチスワイプ対応
 
     &::-webkit-scrollbar {
       display: none; // Chrome/Safari
@@ -107,11 +107,6 @@
       flex: 0 0 auto;
       min-width: 200px;
       max-width: 300px;
-    }
-
-    // ホバー時にアニメーションを一時停止
-    &:hover {
-      animation-play-state: paused;
     }
   }
 
@@ -291,20 +286,128 @@
 }
 
 /***
- * Carousel 自動スクロールアニメーション
- * シームレスな無限ループを実現するため、コンテンツを3倍に複製し、
- * 33.333%移動することで、最初の位置に戻ったように見える
- * これにより、より滑らかな連続スクロールが実現される
+ * Carousel ナビゲーションボタン
  */
-@keyframes carousel-scroll {
-  0% {
-    transform: translateX(0);
+.s2j-alliance-carousel-nav {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  z-index: 10;
+  background: rgba(255, 255, 255, 0.9);
+  border: 1px solid $border-color;
+  border-radius: 50%;
+  width: 2.5rem;
+  height: 2.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: $shadow-md;
+  padding: 0;
+  font-size: 1.2rem;
+  color: $text-color;
+
+  &:hover {
+    background: $white;
+    box-shadow: $shadow-lg;
+    transform: translateY(-50%) scale(1.1);
   }
 
-  100% {
-    transform: translateX(-33.333%);
+  &:active {
+    transform: translateY(-50%) scale(0.95);
+  }
+
+  &:focus {
+    outline: 2px solid $primary-color;
+    outline-offset: 2px;
+  }
+
+  span {
+    display: block;
+    line-height: 1;
+  }
+
+  &--prev {
+    left: $spacing-sm;
+  }
+
+  &--next {
+    right: $spacing-sm;
+  }
+
+  @media (max-width: $breakpoint-sm) {
+    width: 2rem;
+    height: 2rem;
+    font-size: 1rem;
+
+    &--prev {
+      left: $spacing-xs;
+    }
+
+    &--next {
+      right: $spacing-xs;
+    }
   }
 }
+
+/***
+ * Carousel インジケータ (ドット)
+ */
+.s2j-alliance-carousel-indicators {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: $spacing-xs;
+  margin-top: $spacing-md;
+  padding: $spacing-sm 0;
+}
+
+.s2j-alliance-carousel-indicator {
+  width: 0.75rem;
+  height: 0.75rem;
+  border-radius: 50%;
+  border: 2px solid $border-color;
+  background: $white;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  padding: 0;
+  flex-shrink: 0;
+
+  &:hover {
+    background: $primary-color;
+    border-color: $primary-color;
+    transform: scale(1.2);
+  }
+
+  &:focus {
+    outline: 2px solid $primary-color;
+    outline-offset: 2px;
+  }
+
+  &--active {
+    background: $primary-color;
+    border-color: $primary-color;
+    width: 1rem;
+    height: 1rem;
+  }
+
+  @media (max-width: $breakpoint-sm) {
+    width: 0.625rem;
+    height: 0.625rem;
+
+    &--active {
+      width: 0.875rem;
+      height: 0.875rem;
+    }
+  }
+}
+
+/***
+ * Carousel 自動スクロールアニメーション
+ * 注: 現在は JavaScript による制御に切り替えているため、このアニメーションは使用されていません
+ * 将来的な拡張のために残しています
+ */
 
 /***
  * ランク別表示用のスタイル

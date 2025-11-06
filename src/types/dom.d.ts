@@ -21,11 +21,31 @@ declare global {
     focus(): void;
   }
 
+  // HTMLUListElement の型定義
+  interface HTMLUListElement extends HTMLElement {
+    querySelector(selectors: string): Element | null;
+    querySelectorAll(selectors: string): NodeListOf<Element>;
+    scrollWidth: number;
+    style: CSSStyleDeclaration;
+  }
+
   // HTMLTextAreaElement の型定義
   interface HTMLTextAreaElement extends HTMLElement {
     value: string;
     focus(): void;
     blur(): void;
+  }
+
+  // CSSStyleDeclaration の型定義
+  interface CSSStyleDeclaration {
+    gap: string;
+    transform: string;
+    transition: string;
+  }
+
+  // Window の型定義 (getComputedStyle 用)
+  interface Window {
+    getComputedStyle(element: Element, pseudoElement?: string | null): CSSStyleDeclaration;
   }
 
   // KeyboardEvent の型定義

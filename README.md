@@ -371,7 +371,7 @@ interface ContentModel {
 
 ## Contributing
 
-貢献をお待ちしています ! 以下の手順に従ってください:
+貢献をお待ちしています。以下の手順に従ってください。
 
 1. リポジトリをフォークしてください。
 2. 機能ブランチを作成してください (`git checkout -b feature/amazing-feature`)。

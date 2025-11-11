@@ -26,7 +26,7 @@
     "lint:scss": "stylelint src/**/*.scss",
     "lint:scss:fix": "stylelint src/**/*.scss --fix",
     "postinstall": "cd tools/docs-linter && npm install",
-    "prelint:docs": "git submodule update --remote --merge && cd tools/docs-linter && (npm ci || (rm -f package-lock.json && npm install)) && npm run build",
+    "prelint:docs": "cd tools/docs-linter && git restore . && cd ../.. && git submodule update --remote --merge && cd tools/docs-linter && (npm ci || (rm -f package-lock.json && npm install)) && npm run build",
     "lint:docs": "NODE_PATH=./tools/docs-linter/node_modules textlint --config ./tools/docs-linter/wordpress/.textlintrc.wp.json ./README.md ./docs/**/*.md",
     "build:dev": "FLUSH_DIST=true npm run build:dev:admin && npm run build:dev:gutenberg && npm run build:dev:classic && npm run build:dev:frontend",
     "build:dev:admin": "FLUSH_DIST=false VITE_LOG_LEVEL=error vite build --mode development",
@@ -46,15 +46,15 @@
     "react-dom": "^18.2.0"
   },
   "overrides": {
-    "rollup": "^4.53.1"
+    "rollup": "^4.53.2"
   },
   "devDependencies": {
     "@types/jquery": "^3.5.33",
     "@types/node": "^24.10.0",
     "@types/react": "^18.2.0",
     "@types/react-dom": "^18.2.0",
-    "@typescript-eslint/eslint-plugin": "^8.46.3",
-    "@typescript-eslint/parser": "^8.46.3",
+    "@typescript-eslint/eslint-plugin": "^8.46.4",
+    "@typescript-eslint/parser": "^8.46.4",
     "@wordpress/api-fetch": "^7.29.0",
     "@wordpress/block-editor": "^15.2.0",
     "@wordpress/blocks": "^15.2.0",
@@ -64,12 +64,12 @@
     "@wordpress/i18n": "^6.2.0",
     "@wordpress/scripts": "^30.22.0",
     "@wordpress/url": "^4.29.0",
-    "autoprefixer": "^10.4.21",
+    "autoprefixer": "^10.4.22",
     "eslint": "^9.39.1",
     "eslint-plugin-react": "^7.37.5",
     "eslint-plugin-react-hooks": "^7.0.1",
-    "rollup": "^4.53.1",
-    "sass": "^1.93.3",
+    "rollup": "^4.53.2",
+    "sass": "^1.94.0",
     "stylelint": "^16.25.0",
     "stylelint-config-standard-scss": "^16.0.0",
     "typescript": "^5.9.3",

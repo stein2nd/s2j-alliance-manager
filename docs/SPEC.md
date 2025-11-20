@@ -41,17 +41,19 @@
 ├── `README.md`
 ├── `README.txt`
 ├── `LICENSE`
-├── `SPEC.md`  # プラグイン固有仕様
-├── `SPEC_modified.md`  # 最新実装状況反映版
+├── `package.json`  # ビルド設定
+├── node_modules/  # 依存 npm モジュール
 ├── `vite.config.ts`
 ├── `tsconfig.json`
 ├── `eslint.config.js`  # ESLint 設定
+├┬─ docs/  # 開発ドキュメント
+│└─ `SPEC.md`  # プラグイン固有仕様
 ├── `s2j-alliance-manager.php`  # プラグイン本体
 ├── `uninstall.php`  # プラグイン削除時の処理
-├── `package.json`  # ビルド設定
-├── node_modules/
-├┬─ languages/  # 翻訳ファイル (.pot、.po、.mo)
-│└─ `s2j-alliance-manager.pot`
+├┬─ languages/  # 翻訳ファイル
+│├─ `s2j-alliance-manager.pot`
+│├─ `s2j-alliance-manager-[ロケール名].po`
+│└─ `s2j-alliance-manager-[ロケール名].mo`  # WordPress 表示用バイナリ
 ├┬─ includes/  # PHP クラス群 (設定画面、REST API、ブロック)
 │├─ `SettingsPage.php`  # WordPress 管理画面の HTML 構造・メニュー登録、設定サニタイゼーション (✅100%実装完了) 
 │├─ `RestController.php`  # REST API エンドポイント定義・データ処理、権限チェック (✅100%実装完了)

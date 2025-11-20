@@ -1,11 +1,63 @@
 import { render } from '@wordpress/element';
 import { __ } from '@wordpress/i18n';
+import type * as ReactTypes from 'react';
 import { SettingsForm } from './components/SettingsForm';
 import { ContentList } from './components/ContentList';
 import { RankLabelManager } from './components/RankLabelManager';
 import { FFmpegLibraryManager } from './components/FFmpegLibraryManager';
 import { AllianceSettings, ContentModel, RankLabel, FFmpegSettings } from '../types';
 import '@/styles/admin.scss';
+
+// WordPress が提供する React を使用するため、グローバル変数として設定
+// JSX の変換時に React.createElement が使用されるため、React をグローバル変数として設定する必要があります
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+const win = window as any;
+if (!win.React) {
+  // WordPress が提供する React を使用
+  // wp.element は React のラッパーであり、createElement をエクスポートしています
+  const wpElement = win.wp?.element;
+  if (wpElement) {
+    // wp.element から createElement を取得して React オブジェクトを構築
+    win.React = {
+      createElement: wpElement.createElement || wpElement,
+      Fragment: wpElement.Fragment,
+      Component: wpElement.Component,
+      // その他の React API も必要に応じて追加
+    };
+  } else if (!win.React) {
+    // フォールバック: React が見つからない場合はエラー
+    console.error('React not found. Please ensure React is loaded.');
+  }
+}
+// React をグローバルスコープで使用可能にする
+// eslint-disable-next-line no-var
+var React = win.React;
+
+// React 19 の createRoot と React 18 の render の両方に対応
+type RenderRoot = {
+  render: (element: ReactTypes.ReactElement) => void;
+  unmount?: () => void;
+};
+
+/**
+ * React のレンダリング関数を取得します。
+ * WordPress の @wordpress/element の render 関数を使用します。
+ * これは WordPress が提供する React 18 を使用しているため、互換性の問題がありません。
+ */
+function getRenderFunction(container: HTMLElement): RenderRoot {
+  return {
+    render: (element: ReactTypes.ReactElement) => {
+      try {
+        // @wordpress/element の render 関数を使用
+        // これは WordPress が提供する React 18 を使用しているため、互換性の問題がありません
+        render(element, container);
+      } catch (error) {
+        console.error('Error rendering with wp.element.render:', error);
+        throw error;
+      }
+    }
+  };
+}
 
 /**
  * 管理用スクリプト
@@ -24,6 +76,7 @@ class AllianceManagerAdmin {
   };
   private isInitialized = false;
   private isLoading = false;
+  private roots: Map<string, RenderRoot> = new Map();
 
   /**
    * コンストラクター
@@ -141,15 +194,20 @@ class AllianceManagerAdmin {
 
     if (displaySettingsContainer) {
       try {
+        // 既存のルートを取得または作成します。
+        let root = this.roots.get('s2j-display-settings');
+        if (!root) {
+          root = getRenderFunction(displaySettingsContainer);
+          this.roots.set('s2j-display-settings', root);
+        }
         // 「SettingsForm」に、「表示設定のコンテナ」をレンダリングします。
-        render(
-          <SettingsForm
-            settings={this.settings}
-            onSave={this.updateSettings}
-            isLoading={this.isLoading}
-            rankLabels={this.rankLabels}
-          />,
-          displaySettingsContainer
+        root.render(
+          React.createElement(SettingsForm, {
+            settings: this.settings,
+            onSave: this.updateSettings,
+            isLoading: this.isLoading,
+            rankLabels: this.rankLabels
+          })
         );
       } catch (error) {
         console.error('Error rendering SettingsForm:', error);
@@ -161,15 +219,20 @@ class AllianceManagerAdmin {
 
     if (rankLabelContainer && this.isInitialized) {
       try {
+        // 既存のルートを取得または作成します。
+        let root = this.roots.get('s2j-rank-labels');
+        if (!root) {
+          root = getRenderFunction(rankLabelContainer);
+          this.roots.set('s2j-rank-labels', root);
+        }
         // 「RankLabelManager」に、「ランクラベル・マネージャーのコンテナ」をレンダリングします。
-        render(
-          <RankLabelManager 
-            rankLabels={this.rankLabels}
-            contentModels={this.settings.content_models}
-            onUpdate={this.updateRankLabels}
-            isLoading={this.isLoading} 
-          />,
-          rankLabelContainer
+        root.render(
+          React.createElement(RankLabelManager, {
+            rankLabels: this.rankLabels,
+            contentModels: this.settings.content_models,
+            onUpdate: this.updateRankLabels,
+            isLoading: this.isLoading
+          })
         );
       } catch (error) {
         console.error('Error rendering RankLabelManager:', error);
@@ -183,16 +246,21 @@ class AllianceManagerAdmin {
     
     if (contentModelsContainer && this.isInitialized) {
       try {
+        // 既存のルートを取得または作成します。
+        let root = this.roots.get('s2j-content-models');
+        if (!root) {
+          root = getRenderFunction(contentModelsContainer);
+          this.roots.set('s2j-content-models', root);
+        }
         // 「ContentList」に、「コンテンツモデルのコンテナ」をレンダリングします。
-        render(
-          <ContentList
-            contentModels={this.settings.content_models}
-            onUpdate={this.updateContentModels}
-            rankLabels={this.rankLabels}
-            ffmpegSettings={this.ffmpegSettings}
-            isLoading={this.isLoading}
-          />,
-          contentModelsContainer
+        root.render(
+          React.createElement(ContentList, {
+            contentModels: this.settings.content_models,
+            onUpdate: this.updateContentModels,
+            rankLabels: this.rankLabels,
+            ffmpegSettings: this.ffmpegSettings,
+            isLoading: this.isLoading
+          })
         );
       } catch (error) {
         console.error('Error rendering ContentList:', error);
@@ -206,14 +274,19 @@ class AllianceManagerAdmin {
 
     if (ffmpegManagerContainer && this.isInitialized) {
       try {
+        // 既存のルートを取得または作成します。
+        let root = this.roots.get('s2j-ffmpeg-library-manager');
+        if (!root) {
+          root = getRenderFunction(ffmpegManagerContainer);
+          this.roots.set('s2j-ffmpeg-library-manager', root);
+        }
         // FFmpegLibraryManager に、FFmpeg Library Manager のコンテナをレンダリングします。
-        render(
-          <FFmpegLibraryManager
-            settings={this.ffmpegSettings}
-            onSave={this.updateFFmpegSettings}
-            isLoading={this.isLoading}
-          />,
-          ffmpegManagerContainer
+        root.render(
+          React.createElement(FFmpegLibraryManager, {
+            settings: this.ffmpegSettings,
+            onSave: this.updateFFmpegSettings,
+            isLoading: this.isLoading
+          })
         );
       } catch (error) {
         console.error('Error rendering FFmpegLibraryManager:', error);

@@ -25,6 +25,27 @@ declare module '@wordpress/components' {
 
 declare module '@wordpress/element' {
   export const render: (element: React.ReactElement, container: Element | null) => void;
+  export const createElement: typeof React.createElement;
+  export const Fragment: typeof React.Fragment;
+  export const Component: typeof React.Component;
+}
+
+// WordPress の React 型定義を拡張
+import * as ReactTypes from 'react';
+
+declare global {
+  var React: typeof ReactTypes;
+
+  namespace React {
+    type ReactElement = ReactTypes.ReactElement;
+    type ReactNode = ReactTypes.ReactNode;
+    // WordPress の React 18 に合わせて FC の型を調整
+    type FC<P = {}> = (props: P) => ReactTypes.ReactElement | null;
+    type FunctionComponent<P = {}> = FC<P>;
+    const createElement: typeof ReactTypes.createElement;
+    const Fragment: typeof ReactTypes.Fragment;
+    const Component: typeof ReactTypes.Component;
+  }
 }
 
 declare module '@wordpress/data' {

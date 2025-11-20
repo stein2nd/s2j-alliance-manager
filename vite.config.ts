@@ -84,7 +84,7 @@ export default defineConfig({
         // WordPress Gutenberg 関連のモジュールを外部化
         if (id.startsWith('@wordpress/')) return true;
         // React 関連を外部化
-        if (id === 'react' || id === 'react-dom') return true;
+        if (id === 'react' || id === 'react-dom' || id === 'react-dom/client') return true;
         // jQuery を外部化
         if (id === 'jquery') return true;
         return false;
@@ -108,7 +108,7 @@ export default defineConfig({
           }
           // React 関連
           if (id === 'react') return 'React';
-          if (id === 'react-dom') return 'ReactDOM';
+          if (id === 'react-dom' || id === 'react-dom/client') return 'ReactDOM';
           // jQuery
           if (id === 'jquery') return 'jQuery';
           return id;

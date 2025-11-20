@@ -12,7 +12,7 @@ License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
 S2J Alliance Manager は、ロゴや動画付きの提携パートナーバナーを管理するために設計された、包括的な WordPress プラグインです。Gutenberg ブロックと Classic エディターの両方をサポートし、バナーとランクの直感的で柔軟な管理のためのモダンな React ベースの管理インターフェースを提供します。
 
-このプラグインは、React 18.2、TypeScript 5.9、Vite 7.1などの現代的なウェブ技術で構築されており、最適なパフォーマンスと保守性を実現しています。
+このプラグインは、React v19.2、TypeScript v5.9、Vite v7.2などの現代的なウェブ技術で構築されており、最適なパフォーマンスと保守性を実現しています。WordPress 環境での互換性を確保するため、`@wordpress/element` を使用して React コンポーネントをレンダリングしています。
 
 = 特徴 =
 
@@ -65,10 +65,10 @@ S2J Alliance Manager は、ロゴや動画付きの提携パートナーバナ�
 
 = 前提条件 =
 
-* WordPress 6.3 以降 (Gutenberg 15.2.0対応のため)
-* PHP 7.4 以降
+* WordPress 6.3 以降 (Gutenberg v15.2対応のため)
+* PHP v7.4 以降
 * JavaScript が有効な最新のウェブブラウザ
-* Node.js 18 以降 (React 18.2.0対応のため)
+* Node.js v18 以降 (React v19.2対応のため)
 * npm または yarn
 
 = 簡単インストール =
@@ -167,14 +167,14 @@ Gutenberg ブロックエディタとの最適な互換性のため、WordPress 
 = 技術スタック =
 
 * **フロントエンド**:
-    * React 18.2、TypeScript 5.9、SCSS 1.93
+    * React v19.2、TypeScript v5.9、SCSS v1.94
 * **ビルドツール**:
     * Vite 7.1
 * **コード品質**:
     * ESLint 9.36、Stylelint 16.24
 * **WordPress**:
     * Gutenberg
-    * API Fetch 7.29、Block Editor 15.2、Blocks 15.2、Component Reference 30.2、Data 10.29、Element 6.29、Internationalization (i18n) 6.2、Scripts 30.22、URL 4.29
+    * API Fetch v7.29、Block Editor v15.2、Blocks v15.2、Component Reference v30.2、Data v10.29、Element v6.29、Internationalization (i18n) v6.2、Scripts v31.0、URL v4.29
 
 = プロジェクト構造 =
 
@@ -229,6 +229,16 @@ npm run build:production
 * nonce チェックが必須です。
 * 基本設定の管理には、`manage_options` 権限が必要です。
 * ランクラベル管理には `edit_s2j_am_rank_labels` 権限が必要です (管理者に自動付与)。
+
+= WordPress 環境での React 互換性 =
+
+このプラグインは React v19.2 を使用していますが、WordPress 環境では `@wordpress/element` を使用して React コンポーネントをレンダリングすることで、互換性を確保しています。
+
+* **JSX 変換**: `tsconfig.json` の `jsx` オプションを `"react"` に設定し、JSX を `React.createElement` に変換しています。
+* **WordPress の React を使用**: `wp.element` から `React` オブジェクトを構築し、グローバル変数として設定しています。
+* **@wordpress/element の render 関数**: WordPress が提供する React v18 を使用するため、`@wordpress/element` の `render` 関数を使用しています。
+
+**注意事項**: 同様の問題が発生した場合は、ビルド時に使用された React と実行時に使用される React のバージョンが一致しているか確認してください。WordPress 環境では、`@wordpress/element` を使用することで互換性を保つことができます。
 
 = データフローと状態管理 (アーキテクチャ) =
 

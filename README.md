@@ -306,11 +306,11 @@ npm run build:production
 
 ### WordPress 環境での React 互換性
 
-このプラグインは React v19.2 を使用していますが、WordPress 環境では `@wordpress/element` を使用して React コンポーネントをレンダリングすることで、互換性を確保しています。
+このプラグインは React v19.2を使用していますが、WordPress 環境では `@wordpress/element` を使用して React コンポーネントをレンダリングすることで、互換性を確保しています。
 
 * **JSX 変換**: `tsconfig.json` の `jsx` オプションを `"react"` に設定し、JSX を `React.createElement` に変換しています。
 * **WordPress の React を使用**: `wp.element` から `React` オブジェクトを構築し、グローバル変数として設定しています。
-* **@wordpress/element の render 関数**: WordPress が提供する React v18 を使用するため、`@wordpress/element` の `render` 関数を使用しています。
+* **@wordpress/element の render 関数**: WordPress が提供する React v18を使用するため、`@wordpress/element` の `render` 関数を使用しています。
 
 **注意事項**: 同様の問題が発生した場合は、ビルド時に使用された React と実行時に使用される React のバージョンが一致しているか確認してください。WordPress 環境では、`@wordpress/element` を使用することで互換性を保つことができます。
 

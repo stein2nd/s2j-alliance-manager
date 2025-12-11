@@ -50,7 +50,7 @@
   },
   "devDependencies": {
     "@types/jquery": "^3.5.33",
-    "@types/node": "^24.10.2",
+    "@types/node": "^25.0.0",
     "@types/react": "^19.2.7",
     "@types/react-dom": "^19.2.3",
     "@typescript-eslint/eslint-plugin": "^8.49.0",
@@ -69,7 +69,7 @@
     "eslint-plugin-react": "^7.37.5",
     "eslint-plugin-react-hooks": "^7.0.1",
     "rollup": "^4.53.3",
-    "sass": "^1.95.1",
+    "sass": "^1.96.0",
     "stylelint": "^16.26.1",
     "stylelint-config-standard-scss": "^16.0.0",
     "typescript": "^5.9.3",

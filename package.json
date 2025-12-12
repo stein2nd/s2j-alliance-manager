@@ -42,8 +42,8 @@
     "makepot": "wp i18n make-pot . languages/s2j-alliance-manager.pot --domain=s2j-alliance-manager"
   },
   "dependencies": {
-    "react": "^19.2.1",
-    "react-dom": "^19.2.1"
+    "react": "^19.2.3",
+    "react-dom": "^19.2.3"
   },
   "overrides": {
     "rollup": "^4.53.3"

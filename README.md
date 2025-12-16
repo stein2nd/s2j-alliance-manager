@@ -11,7 +11,7 @@
 
 S2J Alliance Manager は、ロゴや動画付きの提携パートナーバナーを管理するために設計された、包括的な WordPress プラグインです。Gutenberg ブロックと Classic エディターの両方をサポートし、バナーとランクの直感的で柔軟な管理のためのモダンな React ベースの管理インターフェースを提供します。
 
-このプラグインは、React v19.2、TypeScript v5.9、Vite v7.2などの現代的な Web 技術で構築されており、最適なパフォーマンスと保守性を実現しています。WordPress 環境での互換性を確保するため、`@wordpress/element` を使用して React コンポーネントをレンダリングしています。
+このプラグインは、React v19.2、TypeScript v5.9、Vite v7.3などの現代的な Web 技術で構築されており、最適なパフォーマンスと保守性を実現しています。WordPress 環境での互換性を確保するため、`@wordpress/element` を使用して React コンポーネントをレンダリングしています。
 
 ### 特徴
 

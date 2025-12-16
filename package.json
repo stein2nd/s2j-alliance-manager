@@ -5,6 +5,14 @@
   "type": "module",
   "author": "Koutarou ISHIKAWA",
   "license": "GPL-2.0-or-later",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/stein2nd/s2j-alliance-manager.git"
+  },
+  "homepage": "https://github.com/stein2nd/s2j-alliance-manager#readme",
+  "bugs": {
+    "url": "https://github.com/stein2nd/s2j-alliance-manager/issues"
+  },
   "keywords": [
     "wordpress",
     "plugin",
@@ -26,7 +34,7 @@
     "lint:scss": "stylelint src/**/*.scss",
     "lint:scss:fix": "stylelint src/**/*.scss --fix",
     "postinstall": "cd tools/docs-linter && npm install",
-    "prelint:docs": "cd tools/docs-linter && git restore . && cd ../.. && git submodule update --remote --merge && cd tools/docs-linter && (npm ci || (rm -f package-lock.json && npm install)) && npm run build && cd node_modules/textlint-rule-preset-wp-docs-ja && (npm install || true) && (test -f vite.config.ts || test -f vite.config.js) && npm run build || true && cd ../../..",
+    "prelint:docs": "cd tools/docs-linter && git restore . && cd ../.. && git submodule update --remote --merge && cd tools/docs-linter && (npm ci || (rm -f package-lock.json && npm install)) && npm run build && cd node_modules/textlint-rule-preset-swift-docs-ja && (npm install || true) && (test -f vite.config.ts || test -f vite.config.js) && npm run build || true && cd ../../..",
     "lint:docs": "NODE_PATH=./tools/docs-linter/node_modules textlint --config ./tools/docs-linter/presets/wordpress/.textlintrc.wp.json ./README.md ./docs/**/*.md",
     "build:dev": "FLUSH_DIST=true npm run build:dev:admin && npm run build:dev:gutenberg && npm run build:dev:classic && npm run build:dev:frontend",
     "build:dev:admin": "FLUSH_DIST=false VITE_LOG_LEVEL=error vite build --mode development",
@@ -46,15 +54,15 @@
     "react-dom": "^19.2.3"
   },
   "overrides": {
-    "rollup": "^4.53.3"
+    "rollup": "^4.53.4"
   },
   "devDependencies": {
     "@types/jquery": "^3.5.33",
-    "@types/node": "^25.0.0",
+    "@types/node": "^25.0.2",
     "@types/react": "^19.2.7",
     "@types/react-dom": "^19.2.3",
-    "@typescript-eslint/eslint-plugin": "^8.49.0",
-    "@typescript-eslint/parser": "^8.49.0",
+    "@typescript-eslint/eslint-plugin": "^8.50.0",
+    "@typescript-eslint/parser": "^8.50.0",
     "@wordpress/api-fetch": "^7.36.0",
     "@wordpress/block-editor": "^15.9.0",
     "@wordpress/blocks": "^15.9.0",
@@ -64,16 +72,16 @@
     "@wordpress/i18n": "^6.9.0",
     "@wordpress/scripts": "^31.1.0",
     "@wordpress/url": "^4.36.0",
-    "autoprefixer": "^10.4.22",
-    "eslint": "^9.39.1",
+    "autoprefixer": "^10.4.23",
+    "eslint": "^9.39.2",
     "eslint-plugin-react": "^7.37.5",
     "eslint-plugin-react-hooks": "^7.0.1",
-    "rollup": "^4.53.3",
+    "rollup": "^4.53.4",
     "sass": "^1.96.0",
     "stylelint": "^16.26.1",
     "stylelint-config-standard-scss": "^16.0.0",
     "typescript": "^5.9.3",
-    "vite": "^7.2.7",
+    "vite": "^7.3.0",
     "vite-plugin-static-copy": "^3.1.4"
   }
 }

@@ -5,7 +5,7 @@
 [![React](https://img.shields.io/badge/React-19.2-blue.svg)](https://reactjs.org/)
 [![TypeScript](https://img.shields.io/badge/TypeScript-5.9-blue.svg)](https://www.typescriptlang.org/)
 [![Dart SASS](https://img.shields.io/badge/SCSS-1.96-blue.svg)](https://sass-lang.com/dart-sass/)
-[![Vite](https://img.shields.io/badge/vite-7.2-blue.svg)](https://vite.dev)
+[![Vite](https://img.shields.io/badge/vite-7.3-blue.svg)](https://vite.dev)
 
 ## Description
 
@@ -205,7 +205,7 @@ A: はい、ランクラベル設定画面で、各ランクに対してロゴ�
   * TypeScript v5.9
   * SCSS v1.94
 * **ビルドツール**:
-  * Vite v7.2
+  * Vite v7.3
 * **コード品質**:
   * ESLint v9.36
   * Stylelint v16.24

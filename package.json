@@ -54,11 +54,11 @@
     "react-dom": "^19.2.3"
   },
   "overrides": {
-    "rollup": "^4.53.4"
+    "rollup": "^4.53.5"
   },
   "devDependencies": {
     "@types/jquery": "^3.5.33",
-    "@types/node": "^25.0.2",
+    "@types/node": "^25.0.3",
     "@types/react": "^19.2.7",
     "@types/react-dom": "^19.2.3",
     "@typescript-eslint/eslint-plugin": "^8.50.0",
@@ -76,8 +76,8 @@
     "eslint": "^9.39.2",
     "eslint-plugin-react": "^7.37.5",
     "eslint-plugin-react-hooks": "^7.0.1",
-    "rollup": "^4.53.4",
-    "sass": "^1.96.0",
+    "rollup": "^4.53.5",
+    "sass": "^1.97.1",
     "stylelint": "^16.26.1",
     "stylelint-config-standard-scss": "^16.0.0",
     "typescript": "^5.9.3",

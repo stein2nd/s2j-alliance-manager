@@ -118,6 +118,10 @@ class S2J_Alliance_Manager {
 
         // プラグインの無効化フックを設定します。
         register_deactivation_hook(__FILE__, array($this, 'deactivate'));
+
+        // フロントエンドで管理画面用のスタイルとクラスを除去します (Admin バーは残す)。
+        add_filter('body_class', array($this, 'remove_admin_body_classes'), 999);
+        add_filter('style_loader_tag', array($this, 'remove_admin_style_tags'), 999, 2);
     }
 
     /**
@@ -222,6 +226,59 @@ class S2J_Alliance_Manager {
             false,
             dirname(S2J_ALLIANCE_MANAGER_PLUGIN_BASENAME) . '/languages'
         );
+    }
+
+    /**
+     * フロントエンドで管理画面用の body クラスを除去します。
+     * Admin バー関連のクラスは残します。
+     * 「body_class」フィルターから呼ばれます。
+     *
+     * @param array<string> $classes body クラスの配列
+     * @return array<string> フィルター後の body クラスの配列
+     */
+    public function remove_admin_body_classes($classes) {
+        if (!is_admin()) {
+            // 管理画面用のクラスを削除 (admin-bar は残す)
+            $admin_classes = array(
+                'wp-admin',
+                'no-customize-support',
+            );
+
+            // wp-admin 関連のクラスを削除 (admin-bar は除外)
+            foreach ($classes as $key => $class) {
+                if (in_array($class, $admin_classes) || 
+                    (strpos($class, 'wp-admin') !== false && $class !== 'admin-bar')) {
+                    unset($classes[$key]);
+                }
+            }
+        }
+        return $classes;
+    }
+
+    /**
+     * フロントエンドで管理画面用のスタイルタグ (common.min.css) を除去します。
+     * Admin バー関連のスタイルタグは残します。
+     * 「style_loader_tag」フィルターから呼ばれます。
+     *
+     * @param string $tag スタイルタグの HTML
+     * @param string $handle スタイルハンドル
+     * @return string フィルター後のスタイルタグの HTML
+     */
+    public function remove_admin_style_tags($tag, $handle) {
+        if (!is_admin()) {
+            // common ハンドルまたは common.min.css を含むスタイルを削除 (admin-bar は除外)
+            // プラグインのスタイル (s2j-alliance-manager-*) は除外
+            if (strpos($handle, 's2j-alliance-manager') === 0) {
+                return $tag;
+            }
+
+            // common ハンドルまたは common.min.css を含むスタイルを削除 (admin-bar は除外)
+            if (($handle === 'common' || strpos($tag, 'common.min.css') !== false) && 
+                strpos($tag, 'admin-bar') === false) {
+                return '';
+            }
+        }
+        return $tag;
     }
 
     /**

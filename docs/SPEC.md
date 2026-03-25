@@ -21,7 +21,7 @@
 | §1 | [overview.md](./overview.md) | プラグイン概要・基本情報・はじめに |
 | §2〜§6 | [architecture.md](./architecture.md) | プロジェクト構成、技術スタック、国際化、スタイル設計、パフォーマンス・デバッグ |
 | §7 | [block_spec.md](./block_spec.md) | Gutenberg ブロック対応、Classic エディター対応 |
-| §5.2 + §8 | [admin_ui_spec.md](./admin_ui_spec.md) | コンポーネント一覧、機能仕様・UI/UX 設計 |
+| §5.2 + §8 | [admin_ui_spec.md](./admin_ui_spec.md) | コンポーネント一覧、機能仕様、UI/UX 設計 |
 | §9.1〜§9.2 | [data_dictionary.md](./data_dictionary.md) | データ構造、型定義、データフロー |
 | §9.3 | [rest_api_spec.md](./rest_api_spec.md) | REST API エンドポイント・セキュリティ |
 | 付録 A | [carousel_spec.md](./carousel_spec.md) | Carousel 機能の実装詳細 |

@@ -1,0 +1,23 @@
+{
+  "extends": ["./tools/docs-linter/presets/base/.textlintrc.base.json"],
+  "plugins": {},
+  "filters": {
+    "allowlist": {
+      "allow": [
+        "/\\s>\\s/",
+        "/エントリー/",
+        "/エントリ/",
+        "/(?<!プ)レイヤー/",
+        "/(?<!プレ)レイヤ(?!ー)/",
+        "/ローダー/",
+        "/スクロール/",
+        "/ロールバック/",
+        "/@wordpress\\/[a-zA-Z0-9@._/-]*/i",
+        "/[.。]\\s*「/u"
+      ]
+    }
+  },
+  "rules": {
+    "preset-wp-docs-ja": true
+  }
+}

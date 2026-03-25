@@ -15,7 +15,7 @@ if (process.env.FLUSH_DIST === 'true') {
   );
 }
 
-// ビルド対象の設定を取得（npm スクリプト名から推測）
+// ビルド対象の設定を取得 (npm スクリプト名から推測)
 const getBuildTarget = () => {
   const npmScript = process.env.npm_lifecycle_event;
   if (npmScript?.includes('admin')) return 'admin';

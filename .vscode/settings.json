@@ -1,0 +1,13 @@
+{
+  "npm.exclude": ["**/tools/docs-linter"],
+  "textlint.configPath": "./.textlintrc.json",
+  "textlint.nodePath": "./tools/docs-linter/node_modules:./node_modules",
+  "textlint.enable": true,
+  "textlint.autoFixOnSave": true,
+  "editor.codeActionsOnSave": {
+    "source.fixAll.textlint": "always"
+  },
+  "[markdown]": {
+    "editor.defaultFormatter": "3w36zj6.textlint"
+  }
+}

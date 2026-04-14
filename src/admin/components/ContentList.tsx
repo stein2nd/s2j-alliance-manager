@@ -85,7 +85,7 @@ export const ContentList: React.FC<ContentListProps> = ({
       setPendingModels(null);
       setHasUnsavedChanges(false);
 
-      // 保存後、元の順序をリセット（新しい順序が元の順序になる）
+      // 保存後、元の順序をリセット (新しい順序が元の順序になる)
       setOriginalOrder(pendingModels.map((_, index) => index));
     }
   };
@@ -144,7 +144,7 @@ export const ContentList: React.FC<ContentListProps> = ({
       setPendingModels(updated);
       setHasUnsavedChanges(true);
 
-      // 元の順序も更新（削除されたインデックス以降を1つずつ前にずらす）
+      // 元の順序も更新 (削除されたインデックス以降を1つずつ前にずらす)
       const newOriginalOrder = originalOrder.filter((_, i) => i !== index);
 
       setOriginalOrder(newOriginalOrder);
@@ -206,7 +206,7 @@ export const ContentList: React.FC<ContentListProps> = ({
     setShowMessageModal(null);
   };
 
-  // 表示するモデルを決定（保留中の変更がある場合はそれを使用、なければ保存済みのモデルを使用）
+  // 表示するモデルを決定 (保留中の変更がある場合はそれを使用、なければ保存済みのモデルを使用)
   const displayModels = pendingModels || contentModels;
   const displayModelsLength = displayModels.length;
 
@@ -341,7 +341,7 @@ export const ContentList: React.FC<ContentListProps> = ({
                   </Button>
                 </div>
               </div>
-              {/* ポスターノティス（独立した行として表示） */}
+              {/* ポスターノティス (独立した行として表示) */}
               {hasPosterNotice && (
                 <div className="s2j-poster-notice">
                   <p>{__('No poster image available. Please generate or upload one.', 's2j-alliance-manager')}</p>

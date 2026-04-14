@@ -23,6 +23,11 @@ class S2J_Alliance_Manager_AllianceManager {
     private $initialized = false;
 
     /**
+     * wp_footer で遅延出力用フックを登録済みか (リクエスト単位)
+     */
+    private $alliance_banner_footer_styles_hooked = false;
+
+    /**
      * Singleton instance
      */
     private static $instance = null;
@@ -47,8 +52,7 @@ class S2J_Alliance_Manager_AllianceManager {
         // Gutenberg エディター用登録済みスクリプトとスタイルのアセット (s2j-alliance-manager-gutenberg) をキューに追加します。
         add_action('enqueue_block_editor_assets', array($this, 'enqueue_block_editor_assets'));
 
-        // フロントエンド用アセット (s2j-alliance-manager-gutenberg.css) をキューに追加します。
-        add_action('wp_enqueue_scripts', array($this, 'enqueue_frontend_assets'));
+        // フロントのアセットは block.json (style / viewScript) と render_callback / ショートコード内の enqueue に委ねます (全ページ常時読み込みはしない)。
 
         // デバッグ用のヘルプタブを表示します (Alliance Manager 専用管理画面でのみ)。
         if (is_admin()) {
@@ -66,7 +70,7 @@ class S2J_Alliance_Manager_AllianceManager {
         // Classic エディター用のヘルプタブは管理画面に統合されました。
         // add_action('admin_head', array($this, 'add_shortcode_help_tab'));
 
-        // Shortcode ブロックの処理を監視してアセットを読み込む
+        // Shortcode ブロック内のショートコードを展開する (アセットは render 時に enqueue)
         add_filter('render_block', array($this, 'handle_shortcode_block'), 10, 2);
 
         // コンテンツ内のショートコードを確実に実行する
@@ -152,14 +156,58 @@ class S2J_Alliance_Manager_AllianceManager {
         }
 
         if (file_exists($css_path)) {
-            // スタイルを登録します (block.json で参照されるため必要)
+            // スタイルを登録します (block.json で参照されるため必要)。フロントではエディター用スタイルに依存させない。
             wp_register_style(
                 's2j-alliance-manager-gutenberg',
                 S2J_ALLIANCE_MANAGER_PLUGIN_URL . 'dist/css/s2j-alliance-manager-gutenberg.css',
-                array('wp-edit-blocks'),
+                array(),
                 S2J_ALLIANCE_MANAGER_VERSION
             );
         }
+    }
+
+    /**
+     * フロント表示用のスタイル・スクリプトをキューに追加します。
+     * 「render_alliance_banner_block()」から呼ばれます (ブロックの render_callback / ショートコードの共通出口)。
+     *
+     * block.json の style / viewScript と併用しても、同一ハンドルは二重出力されません。
+     *
+     * @return void
+     */
+    private function enqueue_alliance_banner_view_assets() {
+        if (is_admin()) {
+            return;
+        }
+
+        if (wp_style_is('s2j-alliance-manager-gutenberg', 'registered')) {
+            wp_enqueue_style('s2j-alliance-manager-gutenberg');
+            // ショートコード等で wp_head より後に enqueue した場合、通常の wp_print_styles では <link> が出ない。
+            // スクリプトはフッターで出力されるが、スタイルは通常 head 専用のため未出力分をここで出す。
+            if (!$this->alliance_banner_footer_styles_hooked) {
+                $this->alliance_banner_footer_styles_hooked = true;
+                add_action('wp_footer', array($this, 'print_alliance_banner_styles_in_footer'), 5);
+            }
+        }
+
+        if (wp_script_is('s2j-alliance-manager-frontend', 'registered')) {
+            wp_enqueue_script('s2j-alliance-manager-frontend');
+        }
+    }
+
+    /**
+     * wp_head 後にキューされたバナー用スタイルをフッターで出力します。
+     * 「enqueue_alliance_banner_view_assets()」から wp_footer に1回だけ登録されます。
+     *
+     * @return void
+     */
+    public function print_alliance_banner_styles_in_footer() {
+        if (!wp_style_is('s2j-alliance-manager-gutenberg', 'enqueued')) {
+            return;
+        }
+        if (wp_style_is('s2j-alliance-manager-gutenberg', 'done')) {
+            return;
+        }
+        wp_print_styles('s2j-alliance-manager-gutenberg');
     }
 
     /**
@@ -189,7 +237,7 @@ class S2J_Alliance_Manager_AllianceManager {
      * @return string $html ショートコードの HTML
      */
     public function render_alliance_banner_shortcode($atts = array(), $content = '') {
-        // パラメーター名を正規化（小文字からキャメルケースに変換）
+        // パラメーター名を正規化 (小文字からキャメルケースに変換)
         $normalized_atts = array();
         foreach ($atts as $key => $value) {
             if ($key === 'displaystyle') {
@@ -252,6 +300,10 @@ class S2J_Alliance_Manager_AllianceManager {
         if (empty($alliance_data)) {
             return '<p>' . __('No alliance partners found.', 's2j-alliance-manager') . '</p>';
         }
+
+        // バナーを実際に出力するリクエストでのみフロント用 CSS/JS をキューに追加 (ショートコード・render_callback・ブロック表示で共通)。
+        // 本文内ショートコードは wp_head より後に実行されるため、CSS は wp_footer での追加入力が必要 (enqueue_alliance_banner_view_assets 内で対応)。
+        $this->enqueue_alliance_banner_view_assets();
 
         // React コンポーネント用のデータを準備
         $content_models = $this->prepare_content_models($alliance_data);
@@ -357,7 +409,7 @@ class S2J_Alliance_Manager_AllianceManager {
     private function prepare_content_models($alliance_data) {
         $content_models = array();
 
-        // ランクラベル情報を取得してマッピングを作成（パフォーマンス向上のため）
+        // ランクラベル情報を取得してマッピングを作成 (パフォーマンス向上のため)
         $rank_labels_map = array();
         $rank_labels = get_posts(array(
             'post_type' => 's2j_am_rank_label',
@@ -373,18 +425,21 @@ class S2J_Alliance_Manager_AllianceManager {
             $logo_size_type = get_post_meta($rank_label->ID, '_logo_size_type', true) ?: 'none';
             $logo_size_value = intval(get_post_meta($rank_label->ID, '_logo_size_value', true)) ?: 0;
             $carousel_enabled = (bool) get_post_meta($rank_label->ID, '_carousel_enabled', true);
+            $background_color = get_post_meta($rank_label->ID, '_background_color', true) ?: 'transparent';
 
             // タイトルとスラッグの両方でマッピング
             $rank_labels_map[$rank_title] = array(
                 'logo_size_type' => $logo_size_type,
                 'logo_size_value' => $logo_size_value,
-                'carousel_enabled' => $carousel_enabled
+                'carousel_enabled' => $carousel_enabled,
+                'background_color' => $background_color
             );
             if ($rank_slug !== $rank_title) {
                 $rank_labels_map[$rank_slug] = array(
                     'logo_size_type' => $logo_size_type,
                     'logo_size_value' => $logo_size_value,
-                    'carousel_enabled' => $carousel_enabled
+                    'carousel_enabled' => $carousel_enabled,
+                    'background_color' => $background_color
                 );
             }
         }
@@ -410,7 +465,8 @@ class S2J_Alliance_Manager_AllianceManager {
                 // ランクに対応するロゴサイズ情報を取得
                 $logo_size_info = $rank_labels_map[$rank] ?? array(
                     'logo_size_type' => 'none',
-                    'logo_size_value' => 0
+                    'logo_size_value' => 0,
+                    'background_color' => 'transparent'
                 );
 
                 $content_models[] = array(
@@ -425,7 +481,8 @@ class S2J_Alliance_Manager_AllianceManager {
                     'frontpage' => $partner['frontpage'] ?? 'YES',
                     'index' => $partner['index'] ?? 0,
                     'logo_size_type' => $logo_size_info['logo_size_type'],
-                    'logo_size_value' => $logo_size_info['logo_size_value']
+                    'logo_size_value' => $logo_size_info['logo_size_value'],
+                    'background_color' => $logo_size_info['background_color'] ?? 'transparent'
                 );
             }
         }
@@ -551,75 +608,6 @@ class S2J_Alliance_Manager_AllianceManager {
         if (strpos($screen->id, 'post') !== false || strpos($screen->id, 'page') !== false) {
             $this->enqueue_block_editor_assets();
         }
-    }
-
-    /**
-     * フロントエンド用アセット (s2j-alliance-manager-gutenberg.css) をキューに追加します。
-     * コンストラクターから呼ばれます。
-     * 「wp_enqueue_scripts」フックから呼ばれます。
-     *
-     * @return void
-     */
-    public function enqueue_frontend_assets() {
-        // フロントエンドでのみスタイルと jQuery をキューに追加（管理画面では block.json が自動的に処理）
-        if (!is_admin()) {
-            // jQuery を確実に読み込む
-            wp_enqueue_script('jquery');
-
-            // フロントエンド用スタイルを読み込む (Block と Shortcode で共通)
-            wp_enqueue_style(
-                's2j-alliance-manager-gutenberg',
-                S2J_ALLIANCE_MANAGER_PLUGIN_URL . 'dist/css/s2j-alliance-manager-gutenberg.css',
-                array(),
-                S2J_ALLIANCE_MANAGER_VERSION
-            );
-
-            // フロントエンド用Reactコンポーネントを読み込む
-            wp_enqueue_script(
-                's2j-alliance-manager-frontend',
-                S2J_ALLIANCE_MANAGER_PLUGIN_URL . 'dist/js/s2j-alliance-manager-frontend.js',
-                array('react', 'react-dom'),
-                S2J_ALLIANCE_MANAGER_VERSION,
-                true
-            );
-
-            // Shortcode が使用されている場合のみ JavaScript を読み込む
-            if ($this->is_shortcode_used()) {
-                wp_enqueue_script(
-                    's2j-alliance-manager-gutenberg',
-                    S2J_ALLIANCE_MANAGER_PLUGIN_URL . 'dist/js/s2j-alliance-manager-gutenberg.js',
-                    array('jquery'),
-                    S2J_ALLIANCE_MANAGER_VERSION,
-                    true
-                );
-            }
-        }
-    }
-
-    /**
-     * 現在のページで Shortcode が使用されているかチェックします。
-     * 「enqueue_frontend_assets()」メソッドから呼ばれます。
-     *
-     * @return bool
-     */
-    private function is_shortcode_used() {
-        global $post;
-
-        if (!$post) {
-            return false;
-        }
-
-        // 投稿内容に shortcode が含まれているかチェック
-        if (has_shortcode($post->post_content, 'alliance_banner')) {
-            return true;
-        }
-
-        // Shortcode ブロック内の shortcode もチェック
-        if (strpos($post->post_content, '[alliance_banner') !== false) {
-            return true;
-        }
-
-        return false;
     }
 
     /**
@@ -1061,7 +1049,7 @@ class S2J_Alliance_Manager_AllianceManager {
     }
 
     /**
-     * Shortcode ブロックの処理を監視してアセットを読み込みます。
+     * Shortcode ブロック内のショートコードを展開します。
      * コンストラクターから呼ばれます。
      * 「render_block」フックから呼ばれます。
      *
@@ -1074,10 +1062,7 @@ class S2J_Alliance_Manager_AllianceManager {
         if ($block['blockName'] === 'core/shortcode') {
             // ブロック内に shortcode が含まれているかチェック
             if (strpos($block_content, '[alliance_banner') !== false || strpos($block_content, '[test_alliance') !== false) {
-                // アセットを強制的に読み込む
-                $this->force_enqueue_assets();
-
-                // ショートコードを実行
+                // ショートコードを実行 (アセットは render_alliance_banner_block 内で enqueue)
                 $block_content = do_shortcode($block_content);
             }
         }
@@ -1100,43 +1085,11 @@ class S2J_Alliance_Manager_AllianceManager {
 
         // ショートコードが含まれているかチェック
         if (strpos($content, '[alliance_banner') !== false || strpos($content, '[test_alliance') !== false) {
-            // アセットを強制的に読み込む
-            $this->force_enqueue_assets();
-
-            // ショートコードを実行
+            // ショートコードを実行 (アセットは render_alliance_banner_block 内で enqueue)
             $content = do_shortcode($content);
         }
 
         return $content;
     }
 
-    /**
-     * アセットを強制的に読み込みます。
-     * 「handle_shortcode_block()」メソッドから呼ばれます。
-     *
-     * @return void
-     */
-    private function force_enqueue_assets() {
-        // 既に読み込まれている場合はスキップ
-        if (wp_style_is('s2j-alliance-manager-gutenberg', 'enqueued')) {
-            return;
-        }
-
-        // フロントエンド用スタイルを読み込む
-        wp_enqueue_style(
-            's2j-alliance-manager-gutenberg',
-            S2J_ALLIANCE_MANAGER_PLUGIN_URL . 'dist/css/s2j-alliance-manager-gutenberg.css',
-            array(),
-            S2J_ALLIANCE_MANAGER_VERSION
-        );
-
-        // フロントエンド用スクリプトを読み込む
-        wp_enqueue_script(
-            's2j-alliance-manager-gutenberg',
-            S2J_ALLIANCE_MANAGER_PLUGIN_URL . 'dist/js/s2j-alliance-manager-gutenberg.js',
-            array('jquery'),
-            S2J_ALLIANCE_MANAGER_VERSION,
-            true
-        );
-    }
 }

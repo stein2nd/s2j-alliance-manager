@@ -127,6 +127,18 @@ export default [
     },
   },
   {
+    files: ['tools/**/*.mjs'],
+    languageOptions: {
+      ecmaVersion: 'latest',
+      sourceType: 'module',
+      globals: {
+        process: 'readonly',
+        Buffer: 'readonly',
+        global: 'readonly',
+      },
+    },
+  },
+  {
     ignores: [
       'node_modules/**',
       'dist/**',

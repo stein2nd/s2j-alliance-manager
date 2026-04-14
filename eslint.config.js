@@ -32,8 +32,10 @@ export default [
         HTMLTextAreaElement: 'readonly',
         HTMLInputElement: 'readonly',
         HTMLUListElement: 'readonly',
+        HTMLDivElement: 'readonly',
         HTMLElement: 'readonly',
         Event: 'readonly',
+        KeyboardEvent: 'readonly',
         CustomEvent: 'readonly',
         MutationObserver: 'readonly',
         getComputedStyle: 'readonly',
@@ -93,7 +95,9 @@ export default [
     },
     settings: {
       react: {
-        version: 'detect',
+        // ESLint v10 では RuleContext#getFilename が削除されている。`detect` は内部で getFilename を呼ぶため TypeError になる。
+        // package.json の react (^19.2 系) に合わせる。
+        version: '19.2',
       },
     },
   },

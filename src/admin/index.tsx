@@ -557,7 +557,7 @@ class AllianceManagerAdmin {
   }
 
   /**
-   * デバッグ情報をリフレッシュします（通知なし）。
+   * デバッグ情報をリフレッシュします (通知なし)。
    * 「saveData()」メソッドから呼ばれます。
    */
   private async refreshDebugInfo() {

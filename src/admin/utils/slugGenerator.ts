@@ -9,7 +9,7 @@ export class SlugGenerator {
    * タイトルからスラッグを生成します
    * @param title タイトル
    * @param existingLabels 既存のラベル一覧
-   * @param excludeIndex 除外するインデックス（編集時）
+   * @param excludeIndex 除外するインデックス (編集時)
    * @returns 生成されたスラッグ
    */
   static generateSlug(

@@ -126,6 +126,18 @@ npm run build:production
 4. **Insert Alliance Banner** をクリックします。
 5. コンテンツを公開または更新します。
 
+= ショートコードとテーマテンプレート (Classic テーマ、ブロックテーマ共通) =
+
+投稿本文やウィジェット以外に、PHP テンプレートから次のように埋め込んでも問題ありません。
+
+`
+echo do_shortcode( '[alliance_banner displayStyle="grid-multi" alignment="center"]' );
+`
+
+バナー用の CSS とフロント用スクリプトは、**実際にバナーがレンダリングされるタイミング** (ブロックの render_callback またはショートコード処理の共通関数内) で `wp_enqueue_*` されます。本文にショートコードやブロックがないページでは読み込まれません。
+
+`block.json` の `viewScript` は WordPress v6.1以降で解釈されます。本プラグインの動作要件は WordPress v6.3以降のため、ブロック経由の宣言的なスクリプト読み込みもこの要件内で利用できます。
+
 == Frequently Asked Questions ==
 
 = このプラグインは、ページビルダーと互換性がありますか ? =
@@ -142,7 +154,7 @@ npm run build:production
 
 = 必要な WordPress のバージョンは ? =
 
-Gutenberg ブロックエディタとの最適な互換性のため、WordPress 6.3以降が必要です。
+Gutenberg ブロックエディタとの最適な互換性のため、WordPress v6.3以降が必要です。フロント表示向けの `block.json` `viewScript` は WordPress v6.1以降で解釈されますが、プラグイン全体としては v6.3未満は対象外です。
 
 = パートナーランクはどのように管理しますか ? =
 

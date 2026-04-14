@@ -382,6 +382,7 @@ class S2J_Alliance_Manager_RestController {
                 'logo_size_type' => get_post_meta($post->ID, '_logo_size_type', true) ?: 'none',
                 'logo_size_value' => intval(get_post_meta($post->ID, '_logo_size_value', true)) ?: 0,
                 'carousel_enabled' => (bool) get_post_meta($post->ID, '_carousel_enabled', true),
+                'background_color' => get_post_meta($post->ID, '_background_color', true) ?: 'transparent',
             );
         }
 
@@ -446,6 +447,21 @@ class S2J_Alliance_Manager_RestController {
                     // 未設定の場合は false を保存
                     update_post_meta($post_id, '_carousel_enabled', false);
                 }
+
+                // Save background color
+                if (isset($rank_label['background_color'])) {
+                    $background_color = sanitize_text_field($rank_label['background_color']);
+                    // カラーコードのバリデーション (hex、rgb、rgba、transparentを許可)
+                    if (preg_match('/^(#[0-9a-fA-F]{3,6}|rgb\(|rgba\(|transparent)$/i', $background_color) || $background_color === 'transparent' || $background_color === '') {
+                        update_post_meta($post_id, '_background_color', $background_color ?: 'transparent');
+                    } else {
+                        // 無効な値の場合は transparent を保存
+                        update_post_meta($post_id, '_background_color', 'transparent');
+                    }
+                } else {
+                    // 未設定の場合は transparent を保存
+                    update_post_meta($post_id, '_background_color', 'transparent');
+                }
             }
         }
 
@@ -498,6 +514,16 @@ class S2J_Alliance_Manager_RestController {
 
             // carousel_enabled をサニタイズ
             $sanitized_label['carousel_enabled'] = (bool) ($rank_label['carousel_enabled'] ?? false);
+
+            // background_color をサニタイズ
+            $background_color = sanitize_text_field($rank_label['background_color'] ?? 'transparent');
+            // カラーコードのバリデーション (hex、rgb、rgba、transparentを許可)
+            if (preg_match('/^(#[0-9a-fA-F]{3,6}|rgb\(|rgba\(|transparent)$/i', $background_color) || $background_color === 'transparent' || $background_color === '') {
+                $sanitized_label['background_color'] = $background_color ?: 'transparent';
+            } else {
+                // 無効な値の場合は transparent を設定
+                $sanitized_label['background_color'] = 'transparent';
+            }
 
             $sanitized[] = $sanitized_label;
         }

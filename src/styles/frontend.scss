@@ -16,6 +16,9 @@
   .s2j-alliance-rank {
     margin-bottom: $spacing-xl;
 
+    // CSS 変数を定義 (親要素から継承、デフォルトは transparent)
+    --rank-background-color: transparent;
+
     &:last-child {
       margin-bottom: 0;
     }
@@ -135,7 +138,9 @@
     min-height: 6.25rem;
     border: 1px solid $border-color;
     border-radius: $border-radius-md;
-    background: $white;
+
+    /* CSS 変数を使用、フォールバックは既存の $white */
+    background: var(--rank-background-color, $white);
     transition: all 0.3s ease;
 
     &:hover {

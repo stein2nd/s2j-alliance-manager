@@ -155,7 +155,7 @@ export class ErrorHandler {
     if (container) {
       container.insertBefore(notice, container.firstChild);
 
-      // 自動で消える（エラーの場合は長めに）
+      // 自動で消える (エラーの場合は長めに)
       setTimeout(() => {
         if (notice.parentNode) {
           notice.parentNode.removeChild(notice);

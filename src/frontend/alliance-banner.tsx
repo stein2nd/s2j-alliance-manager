@@ -676,7 +676,7 @@ const AllianceBanner: React.FC<AllianceBannerProps> = ({
     }, []);
 
     /**
-     * タッチ終了時の処理（スワイプ判定）
+     * タッチ終了時の処理 (スワイプ判定)
      */
     const handleTouchEnd = useCallback(() => {
       if (!touchStart || !touchEnd) return;
@@ -749,7 +749,7 @@ const AllianceBanner: React.FC<AllianceBannerProps> = ({
      */
     const updateSlidePosition = useCallback(() => {
       if (carouselRef.current && modelsCount > 0) {
-        // 最初のアイテムの幅を取得（gap を含む）
+        // 最初のアイテムの幅を取得 (gap を含む)
         const firstItem = carouselRef.current.querySelector('.s2j-alliance-item') as HTMLElement;
         if (firstItem) {
           const itemWidth = firstItem.offsetWidth;
@@ -893,8 +893,17 @@ const AllianceBanner: React.FC<AllianceBannerProps> = ({
     const displayClass = getDisplayClass(rank, modelsCount);
     const isCarousel = displayClass === 's2j-alliance-banner--carousel';
 
+    // ランクごとの背景色を取得 (最初のモデルから取得)
+    const backgroundColor = models[0]?.background_color || 'transparent';
+
     return (
-      <div key={rank} className={`s2j-alliance-rank`}>
+      <div 
+        key={rank} 
+        className="s2j-alliance-rank"
+        style={{ 
+          '--rank-background-color': backgroundColor 
+        } as React.CSSProperties}
+      >
         <h3 className="s2j-alliance-rank-title">{rank}</h3>
         {isCarousel ? (
           <Carousel rank={rank} models={models} displayClass={displayClass} />

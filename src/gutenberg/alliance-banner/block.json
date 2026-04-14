@@ -17,6 +17,7 @@
   "editorScript": "s2j-alliance-manager-gutenberg",
   "editorStyle": "s2j-alliance-manager-gutenberg",
   "style": "s2j-alliance-manager-gutenberg",
+  "viewScript": "s2j-alliance-manager-frontend",
   "supports": {
     "align": ["wide", "full"],
     "html": false

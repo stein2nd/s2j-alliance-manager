@@ -112,6 +112,13 @@
 * `src/types/index.ts` : TypeScript 型定義 (ContentModel、RankLabel 等) (✅100% 実装完了)
 * `src/types/wordpress.d.ts` : WordPress 型定義 (React v19対応、WordPress の React 互換性対応) (✅100% 実装完了)
 
+### 2.3. フロント表示アセット (Alliance Banner)
+
+* **`includes/AllianceManager.php`**: ブロックの `render_callback` と `[alliance_banner]` ショートコードは、どちらも同じ `render_alliance_banner_block()` に集約される。
+* **`init` での登録**: `register_block_assets()` が `wp_register_style` / `wp_register_script` のみ行い、フロント全ページでの常時 enqueue は行わない。
+* **レンダリング時の enqueue**: バナーを実際に出力する場合に限り `enqueue_alliance_banner_view_assets()` が `wp_enqueue_style` / `wp_enqueue_script` を呼ぶ。ブロックテーマで「ブロックが使われたページだけ読み込む」方針と整合し、Classic テーマで `echo do_shortcode( '[alliance_banner ...]' );` としたテンプレートでも同じ経路でアセットが載る。
+* **`block.json`**: `style` と `viewScript` (WordPress v6.1以降で解釈。本プラグイン要件は v6.3以降) でフロント用アセットを宣言し、コアのブロック依存読み込みと合わせる。
+
 ---
 
 ## 3. 技術スタック・開発環境

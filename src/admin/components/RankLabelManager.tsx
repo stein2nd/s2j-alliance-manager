@@ -1,10 +1,171 @@
-import React, { useState, useEffect, useMemo, useCallback } from 'react';
+import React, { useState, useEffect, useMemo, useCallback, useRef } from 'react';
 import { __ } from '@wordpress/i18n';
-import { Button, TextControl, TextareaControl, RadioControl, CheckboxControl } from '@wordpress/components';
+import { Button, TextControl, TextareaControl, RadioControl, CheckboxControl, ColorPicker } from '@wordpress/components';
 import { RankLabel, ContentModel } from '../../types';
 import { MediaUploader } from './MediaUploader';
 import { SlugGenerator } from '../utils/slugGenerator';
 import { ErrorHandler, ErrorType } from '../utils/errorHandler';
+
+/**
+ * React.FunctionComponent「カラーピッカー・ダイアログ」インターフェイス
+ */
+interface ColorPickerDialogProps {
+  currentColor: string;
+  onSelect: (color: string) => void;
+  onCancel: () => void;
+}
+
+/**
+ * React.FunctionComponent「カラーピッカー・ダイアログ」
+ */
+const ColorPickerDialog: React.FC<ColorPickerDialogProps> = ({
+  currentColor,
+  onSelect,
+  onCancel
+}) => {
+  const [selectedColor, setSelectedColor] = useState<string>(currentColor);
+  const [isTransparent, setIsTransparent] = useState<boolean>(currentColor === 'transparent' || !currentColor);
+  const dialogRef = useRef<HTMLDivElement>(null);
+
+  /**
+   * ESC キーで閉じる機能
+   */
+  useEffect(() => {
+    const handleEscape = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') {
+        onCancel();
+      }
+    };
+
+    document.addEventListener('keydown', handleEscape);
+    document.body.style.overflow = 'hidden';
+
+    return () => {
+      document.removeEventListener('keydown', handleEscape);
+      document.body.style.overflow = 'unset';
+    };
+  }, [onCancel]);
+
+  /**
+   * オーバーレイ・クリックで閉じる機能
+   */
+  const handleOverlayClick = (e: React.MouseEvent) => {
+    if (e.target === e.currentTarget) {
+      onCancel();
+    }
+  };
+
+  /**
+   * Transparent を選択
+   */
+  const handleTransparentSelect = () => {
+    setIsTransparent(true);
+    setSelectedColor('transparent');
+  };
+
+  /**
+   * カラーを選択
+   */
+  const handleColorSelect = (colors: string | { hex?: string; rgb?: { r: number; g: number; b: number; a?: number } }) => {
+    setIsTransparent(false);
+    let colorValue = 'transparent';
+    if (typeof colors === 'string') {
+      colorValue = colors || 'transparent';
+    } else if (colors && typeof colors === 'object') {
+      if (colors.hex) {
+        colorValue = colors.hex === 'transparent' || !colors.hex ? 'transparent' : colors.hex;
+      } else if (colors.rgb) {
+        const { r, g, b, a } = colors.rgb;
+        if (a !== undefined && a < 1) {
+          colorValue = `rgba(${r}, ${g}, ${b}, ${a})`;
+        } else {
+          colorValue = `rgb(${r}, ${g}, ${b})`;
+        }
+      }
+    }
+    setSelectedColor(colorValue);
+  };
+
+  /**
+   * 適用ボタンをクリック
+   */
+  const handleApply = () => {
+    onSelect(selectedColor);
+  };
+
+  return (
+    <div 
+      className="s2j-color-picker-dialog-overlay"
+      onClick={handleOverlayClick}
+      style={{
+        position: 'fixed',
+        top: 0,
+        left: 0,
+        right: 0,
+        bottom: 0,
+        backgroundColor: 'rgba(0, 0, 0, 0.5)',
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+        zIndex: 100000
+      }}
+    >
+      <div
+        ref={dialogRef}
+        className="s2j-color-picker-dialog"
+        style={{
+          backgroundColor: '#fff',
+          padding: '20px',
+          borderRadius: '4px',
+          boxShadow: '0 2px 10px rgba(0, 0, 0, 0.2)',
+          minWidth: '320px',
+          maxWidth: '400px'
+        }}
+        onClick={(e) => e.stopPropagation()}
+      >
+        <h3 style={{ marginTop: 0, marginBottom: '16px' }}>
+          {__('Select Background Color', 's2j-alliance-manager')}
+        </h3>
+        
+        <div style={{ marginBottom: '16px' }}>
+          <Button
+            variant={isTransparent ? 'primary' : 'secondary'}
+            onClick={handleTransparentSelect}
+            style={{ width: '100%', marginBottom: '8px' }}
+          >
+            {__('Transparent', 's2j-alliance-manager')}
+          </Button>
+        </div>
+
+        <div style={{ marginBottom: '16px' }}>
+          <label style={{ display: 'block', marginBottom: '8px', fontSize: '13px', fontWeight: 500 }}>
+            {__('Or select a color:', 's2j-alliance-manager')}
+          </label>
+          <ColorPicker
+            color={isTransparent ? '#ffffff' : selectedColor}
+            onChangeComplete={handleColorSelect}
+            enableAlpha={true}
+          />
+        </div>
+
+        <div style={{ display: 'flex', gap: '8px', justifyContent: 'flex-end' }}>
+          <Button
+            variant="secondary"
+            onClick={onCancel}
+          >
+            {__('Cancel', 's2j-alliance-manager')}
+          </Button>
+          <Button
+            variant="primary"
+            onClick={handleApply}
+          >
+            {__('Apply', 's2j-alliance-manager')}
+          </Button>
+        </div>
+      </div>
+    </div>
+  );
+};
 
 /**
  * React.FunctionComponent「ランクラベル管理 UI」インターフェイス
@@ -56,6 +217,11 @@ export const RankLabelManager: React.FC<RankLabelManagerProps> = ({
   const [isSelectMode, setIsSelectMode] = useState(false);
 
   /**
+   * カラーピッカー・ダイアログが開いているインデックス
+   */
+  const [openColorPickerIndex, setOpenColorPickerIndex] = useState<number | null>(null);
+
+  /**
    * ランクラベルが変更された際に、original order を初期化します。
    * 「useEffect()」メソッドから呼ばれます。
    */
@@ -80,7 +246,8 @@ export const RankLabelManager: React.FC<RankLabelManagerProps> = ({
       slug: '',
       logo_size_type: 'none',
       logo_size_value: 0,
-      carousel_enabled: false
+      carousel_enabled: false,
+      background_color: 'transparent'
     };
 
     /**
@@ -130,7 +297,7 @@ export const RankLabelManager: React.FC<RankLabelManagerProps> = ({
           const childrenCount = childrenCountByRank[label.slug] || childrenCountByRank[label.title] || 0;
           const canEnableCarousel = childrenCount >= 4 && childrenCount <= 8;
 
-          // carousel_enabled を明示的に設定（false の場合も含む）
+          // carousel_enabled を明示的に設定 (false の場合も含む)
           const carouselEnabled = canEnableCarousel && (label.carousel_enabled === true) ? true : false;
 
           return { 
@@ -498,7 +665,7 @@ export const RankLabelManager: React.FC<RankLabelManagerProps> = ({
           >
             <span className="s2j-button-text">{isSelectMode ? __('Exit Select Mode', 's2j-alliance-manager') : __('Select Mode', 's2j-alliance-manager')}</span>
           </button>
-          {/* 一括操作ボタン（選択モード時のみ表示） */}
+          {/* 一括操作ボタン (選択モード時のみ表示) */}
           {isSelectMode && (
             <>
               <button
@@ -577,7 +744,7 @@ export const RankLabelManager: React.FC<RankLabelManagerProps> = ({
                 key={`label-${index}-${label.id}`} 
                 className={`s2j-rank-label ${hasUnsavedChanges ? 's2j-pending-changes' : ''} ${isSelected ? 's2j-selected' : ''}`}
               >
-                {/* 選択チェックボックス（選択モード時のみ表示） */}
+                {/* 選択チェックボックス (選択モード時のみ表示) */}
                 {isSelectMode && (
                   <div className="s2j-selection-checkbox">
                     <input
@@ -698,6 +865,52 @@ export const RankLabelManager: React.FC<RankLabelManagerProps> = ({
                       />
                     );
                   })()}
+                </div>
+                <div className="s2j-label-field background-color">
+                  <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
+                    <label style={{ fontSize: '13px', fontWeight: 500, marginBottom: '4px' }}>
+                      {__('Background Color', 's2j-alliance-manager')}
+                    </label>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                      <label 
+                        htmlFor={`s2j-background-color-btn-${index}`}
+                        style={{ fontSize: '13px', fontWeight: 500 }}
+                      >
+                        {__('Background Color', 's2j-alliance-manager')}
+                      </label>
+                      <Button
+                        id={`s2j-background-color-btn-${index}`}
+                        onClick={() => setOpenColorPickerIndex(index)}
+                        variant="secondary"
+                        style={{ 
+                          minWidth: '120px',
+                          justifyContent: 'flex-start',
+                          backgroundColor: label.background_color && label.background_color !== 'transparent' ? label.background_color : undefined
+                        }}
+                      >
+                        {label.background_color === 'transparent' || !label.background_color 
+                          ? __('Transparent', 's2j-alliance-manager')
+                          : label.background_color}
+                      </Button>
+                    </div>
+                    {openColorPickerIndex === index && (
+                      <ColorPickerDialog
+                        currentColor={label.background_color || 'transparent'}
+                        onSelect={(color: string) => {
+                          const currentLabels = pendingLabels || initialRankLabels;
+                          const updated = [...currentLabels];
+                          updated[index] = { 
+                            ...updated[index], 
+                            background_color: color
+                          };
+                          setPendingLabels(updated);
+                          setHasUnsavedChanges(true);
+                          setOpenColorPickerIndex(null);
+                        }}
+                        onCancel={() => setOpenColorPickerIndex(null)}
+                      />
+                    )}
+                  </div>
                 </div>
                 <div className="s2j-label-field actions">
                   <Button

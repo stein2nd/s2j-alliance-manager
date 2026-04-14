@@ -25,6 +25,7 @@ export interface ContentModel {
   message: string;
   logo_size_type?: 'none' | 'width' | 'height'; // ロゴサイズの指定タイプ
   logo_size_value?: number; // ロゴサイズの値 (width または height)
+  background_color?: string; // 背景色 (カラーコード、例: #ffffff, transparent)
 }
 
 /**
@@ -116,6 +117,7 @@ export interface RankLabel {
   logo_size_type?: 'none' | 'width' | 'height'; // ロゴサイズの指定タイプ
   logo_size_value?: number; // ロゴサイズの値 (width または height)
   carousel_enabled?: boolean; // Carousel 表示の有効/無効
+  background_color?: string; // 背景色 (カラーコード、例: #ffffff, transparent)
 }
 
 /**

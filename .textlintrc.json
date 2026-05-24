@@ -1,5 +1,5 @@
 {
-  "extends": ["./tools/docs-linter/presets/base/.textlintrc.base.json"],
+  "extends": ["./node_modules/@s2j/docs-linter/presets/base/.textlintrc.base.json"],
   "plugins": {},
   "filters": {
     "allowlist": {

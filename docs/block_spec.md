@@ -97,5 +97,4 @@
 * **登録のみ (`init`)**: `AllianceManager::register_block_assets()` で、`wp_register_style` / `wp_register_script` によりハンドルだけ登録する。フロントの全リクエストで常に `wp_enqueue_*` しない。
 * **遅延 enqueue (ブロック・ショートコード共通)**: 提携データがありバナー用マークアップを返す場合に限り、`render_alliance_banner_block()` 内の `enqueue_alliance_banner_view_assets()` でフロント用 CSS (`s2j-alliance-manager-gutenberg`) とフロント用 React バンドル (`s2j-alliance-manager-frontend`) をキューに追加する。Classic テーマで PHP テンプレートから `do_shortcode( '[alliance_banner ...]' )` だけを呼んでも、この経路で読み込まれる。
 * **block.json**: `style` でフロント用 CSS、`viewScript` でフロント用スクリプトを宣言する (`viewScript` は WordPress v6.1以降で解釈される)。本プラグインの WordPress 要件は v6.3以降のため、宣言的な `viewScript` も要件内で利用可能。
-* **パートナー0件時**:「No alliance partners found.」などのメッセージのみ返す場合は、上記 CSS/JS は enqueue しない (未使用アセットを避ける)。
-
+* **パートナー0件時**: メッセージ (「No alliance partners found.」など) のみ返す場合は、上記 CSS/JS は enqueue しない (未使用アセットを避ける)。

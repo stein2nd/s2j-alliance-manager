@@ -10,7 +10,7 @@
  * Plugin Name: S2J Alliance Manager
  * Plugin URI: https://github.com/stein2nd/s2j-alliance-manager
  * Description: Manage linked banners (including logos and videos) for partner companies in alliance relationships and display them in blocks on the front page and other locations.
- * Version: 2.0.0
+ * Version: 2.0.1
  * Author: Koutarou ISHIKAWA
  * Author URI: https://stein2nd.wordpress.com
  * License: GPL v3 or later
@@ -29,7 +29,7 @@ if (!defined('ABSPATH')) {
 }
 
 // プラグイン定数を定義します。
-define('S2J_ALLIANCE_MANAGER_VERSION', '2.0.0');
+define('S2J_ALLIANCE_MANAGER_VERSION', '2.0.1');
 define('S2J_ALLIANCE_MANAGER_PLUGIN_FILE', __FILE__);
 define('S2J_ALLIANCE_MANAGER_PLUGIN_DIR', plugin_dir_path(__FILE__));
 define('S2J_ALLIANCE_MANAGER_PLUGIN_URL', plugin_dir_url(__FILE__));
@@ -38,7 +38,7 @@ define('S2J_ALLIANCE_MANAGER_PLUGIN_BASENAME', plugin_basename(__FILE__));
 /**
  * Singleton パターンで実装した、プラグインのメインクラス
  * 
- * @version 2.0.0
+ * @version 2.0.1
  * @since 1.0.0
  * @package S2J_Alliance_Manager
  */

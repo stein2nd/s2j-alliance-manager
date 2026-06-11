@@ -1,6 +1,6 @@
 {
   "name": "s2j-alliance-manager",
-  "version": "2.0.0",
+  "version": "2.0.1",
   "description": "Manage linked banners (including logos and videos) for partner companies in alliance relationships and display them in blocks on the front page and other locations.",
   "type": "module",
   "author": "Koutarou ISHIKAWA",

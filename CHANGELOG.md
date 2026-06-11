@@ -7,7 +7,7 @@
 ### Fixed
 
 * 配布 zip 生成スクリプト `tools/dist/make-dist-zip.mjs` を復元 (npm 更新時に誤削除されていたため、GitHub Actions の配布 zip ワークフローが失敗していた)
-* Linux CI 向けに `readme.txt` / `README.txt` の大文字小文字差異に対応
+* Linux CI 向けに `readme.txt` / `README.txt` の大文字/小文字の差異に対応
 
 ## 2.0.0 - 2026-06-11
 

@@ -20,7 +20,7 @@
 * 名称: S2J Alliance Manager
 * プラグイン・スラッグ: s2j-alliance-manager
 * テキスト・ドメイン: s2j-alliance-manager
-* ライセンス: GPL v2以降
+* ライセンス: GPL v3以降
 * 目的: アライアンス関係にある協力会社のリンク付きバナー (動画含む) を管理し、Front page 等でブロック表示します。
 * 特徴:
   * Gutenberg ブロックエディターに対応します。

@@ -1,0 +1,13 @@
+// textlint 拡張（3w36zj6.textlint）をインストールした後に、
+// 必要なら .vscode/settings.json にマージしてください。
+//
+// 拡張未インストール時に textlint.* を settings.json に書くと
+// Cursor / VS Code が「不明な構成設定」と表示します。
+{
+  "textlint.configPath": "${workspaceFolder}/.textlintrc.json",
+  "textlint.nodePath": "${workspaceFolder}/node_modules",
+  "textlint.autoFixOnSave": true,
+  "editor.codeActionsOnSave": {
+    "source.fixAll.textlint": "always"
+  }
+}

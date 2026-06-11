@@ -1,13 +1,8 @@
 {
-  "npm.enableScriptExplorer": true,
   "textlint.configPath": "${workspaceFolder}/.textlintrc.json",
   "textlint.nodePath": "${workspaceFolder}/node_modules",
   "textlint.autoFixOnSave": true,
-  "textlint.enable": true,
   "editor.codeActionsOnSave": {
-    "source.fixAll.textlint": "always"
-  },
-  "[markdown]": {
-    "editor.defaultFormatter": "3w36zj6.textlint"
+    "source.fixAll": "always"
   }
 }

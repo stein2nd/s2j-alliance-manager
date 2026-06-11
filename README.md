@@ -1,7 +1,8 @@
 # S2J Alliance Manager
 
-[![License: GPL v2](https://img.shields.io/badge/License-GPL%20v2-blue.svg)](https://www.gnu.org/licenses/old-licenses/gpl-2.0.en.html)
-[![WordPress](https://img.shields.io/badge/WordPress-6.3-blue.svg)](https://wordpress.org/)
+[![License: GPL v3](https://img.shields.io/badge/License-GPL%20v3-blue.svg)](https://www.gnu.org/licenses/gpl-3.0.en.html)
+[![PHP](https://img.shields.io/badge/PHP-8.0-blue.svg)](https://www.php.net/)
+[![WordPress](https://img.shields.io/badge/WordPress-6.9+-blue.svg)](https://wordpress.org/)
 [![React](https://img.shields.io/badge/React-19.2-blue.svg)](https://reactjs.org/)
 [![TypeScript](https://img.shields.io/badge/TypeScript-6.0-blue.svg)](https://www.typescriptlang.org/)
 [![Dart SASS](https://img.shields.io/badge/SCSS-1.99-blue.svg)](https://sass-lang.com/dart-sass/)
@@ -48,7 +49,7 @@ S2J Alliance Manager は、ロゴや動画付きの提携パートナーバナ�
 
 ## License
 
-このプロジェクトは GPL v2以降の下でライセンスされています - 詳細は [LICENSE](LICENSE) ファイルを参照してください。
+このプロジェクトは GPL v3以降の下でライセンスされています - 詳細は [LICENSE](LICENSE) ファイルを参照してください。
 
 ## Privacy Policy
 
@@ -420,6 +421,17 @@ interface ContentModel {
 
 ## Changelog
 
+### v2.0.0
+
+* **破壊的変更**: ライセンスを GPL v2から GPL v3に変更
+* ランクごとにカルーセル表示を指定可能に
+* React v18から React v19に更新
+* 配布 zip 生成スクリプトと GitHub ワークフローを追加
+* 仕様書を `docs/` 配下の個別ドキュメントに細分化
+* S2J Docs Linter によるドキュメント lint を導入
+* 管理 UI、Gutenberg ブロック、フロントエンド表示の各種改善
+* 依存 npm モジュールの更新
+
 ### v1.0.0
 
 * 初回リリース
@@ -434,6 +446,9 @@ interface ContentModel {
 * 動画ポスター生成のための FFmpeg 統合
 
 ## Upgrade Notice
+
+### 2.0.0
+ライセンスが GPL v3に変更されました。再配布したり、改変する場合は GPL v3の条件に従ってください。
 
 ### 1.0.0
 S2J Alliance Manager の初回リリース。このバージョンには、最新の WordPress 統合による提携パートナーバナー管理のための全コア機能が含まれています。

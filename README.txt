@@ -4,7 +4,7 @@ Tags: gutenberg, blocks, alliance, partners, management, banners, logos, videos
 Requires at least: 6.3
 Tested up to: 6.8
 Requires PHP: 8.2
-Stable tag: 2.0.1
+Stable tag: 2.0.2
 License: GPLv3 or later
 License URI: https://www.gnu.org/licenses/gpl-3.0.html
 
@@ -333,6 +333,11 @@ interface ContentModel {
 ---
 
 == Changelog ==
+
+= 2.0.2 =
+* 日本語翻訳ファイルを追加
+* 依存 npm モジュールおよび WordPress パッケージを最新化
+* npm v12 以降向けの docs-linter 設定を追加
 
 = 2.0.0 =
 * 破壊的変更: ライセンスを GPL v2 から GPL v3 に変更

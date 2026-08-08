@@ -2,6 +2,21 @@
 
 ## unreleased
 
+## 2.0.2 - 2026-08-08
+
+### Added
+
+* 日本語翻訳ファイル (`languages/s2j-alliance-manager-ja.po` / `.mo`) を追加
+* npm v12以降向けに `@s2j/docs-linter` の install script 実行を許可 (`package.json` の `allowScripts`)
+
+### Changed
+
+* 依存 npm モジュールを最新化 (React v19.2.8、TypeScript v7.0、Vite v8.2、Sass v1.102等)
+* WordPress パッケージを更新 (`@wordpress/components` v38、`@wordpress/scripts` v34、`@wordpress/block-editor` v16等)
+* `@s2j/docs-linter` を v1.0.22に更新
+* `.npmrc` に `allow-git=all` を追加 (`@s2j/docs-linter` の GitHub 依存取得用)
+* 翻訳テンプレート `languages/s2j-alliance-manager.pot` を更新
+
 ## 2.0.1 - 2026-06-11
 
 ### Fixed

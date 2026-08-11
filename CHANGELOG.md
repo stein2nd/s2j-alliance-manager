@@ -2,6 +2,15 @@
 
 ## unreleased
 
+## 2.0.3 - 2026-08-11
+
+### Changed
+
+* `@typescript-eslint/*` を v8.67.0に更新
+* TypeScript v7.0 (`tsc`) を維持しつつ、`typescript-eslint` 向けに `@typescript/typescript6` を併用 (公式の side-by-side 構成)
+* `allowScripts` のキーを `@s2j/docs-linter` に簡略化
+* `vite.config.ts` で `__dirname` を `import.meta.dirname` に置換し、無効な `inlineDynamicImports` 指定を削除
+
 ## 2.0.2 - 2026-08-08
 
 ### Added

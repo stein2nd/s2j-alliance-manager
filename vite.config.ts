@@ -32,34 +32,34 @@ const getBuildConfig = (target: string) => {
   switch (target) {
       case 'admin':
           return {
-              entry: resolve(__dirname, 'src/admin/index.tsx'),
+              entry: resolve(import.meta.dirname, 'src/admin/index.tsx'),
               name: 'S2JAllianceManagerAdmin',
-              scss: resolve(__dirname, 'src/styles/admin.scss')
+              scss: resolve(import.meta.dirname, 'src/styles/admin.scss')
           };
       case 'gutenberg':
           return {
-              entry: resolve(__dirname, 'src/gutenberg/index.tsx'),
+              entry: resolve(import.meta.dirname, 'src/gutenberg/index.tsx'),
               name: 'S2JAllianceManagerGutenberg',
-              scss: resolve(__dirname, 'src/styles/gutenberg.scss'),
+              scss: resolve(import.meta.dirname, 'src/styles/gutenberg.scss'),
               blocks: ['alliance-banner'] // block.json ファイルからブロックタイプを取得
           };
       case 'classic':
           return {
-              entry: resolve(__dirname, 'src/classic/index.ts'),
+              entry: resolve(import.meta.dirname, 'src/classic/index.ts'),
               name: 'S2JAllianceManagerClassic',
-              scss: resolve(__dirname, 'src/styles/classic.scss')
+              scss: resolve(import.meta.dirname, 'src/styles/classic.scss')
           };
       case 'frontend':
           return {
-              entry: resolve(__dirname, 'src/frontend/alliance-banner.tsx'),
+              entry: resolve(import.meta.dirname, 'src/frontend/alliance-banner.tsx'),
               name: 'S2JAllianceManagerFrontend',
-              scss: resolve(__dirname, 'src/styles/gutenberg.scss')
+              scss: resolve(import.meta.dirname, 'src/styles/gutenberg.scss')
           };
       default:
           return {
-              entry: resolve(__dirname, 'src/gutenberg/index.tsx'),
+              entry: resolve(import.meta.dirname, 'src/gutenberg/index.tsx'),
               name: 'S2JAllianceManagerGutenberg',
-              scss: resolve(__dirname, 'src/styles/gutenberg.scss')
+              scss: resolve(import.meta.dirname, 'src/styles/gutenberg.scss')
           };
   }
 };
@@ -121,7 +121,6 @@ export default defineConfig({
         },
         chunkFileNames: 'js/[name]-[hash].js',
         entryFileNames: `js/s2j-alliance-manager-${buildTarget}.js`,
-        inlineDynamicImports: false
       },
       onwarn(warning, warn) {
         // 特定の警告を抑制
@@ -181,7 +180,7 @@ export default defineConfig({
   },
   resolve: {
     alias: {
-      '@': resolve(__dirname, 'src'),
+      '@': resolve(import.meta.dirname, 'src'),
     }
   }
 });

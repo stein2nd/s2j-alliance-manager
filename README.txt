@@ -4,7 +4,7 @@ Tags: gutenberg, blocks, alliance, partners, management, banners, logos, videos
 Requires at least: 6.3
 Tested up to: 6.8
 Requires PHP: 8.2
-Stable tag: 2.0.3
+Stable tag: 2.0.4
 License: GPLv3 or later
 License URI: https://www.gnu.org/licenses/gpl-3.0.html
 
@@ -333,6 +333,10 @@ interface ContentModel {
 ---
 
 == Changelog ==
+
+= 2.0.4 =
+* 依存 npm モジュールおよび WordPress パッケージを最新化
+* 未使用の @wordpress/scripts を削除し、npm 脆弱性警告を解消
 
 = 2.0.3 =
 * TypeScript 7.0 を維持しつつ typescript-eslint 向けに TypeScript 6 API を併用

@@ -2,6 +2,15 @@
 
 ## unreleased
 
+## 2.0.4 - 2026-09-09
+
+### Changed
+
+* 依存 npm モジュールを最新化 (Vite v8.2.2、Sass v1.104、ESLint v10.10、`@typescript-eslint/*` v8.70等)
+* WordPress パッケージを更新 (`@wordpress/components` v40、`@wordpress/block-editor` v17等)
+* `@s2j/docs-linter` を v1.0.24に更新
+* 未使用の `@wordpress/scripts` を削除し、間接依存に起因する npm 脆弱性警告を解消
+
 ## 2.0.3 - 2026-08-11
 
 ### Changed

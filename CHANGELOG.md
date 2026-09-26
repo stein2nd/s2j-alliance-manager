@@ -2,6 +2,14 @@
 
 ## unreleased
 
+## 2.0.5 - 2026-09-26
+
+### Changed
+
+* 依存 npm モジュールを最新化 (React v19.3、Vite v8.3.1、Sass v1.105、ESLint v10.11等)
+* WordPress パッケージを更新 (`@wordpress/components` v41、`@wordpress/block-editor` v18、`@wordpress/blocks` v16等)
+* `@s2j/docs-linter` を v1.0.25に更新
+
 ## 2.0.4 - 2026-09-09
 
 ### Changed

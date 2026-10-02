@@ -2,6 +2,13 @@
 
 ## unreleased
 
+## 2.0.6 - 2026-10-03
+
+### Changed
+
+* 依存 npm モジュールを最新化 (Vite v8.3.2、Sass v1.105.1、ESLint v10.12、Rollup v4.64、`@typescript-eslint/*` v8.71等)
+* `@s2j/docs-linter` を v1.0.26に更新
+
 ## 2.0.5 - 2026-09-26
 
 ### Changed

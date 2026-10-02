@@ -7,7 +7,7 @@
 [![TypeScript](https://img.shields.io/badge/TypeScript-7.0-blue.svg)](https://www.typescriptlang.org/)
 [![Dart SASS](https://img.shields.io/badge/SCSS-1.105-blue.svg)](https://sass-lang.com/dart-sass/)
 [![Vite](https://img.shields.io/badge/vite-8.3-blue.svg)](https://vite.dev)
-[![Rollup](https://img.shields.io/badge/rollup-4.63-blue.svg)](https://rollupjs.org)
+[![Rollup](https://img.shields.io/badge/rollup-4.64-blue.svg)](https://rollupjs.org)
 
 ## Description
 

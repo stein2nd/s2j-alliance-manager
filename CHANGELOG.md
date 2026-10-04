@@ -2,6 +2,13 @@
 
 ## unreleased
 
+## 2.0.7 - 2026-10-04
+
+### Changed
+
+* `tsconfig.json` の `paths` を `./src/*` 形式に変更し、不要になった `baseUrl` を削除
+* `@s2j/docs-linter` を v1.0.27に更新
+
 ## 2.0.6 - 2026-10-03
 
 ### Changed

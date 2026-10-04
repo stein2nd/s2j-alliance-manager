@@ -15,14 +15,13 @@
     "noUnusedLocals": true,
     "noUnusedParameters": true,
     "noFallthroughCasesInSwitch": true,
-    "baseUrl": ".",
     "paths": {
-      "@/*": ["src/*"],
-      "@admin/*": ["src/admin/*"],
-      "@gutenberg/*": ["src/gutenberg/*"],
-      "@classic/*": ["src/classic/*"],
-      "@styles/*": ["src/styles/*"],
-      "@types/*": ["src/types/*"]
+      "@/*": ["./src/*"],
+      "@admin/*": ["./src/admin/*"],
+      "@gutenberg/*": ["./src/gutenberg/*"],
+      "@classic/*": ["./src/classic/*"],
+      "@styles/*": ["./src/styles/*"],
+      "@types/*": ["./src/types/*"]
     },
     "types": ["react", "react-dom", "jquery", "node"],
     "allowJs": true,

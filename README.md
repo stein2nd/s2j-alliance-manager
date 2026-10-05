@@ -395,7 +395,7 @@ interface ContentModel {
 
 ## Contributing
 
-貢献をお待ちしています。以下の手順に従ってください。
+貢献をお待ちしています。下記の手順に従ってください。
 
 1. リポジトリをフォークしてください。
 2. 機能ブランチを作成してください (`git checkout -b feature/amazing-feature`)。
@@ -414,7 +414,7 @@ interface ContentModel {
 
 ## Contributors & Developers
 
-**"S2J Alliance Manager"** はオープンソース・ソフトウェアです。以下の皆様がこのプラグインに貢献しています。
+**"S2J Alliance Manager"** はオープンソース・ソフトウェアです。下記の皆様がこのプラグインに貢献しています。
 
 * **開発者**: Koutarou ISHIKAWA
 

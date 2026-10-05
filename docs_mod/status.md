@@ -17,7 +17,7 @@
 ### 2.1. 優先度: 高
 
 | タスク | 内容 |
-|--------|------|
+| --- | --- |
 | CPT `s2j_am_alliance_partner` の新規登録 | コンテンツモデルを CPT 化。メタキー定義、`page-attributes` サポート |
 | ランクラベル CPT の一覧画面を有効化 | `show_ui` / `show_in_menu` を変更し、CPT 一覧を表示 |
 | サブボタン形式のメニュー構成 | `add_menu_page` + `add_submenu_page` による VK Block Patterns 風の構成 |
@@ -26,7 +26,7 @@
 ### 2.2. 優先度: 中
 
 | タスク | 内容 |
-|--------|------|
+| --- | --- |
 | `alliance-partner-edit` ブロック | アライアンス・パートナー編集用 Block Editor ブロック |
 | `rank-label-edit` ブロック | ランクラベル編集用 Block Editor ブロック |
 | RankLabel コンボボックスの実装 | ContentList 編集時、RankLabel を選択候補から選択。「新規追加」時の意思確認 |
@@ -35,7 +35,7 @@
 ### 2.3. 優先度: 低
 
 | タスク | 内容 |
-|--------|------|
+| --- | --- |
 | 旧 React コンポーネントの削除・リファクタ | `ContentList.tsx`、`RankLabelManager.tsx` の段階的廃止 |
 | アクセス制御の強化 | 他プラグインからの CPT 一覧への直接アクセス制御 |
 

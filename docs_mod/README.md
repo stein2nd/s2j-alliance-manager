@@ -18,7 +18,7 @@
 ## ドキュメント一覧
 
 | ファイル | 元 | 主な変更内容 |
-|----------|-----|--------------|
+| --- | --- | --- |
 | [overview.md](./overview.md) | docs/overview.md | CPT 設計、Block Editor 編集、ICPO 連携の追記 |
 | [architecture.md](./architecture.md) | docs/architecture.md | 新 CPT、Block Editor、移行スクリプト、サブメニュー構成 |
 | [data_dictionary.md](./data_dictionary.md) | docs/data_dictionary.md | ContentModel の CPT 化、メタキー、データフロー |

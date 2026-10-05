@@ -8,7 +8,7 @@
 ## はじめに
 
 * 本ドキュメントでは、WordPress プラグイン「s2j-alliance-manager」の専用仕様を定義します。
-* 本プラグインの設計は、以下の共通 SPEC に準拠します。
+* 本プラグインの設計は、下記の共通 SPEC に準拠します。
   * [WP_PLUGIN_SPEC.md (共通仕様)](https://github.com/stein2nd/wp-plugin-spec/blob/main/docs/WP_PLUGIN_SPEC.md)
 * プラグイン固有の仕様は、下記の分割ドキュメントに記載されています。
 
@@ -17,7 +17,7 @@
 ## 分割仕様書へのリンク
 
 | 章・付録 | ドキュメント | 内容 |
-|----------|--------------|------|
+| --- | --- | --- |
 | §1 | [overview.md](./overview.md) | プラグイン概要・基本情報・はじめに |
 | §2〜§6 | [architecture.md](./architecture.md) | プロジェクト構成、技術スタック、国際化、スタイル設計、パフォーマンス・デバッグ |
 | §7 | [block_spec.md](./block_spec.md) | Gutenberg ブロック対応、Classic エディター対応 |

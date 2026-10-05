@@ -18,7 +18,7 @@
 
 ### 9.3.2. カスタムエンドポイント (継続)
 
-以下のエンドポイントは、設定、FFmpeg、デバッグ用として継続します。
+下記のエンドポイントは、設定、FFmpeg、デバッグ用として継続します。
 
 * `GET /wp-json/s2j-alliance-manager/v1/settings`
   * 表示設定 (display_style, alignment, ffmpeg_path) の取得

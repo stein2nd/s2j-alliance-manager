@@ -67,7 +67,7 @@
 ### 2.2. 主要変更点の概要
 
 | 項目 | 現行 | 仕様変更案 |
-|------|------|------------|
+| --- | --- | --- |
 | ランクラベル一覧 | React UI (RankLabelManager) | CPT 一覧画面、ICPO で並び替え |
 | アライアンス・パートナー一覧 | React UI (ContentList)、wp_options | CPT `s2j_am_alliance_partner` 一覧、ICPO で並び替え |
 | ランクラベル編集 | インライン編集 | 専用 Block Editor (rank-label-edit) |

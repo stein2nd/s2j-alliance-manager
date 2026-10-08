@@ -27,7 +27,7 @@
   * MetaBox により、Classic エディターに対応します。
     * Gutenberg ブロックでの処理内容を基本的に再現します。
   * 管理画面でバナー画像 (または動画)、リンク先 URL、グループ等を保存します。
-  * **【仕様変更案】管理画面は次の構成を採用します:**
+  * **【仕様変更案】管理画面は、下記の構成を採用します:**
     * VK Block Patterns 風のサブボタン形式 (親メニュー配下に「ランクラベル」「アライアンス・パートナー」等のサブ項目)
     * ランクラベル、アライアンス・パートナーは、それぞれ CPT 一覧画面で表示し、一覧から専用 Block Editor を呼び出して編集
     * 並び順は [Intuitive Custom Post Order (ICPO)](https://github.com/hijiriworld/intuitive-custom-post-order) によりドラッグ & ドロップで変更可能

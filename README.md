@@ -141,7 +141,7 @@ npm run build:production
 
 ### ショートコードとテーマテンプレート (Classic テーマ、ブロックテーマ共通)
 
-投稿本文やウィジェット以外に、PHP テンプレートから次のように埋め込んでも問題ありません。
+投稿本文やウィジェット以外に、PHP テンプレートから下記のように埋め込んでも問題ありません。
 
 ```php
 echo do_shortcode( '[alliance_banner displayStyle="grid-multi" alignment="center"]' );

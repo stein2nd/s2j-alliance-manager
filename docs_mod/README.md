@@ -5,7 +5,7 @@
 ## 変更の概要
 
 * **管理画面の構成**:
-    * VK Block Patterns 風のサブボタン形式へ変更
+    * VK Block Patterns 風のサブボタン形式に変更
 * **RankLabelManager**:
     * CPT 一覧画面として提示 (専用 Block Editor で編集)
 * **ContentList**:

@@ -39,7 +39,7 @@
   * **CheckboxControl**: `frontpage` (YES/NO)
   * **SelectControl (コンボボックス)**: `rank` — 定義済みランクラベルを選択候補として表示
     * 選択候補は `s2j_am_rank_label` の `menu_order` 順に取得
-    * 新規ランクを追加したい場合は、「RankLabelManager のエントリー編集を開きますか ?」と意思確認し、肯定ならランクラベル新規作成/編集画面へ遷移
+    * 新規ランクを追加したい場合は、「RankLabelManager のエントリー編集を開きますか ?」と意思確認し、肯定ならランクラベル新規作成/編集画面に遷移
   * **MediaUploader**: `logo` (画像/動画)
   * **MediaUploader**: `poster` (ポスター画像、動画時)
   * **TextControl**: `jump_url`

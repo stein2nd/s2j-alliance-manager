@@ -2,6 +2,13 @@
 
 ## unreleased
 
+## 2.0.10 - 2026-10-11
+
+### Changed
+
+* 依存 npm モジュールを最新化 (Vite v8.3.4、Rollup v4.64.5、`@typescript-eslint/*` v8.71.1等)
+* WordPress パッケージを更新 (`@wordpress/components` v42、`@wordpress/block-editor` v18.1、`@wordpress/element` v9等)
+
 ## 2.0.10 - 2026-10-10
 
 ### Changed

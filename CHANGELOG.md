@@ -2,6 +2,14 @@
 
 ## unreleased
 
+## 2.0.11 - 2026-10-15
+
+### Changed
+
+* 依存 npm モジュールを最新化 (React v19.3.1、Rollup v4.64.7、`@typescript-eslint/*` v8.71.2等)
+* `@s2j/docs-linter` を v1.0.29に更新
+* textlint の許可パターンに `#status-*` アンカー ID を追加
+
 ## 2.0.10 - 2026-10-11
 
 ### Changed

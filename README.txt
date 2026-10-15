@@ -4,7 +4,7 @@ Tags: gutenberg, blocks, alliance, partners, management, banners, logos, videos
 Requires at least: 6.3
 Tested up to: 6.8
 Requires PHP: 8.2
-Stable tag: 2.0.10
+Stable tag: 2.0.11
 License: GPLv3 or later
 License URI: https://www.gnu.org/licenses/gpl-3.0.html
 
@@ -333,6 +333,10 @@ interface ContentModel {
 ---
 
 == Changelog ==
+
+= 2.0.11 =
+* 依存 npm モジュールおよび @s2j/docs-linter を最新化
+* textlint 設定を更新
 
 = 2.0.10 =
 * ドキュメント表記を統一

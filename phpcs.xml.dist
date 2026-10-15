@@ -1,0 +1,17 @@
+<?xml version="1.0"?>
+<ruleset name="s2j-plugin">
+	<description>
+		PSR-12 for future namespaced PHP only.
+		Legacy WordPress code in includes/ is checked with phpcs.wpcs.xml.dist (composer phpcs / npm run phpcs).
+	</description>
+	<rule ref="PSR12"/>
+	<config name="php_version" value="80100"/>
+	<exclude-pattern>*/vendor/*</exclude-pattern>
+	<exclude-pattern>*/node_modules/*</exclude-pattern>
+	<exclude-pattern>*/dist/*</exclude-pattern>
+	<exclude-pattern>*/includes/*</exclude-pattern>
+	<exclude-pattern>*.php</exclude-pattern>
+	<arg name="extensions" value="php"/>
+	<arg name="colors"/>
+	<arg value="sp"/>
+</ruleset>

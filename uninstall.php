@@ -6,15 +6,15 @@
  */
 
 // WordPress からアンインストールが呼び出されない場合、終了します。
-if (!defined('WP_UNINSTALL_PLUGIN')) {
-    exit;
+if ( ! defined( 'WP_UNINSTALL_PLUGIN' ) ) {
+	exit;
 }
 
 // プラグインオプションを削除します。
-delete_option('s2j_alliance_manager_settings');
+delete_option( 's2j_alliance_manager_settings' );
 
 // トランジェントを削除します。
-delete_transient('s2j_alliance_manager_cache');
+delete_transient( 's2j_alliance_manager_cache' );
 
 // スケジュールイベントを削除します。
-wp_clear_scheduled_hook('s2j_alliance_manager_cleanup');
+wp_clear_scheduled_hook( 's2j_alliance_manager_cleanup' );

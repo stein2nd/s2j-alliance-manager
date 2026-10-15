@@ -2,6 +2,25 @@
 
 ## unreleased
 
+## 2.0.12 - 2026-10-16
+
+### Added
+
+* Composer 開発依存 (PHPStan、WPCS、PHPUnit 等) と `composer.json` / `composer.lock`
+* WPCS 用 `phpcs.wpcs.xml.dist`、PHPStan 用 `phpstan.neon.dist` / `phpstan-bootstrap.php`
+* npm スクリプト `lint:php` / `phpstan` / `phpcs` (Composer 経由)
+
+### Changed
+
+* PHP ソースを WordPress Coding Standards (WPCS) に準拠 (整形、DocBlock、エスケープ出力等)
+* PHPStan level-5を `includes/` で通過するよう PHPDoc と実装を整理
+* プラグインメインクラス / `AllianceManager` のシングルトン等にプロパティ型を付与
+* 未使用の `render_partner_logo()` とブロック登録状態用プロパティを削除
+
+### Fixed
+
+* 管理画面での出力の `_e()` を `esc_html_e()` に変更、`in_array` の strict 比較、JSON/日時、GET サニタイズ等の WPCS 指摘を修正
+
 ## 2.0.11 - 2026-10-15
 
 ### Changed

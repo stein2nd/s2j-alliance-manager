@@ -2,6 +2,18 @@
 
 ## unreleased
 
+## 2.0.13 - 2026-10-16
+
+### Added
+
+* wp-env / Docker なしのローカル PHPUnit (`phpunit.unit.xml.dist` / `phpunit.xml.dist`、`bin/phpunit-local.sh`、`bin/install-wp-tests.sh`)
+* ユニット3件・統合2件 (`RestController` サニタイズ / REST `/settings`)、Local 用 WP-CLI スモーク `tests/smoke-local.sh`
+* npm スクリプト `test:unit:php:unit-only` / `test:unit:php:local` / `test:smoke:local`、`.env.tests.example`、`docs/phpunit_local.md`
+
+### Changed
+
+* Composer の `test:unit` / `test:integration` / `test:all` に分割 (従来の `composer test` は全件実行)
+
 ## 2.0.12 - 2026-10-16
 
 ### Added

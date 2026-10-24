@@ -2,6 +2,12 @@
 
 ## unreleased
 
+## 2.0.15 - 2026-10-24
+
+### Fixed
+
+* GitHub Actions「dist」で `makejson` (`wp i18n make-json`) が `wp` 未導入のため失敗する問題 (`.github/workflows/dist-zip.yml` に PHP v8.3 + WP-CLI を追加)
+
 ## 2.0.14 - 2026-10-24
 
 ### Added

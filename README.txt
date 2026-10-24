@@ -3,8 +3,8 @@ Contributors: stein2nd
 Tags: gutenberg, blocks, alliance, partners, management, banners, logos, videos
 Requires at least: 6.3
 Tested up to: 6.8
-Requires PHP: 8.2
-Stable tag: 2.0.11
+Requires PHP: 8.3
+Stable tag: 2.0.14
 License: GPLv3 or later
 License URI: https://www.gnu.org/licenses/gpl-3.0.html
 
@@ -66,7 +66,7 @@ S2J Alliance Manager は、ロゴや動画付きの提携パートナーバナ�
 = 前提条件 =
 
 * WordPress 6.3 以降 (Gutenberg v15.2対応のため)
-* PHP v7.4 以降
+* PHP v8.3 以降
 * JavaScript が有効な最新のウェブブラウザ
 * Node.js v18 以降 (React v19.2対応のため)
 * npm または yarn

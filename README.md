@@ -1,7 +1,7 @@
 # S2J Alliance Manager
 
 [![License: GPL v3](https://img.shields.io/badge/License-GPL%20v3-blue.svg)](https://www.gnu.org/licenses/gpl-3.0.en.html)
-[![PHP](https://img.shields.io/badge/PHP-8.0-blue.svg)](https://www.php.net/)
+[![PHP](https://img.shields.io/badge/PHP-8.3+-blue.svg)](https://www.php.net/)
 [![WordPress](https://img.shields.io/badge/WordPress-6.9+-blue.svg)](https://wordpress.org/)
 [![React](https://img.shields.io/badge/React-19.3-blue.svg)](https://reactjs.org/)
 [![TypeScript](https://img.shields.io/badge/TypeScript-7.0-blue.svg)](https://www.typescriptlang.org/)
@@ -67,7 +67,7 @@ S2J Alliance Manager は、ロゴや動画付きの提携パートナーバナ�
 ### 前提条件
 
 * WordPress v6.3以降 (Gutenberg v15.2対応のため)
-* PHP v7.4以降
+* PHP v8.3以降
 * JavaScript が有効な最新の Web ブラウザ
 * Node.js v18以降 (React v19.2対応のため)
 * npm または yarn

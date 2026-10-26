@@ -14,7 +14,7 @@ PLUGIN_ENTRY="${PLUGIN_SLUG}/${PLUGIN_SLUG}.php"
 REST_NAMESPACE="s2j-alliance-manager/v1"
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 PLUGIN_ROOT="$(cd "${SCRIPT_DIR}/.." && pwd)"
-ADMIN_JS="${PLUGIN_ROOT}/dist/js/s2j-alliance-manager-admin.js"
+ADMIN_JS="${PLUGIN_ROOT}/dist/js/s2j-alliance-manager-settings.js"
 BLOCK_JSON="${PLUGIN_ROOT}/dist/blocks/alliance-banner/block.json"
 
 WP_ARGS=()

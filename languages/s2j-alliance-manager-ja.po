@@ -1,23 +1,21 @@
-# Copyright (C) 2025 Koutarou ISHIKAWA
-# This file is distributed under the GPL v3 or later.
 msgid ""
 msgstr ""
 "Project-Id-Version: S2J Alliance Manager 2.0.1\n"
-"Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/s2j-alliance-"
-"manager\n"
-"POT-Creation-Date: 2025-11-18T08:25:12+00:00\n"
-"PO-Revision-Date: 2025-11-18 20:47+0900\n"
+"Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/s2j-alliance-manager\n"
 "Last-Translator: \n"
 "Language-Team: \n"
-"Language: ja\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
+"POT-Creation-Date: 2025-11-18T08:25:12+00:00\n"
+"PO-Revision-Date: 2025-11-18 20:47+0900\n"
+"Language: ja\n"
 "X-Generator: Poedit 3.8\n"
 "X-Domain: s2j-alliance-manager\n"
 
 #. Plugin Name of the plugin
-#: s2j-alliance-manager.php includes/SettingsPage.php:38
+#: s2j-alliance-manager.php
+#: includes/SettingsPage.php:38
 #: includes/SettingsPage.php:39
 msgid "S2J Alliance Manager"
 msgstr ""
@@ -29,13 +27,8 @@ msgstr ""
 
 #. Description of the plugin
 #: s2j-alliance-manager.php
-msgid ""
-"Manage linked banners (including logos and videos) for partner companies in "
-"alliance relationships and display them in blocks on the front page and "
-"other locations."
-msgstr ""
-"提携関係にあるパートナー企業のリンク付きバナー (ロゴや動画を含む) を管理し、"
-"それらをブロック単位でトップページやその他の場所に表示します。"
+msgid "Manage linked banners (including logos and videos) for partner companies in alliance relationships and display them in blocks on the front page and other locations."
+msgstr "提携関係にあるパートナー企業のリンク付きバナー (ロゴや動画を含む) を管理し、それらをブロック単位でトップページやその他の場所に表示します。"
 
 #. Author of the plugin
 #: s2j-alliance-manager.php
@@ -47,7 +40,8 @@ msgstr ""
 msgid "https://stein2nd.wordpress.com"
 msgstr ""
 
-#: includes/AllianceManager.php:253 includes/AllianceManager.php:339
+#: includes/AllianceManager.php:253
+#: includes/AllianceManager.php:339
 msgid "No alliance partners found."
 msgstr ""
 
@@ -79,7 +73,8 @@ msgstr ""
 msgid "Displays the plugin's operational status and system information."
 msgstr ""
 
-#: includes/AllianceManager.php:737 includes/SettingsPage.php:166
+#: includes/AllianceManager.php:737
+#: includes/SettingsPage.php:166
 msgid "FFmpeg Library"
 msgstr ""
 
@@ -115,16 +110,23 @@ msgstr ""
 msgid "Gutenberg Available"
 msgstr ""
 
-#: includes/AllianceManager.php:752 includes/AllianceManager.php:758
-#: includes/AllianceManager.php:772 includes/AllianceManager.php:776
-#: includes/AllianceManager.php:780 includes/AllianceManager.php:790
-#: includes/AllianceManager.php:794 includes/AllianceManager.php:798
+#: includes/AllianceManager.php:752
+#: includes/AllianceManager.php:758
+#: includes/AllianceManager.php:772
+#: includes/AllianceManager.php:776
+#: includes/AllianceManager.php:780
+#: includes/AllianceManager.php:790
+#: includes/AllianceManager.php:794
+#: includes/AllianceManager.php:798
 msgid "✅ Yes"
 msgstr "✅ はい"
 
-#: includes/AllianceManager.php:752 includes/AllianceManager.php:758
-#: includes/AllianceManager.php:772 includes/AllianceManager.php:776
-#: includes/AllianceManager.php:790 includes/AllianceManager.php:794
+#: includes/AllianceManager.php:752
+#: includes/AllianceManager.php:758
+#: includes/AllianceManager.php:772
+#: includes/AllianceManager.php:776
+#: includes/AllianceManager.php:790
+#: includes/AllianceManager.php:794
 msgid "❌ No"
 msgstr "❌ いいえ"
 
@@ -156,23 +158,28 @@ msgstr ""
 msgid "JavaScript Assets"
 msgstr ""
 
-#: includes/AllianceManager.php:770 includes/AllianceManager.php:788
+#: includes/AllianceManager.php:770
+#: includes/AllianceManager.php:788
 msgid "File Exists"
 msgstr ""
 
-#: includes/AllianceManager.php:774 includes/AllianceManager.php:792
+#: includes/AllianceManager.php:774
+#: includes/AllianceManager.php:792
 msgid "Registered"
 msgstr ""
 
-#: includes/AllianceManager.php:778 includes/AllianceManager.php:796
+#: includes/AllianceManager.php:778
+#: includes/AllianceManager.php:796
 msgid "Enqueued"
 msgstr ""
 
-#: includes/AllianceManager.php:780 includes/AllianceManager.php:798
+#: includes/AllianceManager.php:780
+#: includes/AllianceManager.php:798
 msgid "ℹ️ No (Normal)"
 msgstr ""
 
-#: includes/AllianceManager.php:782 includes/AllianceManager.php:799
+#: includes/AllianceManager.php:782
+#: includes/AllianceManager.php:799
 msgid "File URL"
 msgstr ""
 
@@ -192,11 +199,13 @@ msgstr "ブロックが使用されると、JavaScriptとCSSが自動的にロ�
 msgid "Refresh Debug Info"
 msgstr ""
 
-#: includes/AllianceManager.php:970 dist/js/s2j-alliance-manager-gutenberg.js:1
+#: includes/AllianceManager.php:970
+#: dist/js/s2j-alliance-manager-gutenberg.js:1
 msgid "Alliance Banner"
 msgstr ""
 
-#: includes/AllianceManager.php:990 includes/AllianceManager.php:1017
+#: includes/AllianceManager.php:990
+#: includes/AllianceManager.php:1017
 msgid "Alliance Banner Shortcode"
 msgstr ""
 
@@ -221,9 +230,7 @@ msgid "Note: For advanced features, please use the Gutenberg block editor."
 msgstr ""
 
 #: includes/AllianceManager.php:1018
-msgid ""
-"Use the following shortcode in the Shortcode block to display alliance "
-"partner banners:"
+msgid "Use the following shortcode in the Shortcode block to display alliance partner banners:"
 msgstr ""
 
 #: includes/AllianceManager.php:1020
@@ -263,26 +270,25 @@ msgid "How to Use"
 msgstr ""
 
 #: includes/AllianceManager.php:1037
-msgid ""
-"1. Add a \"Shortcode\" block to your post/page. 2. Paste the shortcode into "
-"the block. 3. The alliance banners will be displayed automatically."
+msgid "1. Add a \"Shortcode\" block to your post/page. 2. Paste the shortcode into the block. 3. The alliance banners will be displayed automatically."
 msgstr ""
 
 #: includes/AllianceManager.php:1037
-msgid ""
-"For advanced features and better user experience, we recommend using the "
-"Gutenberg block editor."
+msgid "For advanced features and better user experience, we recommend using the Gutenberg block editor."
 msgstr ""
 
-#: includes/RestController.php:254 dist/js/s2j-alliance-manager-admin.js:26
+#: includes/RestController.php:254
+#: dist/js/s2j-alliance-manager-admin.js:26
 msgid "Settings saved successfully."
 msgstr ""
 
-#: includes/RestController.php:259 dist/js/s2j-alliance-manager-admin.js:26
+#: includes/RestController.php:259
+#: dist/js/s2j-alliance-manager-admin.js:26
 msgid "Failed to save settings."
 msgstr ""
 
-#: includes/RestController.php:454 dist/js/s2j-alliance-manager-admin.js:26
+#: includes/RestController.php:454
+#: dist/js/s2j-alliance-manager-admin.js:26
 msgid "Rank labels saved successfully."
 msgstr ""
 
@@ -290,7 +296,8 @@ msgstr ""
 msgid "FFmpeg is available."
 msgstr ""
 
-#: includes/RestController.php:524 includes/RestController.php:588
+#: includes/RestController.php:524
+#: includes/RestController.php:588
 msgid "FFmpeg is not available."
 msgstr ""
 
@@ -310,7 +317,8 @@ msgstr ""
 msgid "Poster image generated successfully."
 msgstr ""
 
-#: includes/RestController.php:638 dist/js/s2j-alliance-manager-admin.js:26
+#: includes/RestController.php:638
+#: dist/js/s2j-alliance-manager-admin.js:26
 msgid "Failed to generate poster image."
 msgstr ""
 
@@ -330,20 +338,24 @@ msgstr ""
 msgid "Alliance Partners"
 msgstr ""
 
-#: includes/SettingsPage.php:191 dist/js/s2j-alliance-manager-admin.js:26
+#: includes/SettingsPage.php:191
+#: dist/js/s2j-alliance-manager-admin.js:26
 #: dist/js/s2j-alliance-manager-gutenberg.js:1
 msgid "Display Settings"
 msgstr ""
 
-#: s2j-alliance-manager.php:191 dist/js/s2j-alliance-manager-admin.js:26
+#: s2j-alliance-manager.php:191
+#: dist/js/s2j-alliance-manager-admin.js:26
 msgid "Save"
 msgstr ""
 
-#: s2j-alliance-manager.php:192 dist/js/s2j-alliance-manager-admin.js:26
+#: s2j-alliance-manager.php:192
+#: dist/js/s2j-alliance-manager-admin.js:26
 msgid "Cancel"
 msgstr ""
 
-#: s2j-alliance-manager.php:193 dist/js/s2j-alliance-manager-admin.js:26
+#: s2j-alliance-manager.php:193
+#: dist/js/s2j-alliance-manager-admin.js:26
 msgid "Delete"
 msgstr ""
 
@@ -355,7 +367,8 @@ msgstr ""
 msgid "Add New"
 msgstr ""
 
-#: s2j-alliance-manager.php:196 dist/js/s2j-alliance-manager-admin.js:26
+#: s2j-alliance-manager.php:196
+#: dist/js/s2j-alliance-manager-admin.js:26
 msgid "Are you sure you want to delete this item?"
 msgstr ""
 
@@ -367,7 +380,8 @@ msgstr ""
 msgid "Rank Label"
 msgstr ""
 
-#: s2j-alliance-manager.php:290 s2j-alliance-manager.php:291
+#: s2j-alliance-manager.php:290
+#: s2j-alliance-manager.php:291
 #: dist/js/s2j-alliance-manager-admin.js:26
 msgid "Add New Rank Label"
 msgstr ""
@@ -394,711 +408,6 @@ msgstr ""
 
 #: s2j-alliance-manager.php:297
 msgid "No rank labels found in trash"
-msgstr ""
-
-#: dist/js/s2j-alliance-manager-admin.js:1
-msgid "Connection Error"
-msgstr ""
-
-#: dist/js/s2j-alliance-manager-admin.js:1
-msgid ""
-"Unable to connect to the server. Please check your internet connection and "
-"try again."
-msgstr ""
-
-#: dist/js/s2j-alliance-manager-admin.js:1
-msgid "Check your internet connection and refresh the page."
-msgstr ""
-
-#: dist/js/s2j-alliance-manager-admin.js:1
-msgid "Retry"
-msgstr ""
-
-#: dist/js/s2j-alliance-manager-admin.js:1
-msgid "Invalid Request"
-msgstr ""
-
-#: dist/js/s2j-alliance-manager-admin.js:1
-msgid "The data you entered is invalid. Please check your input and try again."
-msgstr ""
-
-#: dist/js/s2j-alliance-manager-admin.js:1
-msgid ""
-"Please review the form fields and ensure all required information is "
-"provided."
-msgstr ""
-
-#: dist/js/s2j-alliance-manager-admin.js:1
-msgid "Authentication Required"
-msgstr ""
-
-#: dist/js/s2j-alliance-manager-admin.js:1
-msgid "You need to log in again to continue."
-msgstr "続行するには、再度ログインする必要があります。"
-
-#: dist/js/s2j-alliance-manager-admin.js:1
-msgid "Please refresh the page and log in again."
-msgstr ""
-
-#: dist/js/s2j-alliance-manager-admin.js:1
-msgid "Refresh Page"
-msgstr ""
-
-#: dist/js/s2j-alliance-manager-admin.js:1
-msgid "Access Denied"
-msgstr "アクセス拒否"
-
-#: dist/js/s2j-alliance-manager-admin.js:1
-msgid "You do not have permission to perform this action."
-msgstr "この操作を実行する権限がありません。"
-
-#: dist/js/s2j-alliance-manager-admin.js:1
-msgid "Contact your administrator if you believe this is an error."
-msgstr ""
-
-#: dist/js/s2j-alliance-manager-admin.js:1
-msgid "Not Found"
-msgstr ""
-
-#: dist/js/s2j-alliance-manager-admin.js:1
-msgid "The requested resource was not found."
-msgstr ""
-
-#: dist/js/s2j-alliance-manager-admin.js:1
-msgid "The item may have been deleted. Please refresh the page."
-msgstr ""
-
-#: dist/js/s2j-alliance-manager-admin.js:1
-msgid "Server Error"
-msgstr ""
-
-#: dist/js/s2j-alliance-manager-admin.js:1
-msgid "A server error occurred. Please try again later."
-msgstr "サーバーエラーが発生しました。しばらくしてから再度お試しください。"
-
-#: dist/js/s2j-alliance-manager-admin.js:1
-msgid "If the problem persists, contact your administrator."
-msgstr ""
-
-#: dist/js/s2j-alliance-manager-admin.js:1
-msgid "An unexpected error occurred. Please try again."
-msgstr ""
-
-#: dist/js/s2j-alliance-manager-admin.js:1
-#: dist/js/s2j-alliance-manager-admin.js:26
-msgid "Validation Error"
-msgstr ""
-
-#: dist/js/s2j-alliance-manager-admin.js:1
-msgid "Please check your input and try again."
-msgstr ""
-
-#: dist/js/s2j-alliance-manager-admin.js:1
-msgid "Review the highlighted fields and correct any errors."
-msgstr ""
-
-#: dist/js/s2j-alliance-manager-admin.js:1
-msgid "Unexpected Error"
-msgstr ""
-
-#: dist/js/s2j-alliance-manager-admin.js:5
-#: dist/js/s2j-alliance-manager-admin.js:6
-#: dist/js/s2j-alliance-manager-admin.js:23
-#: dist/js/s2j-alliance-manager-admin.js:24
-msgid "Dismiss this notice."
-msgstr ""
-
-#: dist/js/s2j-alliance-manager-admin.js:26
-msgid "Please select a valid display style."
-msgstr ""
-
-#: dist/js/s2j-alliance-manager-admin.js:26
-msgid "Please select a valid alignment."
-msgstr ""
-
-#: dist/js/s2j-alliance-manager-admin.js:26
-msgid "Please enter a valid file path."
-msgstr ""
-
-#: dist/js/s2j-alliance-manager-admin.js:26
-msgid "Display style is required."
-msgstr ""
-
-#: dist/js/s2j-alliance-manager-admin.js:26
-msgid "Alignment is required."
-msgstr ""
-
-#: dist/js/s2j-alliance-manager-admin.js:26
-msgid "FFmpeg is working correctly."
-msgstr ""
-
-#: dist/js/s2j-alliance-manager-admin.js:26
-msgid "FFmpeg test failed."
-msgstr ""
-
-#: dist/js/s2j-alliance-manager-admin.js:26
-msgid "Failed to test FFmpeg."
-msgstr ""
-
-#: dist/js/s2j-alliance-manager-admin.js:26
-msgid "Configure how alliance banners are displayed on your site."
-msgstr ""
-
-#: dist/js/s2j-alliance-manager-admin.js:26
-#: dist/js/s2j-alliance-manager-gutenberg.js:1
-msgid "Display Style"
-msgstr ""
-
-#: dist/js/s2j-alliance-manager-admin.js:26
-#: dist/js/s2j-alliance-manager-gutenberg.js:1
-msgid "Single Column Grid"
-msgstr ""
-
-#: dist/js/s2j-alliance-manager-admin.js:26
-#: dist/js/s2j-alliance-manager-gutenberg.js:1
-msgid "Multi Column Grid"
-msgstr ""
-
-#: dist/js/s2j-alliance-manager-admin.js:26
-msgid "Choose how the alliance banners are arranged on your site."
-msgstr ""
-
-#: dist/js/s2j-alliance-manager-admin.js:26
-#: dist/js/s2j-alliance-manager-gutenberg.js:1
-msgid "Alignment"
-msgstr ""
-
-#: dist/js/s2j-alliance-manager-admin.js:26
-#: dist/js/s2j-alliance-manager-gutenberg.js:1
-msgid "Left"
-msgstr ""
-
-#: dist/js/s2j-alliance-manager-admin.js:26
-#: dist/js/s2j-alliance-manager-gutenberg.js:1
-msgid "Center"
-msgstr ""
-
-#: dist/js/s2j-alliance-manager-admin.js:26
-#: dist/js/s2j-alliance-manager-gutenberg.js:1
-msgid "Right"
-msgstr ""
-
-#: dist/js/s2j-alliance-manager-admin.js:26
-msgid "Choose the alignment of the alliance banners."
-msgstr ""
-
-#: dist/js/s2j-alliance-manager-admin.js:26
-msgid "FFmpeg Settings"
-msgstr ""
-
-#: dist/js/s2j-alliance-manager-admin.js:26
-msgid "FFmpeg Path"
-msgstr ""
-
-#: dist/js/s2j-alliance-manager-admin.js:26
-msgid "Enter the path to FFmpeg executable"
-msgstr ""
-
-#: dist/js/s2j-alliance-manager-admin.js:26
-msgid ""
-"Optional: Path to FFmpeg executable for video processing. Leave empty if not "
-"needed."
-msgstr ""
-
-#: dist/js/s2j-alliance-manager-admin.js:26
-msgid "Test FFmpeg"
-msgstr ""
-
-#: dist/js/s2j-alliance-manager-admin.js:26
-msgid "Preview"
-msgstr ""
-
-#: dist/js/s2j-alliance-manager-admin.js:26
-msgid "Saving..."
-msgstr ""
-
-#: dist/js/s2j-alliance-manager-admin.js:26
-msgid "Save Settings"
-msgstr ""
-
-#: dist/js/s2j-alliance-manager-admin.js:26
-#: dist/js/s2j-alliance-manager-gutenberg.js:1
-msgid "Display alliance banners in a single column layout"
-msgstr ""
-
-#: dist/js/s2j-alliance-manager-admin.js:26
-#: dist/js/s2j-alliance-manager-gutenberg.js:1
-msgid "Display alliance banners in a responsive multi-column grid"
-msgstr ""
-
-#: dist/js/s2j-alliance-manager-admin.js:26
-#: dist/js/s2j-alliance-manager-gutenberg.js:1
-msgid "Gold"
-msgstr ""
-
-#: dist/js/s2j-alliance-manager-admin.js:26
-#: dist/js/s2j-alliance-manager-gutenberg.js:1
-msgid "Silver"
-msgstr ""
-
-#: dist/js/s2j-alliance-manager-admin.js:26
-#: dist/js/s2j-alliance-manager-gutenberg.js:1
-msgid "Bronze"
-msgstr ""
-
-#: dist/js/s2j-alliance-manager-admin.js:26
-#: dist/js/s2j-alliance-manager-gutenberg.js:1
-msgid "Platinum"
-msgstr ""
-
-#: dist/js/s2j-alliance-manager-admin.js:26
-#: dist/js/s2j-alliance-manager-gutenberg.js:1
-msgid "Default"
-msgstr ""
-
-#: dist/js/s2j-alliance-manager-admin.js:26
-#: dist/js/s2j-alliance-manager-gutenberg.js:1
-msgid "Jump to URL"
-msgstr ""
-
-#: dist/js/s2j-alliance-manager-admin.js:26
-#: dist/js/s2j-alliance-manager-gutenberg.js:1
-msgid "Clicking the logo will navigate to the specified URL"
-msgstr ""
-
-#: dist/js/s2j-alliance-manager-admin.js:26
-#: dist/js/s2j-alliance-manager-gutenberg.js:1
-msgid "Show Modal"
-msgstr ""
-
-#: dist/js/s2j-alliance-manager-admin.js:26
-#: dist/js/s2j-alliance-manager-gutenberg.js:1
-msgid "Clicking the logo will show a modal with the specified message"
-msgstr ""
-
-#: dist/js/s2j-alliance-manager-admin.js:26
-msgid "Select Media"
-msgstr ""
-
-#: dist/js/s2j-alliance-manager-admin.js:26
-msgid "Select"
-msgstr ""
-
-#: dist/js/s2j-alliance-manager-admin.js:26
-msgid "FFmpeg is not available. Please upload a poster image manually."
-msgstr ""
-
-#: dist/js/s2j-alliance-manager-admin.js:26
-msgid "Select Poster Image"
-msgstr ""
-
-#: dist/js/s2j-alliance-manager-admin.js:26
-msgid "Select Poster"
-msgstr ""
-
-#: dist/js/s2j-alliance-manager-admin.js:26
-msgid "Failed to set poster image. Please try again."
-msgstr ""
-
-#: dist/js/s2j-alliance-manager-admin.js:26
-msgid "Please select a video file first."
-msgstr ""
-
-#: dist/js/s2j-alliance-manager-admin.js:26
-msgid "Loading..."
-msgstr ""
-
-#: dist/js/s2j-alliance-manager-admin.js:26
-msgid "Your browser does not support the video tag."
-msgstr "お使いのブラウザーは、video タグをサポートしていません。"
-
-#: dist/js/s2j-alliance-manager-admin.js:26
-msgid "Poster Image"
-msgstr ""
-
-#: dist/js/s2j-alliance-manager-admin.js:26
-msgid "No media"
-msgstr ""
-
-#: dist/js/s2j-alliance-manager-admin.js:26
-msgid "Change"
-msgstr ""
-
-#: dist/js/s2j-alliance-manager-admin.js:26
-msgid "Generating..."
-msgstr ""
-
-#: dist/js/s2j-alliance-manager-admin.js:26
-msgid "Generate Poster"
-msgstr ""
-
-#: dist/js/s2j-alliance-manager-admin.js:26
-msgid "Change Poster"
-msgstr ""
-
-#: dist/js/s2j-alliance-manager-admin.js:26
-msgid "Upload Poster"
-msgstr ""
-
-#: dist/js/s2j-alliance-manager-admin.js:26
-msgid "FFmpeg not available. Please upload a poster image manually."
-msgstr ""
-
-#: dist/js/s2j-alliance-manager-admin.js:26
-msgid "Remove"
-msgstr ""
-
-#: dist/js/s2j-alliance-manager-admin.js:26
-msgid "Message is required"
-msgstr ""
-
-#: dist/js/s2j-alliance-manager-admin.js:26
-msgid "Message must be 500 characters or less"
-msgstr ""
-
-#: dist/js/s2j-alliance-manager-admin.js:26
-msgid "Edit Message"
-msgstr ""
-
-#: dist/js/s2j-alliance-manager-admin.js:26
-msgid ""
-"Edit the message that will be displayed when users click on the partner logo."
-msgstr ""
-
-#: dist/js/s2j-alliance-manager-admin.js:26
-msgid "Message"
-msgstr ""
-
-#: dist/js/s2j-alliance-manager-admin.js:26
-msgid ""
-"This message will be displayed in a modal when the partner logo is clicked."
-msgstr ""
-
-#: dist/js/s2j-alliance-manager-admin.js:26
-msgid "characters"
-msgstr ""
-
-#: dist/js/s2j-alliance-manager-admin.js:26
-msgid "Message preview"
-msgstr ""
-
-#: dist/js/s2j-alliance-manager-admin.js:26
-msgid "Partner Message"
-msgstr ""
-
-#: dist/js/s2j-alliance-manager-admin.js:26
-msgid "Close preview"
-msgstr ""
-
-#: dist/js/s2j-alliance-manager-admin.js:26
-msgid "Enter your message to see preview"
-msgstr ""
-
-#: dist/js/s2j-alliance-manager-admin.js:26
-msgid "Visit Partner Website"
-msgstr "パートナーサイトを"
-
-#: dist/js/s2j-alliance-manager-admin.js:26
-msgid "Cancel and close modal"
-msgstr ""
-
-#: dist/js/s2j-alliance-manager-admin.js:26
-msgid "Save message and close modal"
-msgstr ""
-
-#: dist/js/s2j-alliance-manager-admin.js:26
-msgid "Save Message"
-msgstr ""
-
-#: dist/js/s2j-alliance-manager-admin.js:26
-msgid "Add New Partner"
-msgstr ""
-
-#: dist/js/s2j-alliance-manager-admin.js:26
-msgid ""
-"No alliance partners added yet. Click \"Add New Partner\" to get started."
-msgstr ""
-
-#: dist/js/s2j-alliance-manager-admin.js:26
-msgid "Frontpage"
-msgstr ""
-
-#: dist/js/s2j-alliance-manager-admin.js:26
-msgid "Rank"
-msgstr ""
-
-#: dist/js/s2j-alliance-manager-admin.js:26
-msgid "Logo"
-msgstr ""
-
-#: dist/js/s2j-alliance-manager-admin.js:26
-msgid "Jump URL"
-msgstr ""
-
-#: dist/js/s2j-alliance-manager-admin.js:26
-msgid "Behavior"
-msgstr ""
-
-#: dist/js/s2j-alliance-manager-admin.js:26
-msgid "Move Up"
-msgstr ""
-
-#: dist/js/s2j-alliance-manager-admin.js:26
-msgid "Up"
-msgstr ""
-
-#: dist/js/s2j-alliance-manager-admin.js:26
-msgid "Move Down"
-msgstr ""
-
-#: dist/js/s2j-alliance-manager-admin.js:26
-msgid "Down"
-msgstr ""
-
-#: dist/js/s2j-alliance-manager-admin.js:26
-msgid "Message is only available when behavior is set to \"Show Modal\""
-msgstr ""
-
-#: dist/js/s2j-alliance-manager-admin.js:26
-msgid "No poster image available. Please generate or upload one."
-msgstr ""
-
-#: dist/js/s2j-alliance-manager-admin.js:26
-msgid "Slug cannot start or end with a hyphen."
-msgstr ""
-
-#: dist/js/s2j-alliance-manager-admin.js:26
-msgid "Slug cannot contain consecutive hyphens."
-msgstr ""
-
-#: dist/js/s2j-alliance-manager-admin.js:26
-msgid "Slug can only contain lowercase letters, numbers, and hyphens."
-msgstr ""
-
-#: dist/js/s2j-alliance-manager-admin.js:26
-msgid "Slug is required."
-msgstr ""
-
-#: dist/js/s2j-alliance-manager-admin.js:26
-msgid "Please correct the following errors before saving:"
-msgstr ""
-
-#: dist/js/s2j-alliance-manager-admin.js:26
-msgid "Duplicate titles found. Please ensure all titles are unique."
-msgstr ""
-
-#: dist/js/s2j-alliance-manager-admin.js:26
-msgid "Title is required for all rank labels."
-msgstr ""
-
-#: dist/js/s2j-alliance-manager-admin.js:26
-msgid "Slug automatically generated to avoid duplicates."
-msgstr ""
-
-#: dist/js/s2j-alliance-manager-admin.js:26
-msgid "Invalid slug format."
-msgstr ""
-
-#: dist/js/s2j-alliance-manager-admin.js:26
-msgid "This slug is already in use. Please choose a different one."
-msgstr ""
-
-#: dist/js/s2j-alliance-manager-admin.js:26
-msgid "Are you sure you want to delete this rank label?"
-msgstr ""
-
-#: dist/js/s2j-alliance-manager-admin.js:26
-msgid "Are you sure you want to delete the selected rank label?"
-msgstr ""
-
-#: dist/js/s2j-alliance-manager-admin.js:26
-msgid "Are you sure you want to delete the selected rank labels?"
-msgstr ""
-
-#: dist/js/s2j-alliance-manager-admin.js:26
-msgid "Rank label deleted successfully."
-msgstr ""
-
-#: dist/js/s2j-alliance-manager-admin.js:26
-msgid "Rank labels deleted successfully."
-msgstr ""
-
-#: dist/js/s2j-alliance-manager-admin.js:26
-msgid "Rank label moved successfully."
-msgstr ""
-
-#: dist/js/s2j-alliance-manager-admin.js:26
-msgid "Rank labels moved successfully."
-msgstr ""
-
-#: dist/js/s2j-alliance-manager-admin.js:26
-msgid "Rank Label Management"
-msgstr ""
-
-#: dist/js/s2j-alliance-manager-admin.js:26
-msgid "Exit Select Mode"
-msgstr ""
-
-#: dist/js/s2j-alliance-manager-admin.js:26
-msgid "Select Mode"
-msgstr ""
-
-#: dist/js/s2j-alliance-manager-admin.js:26
-msgid "Deselect All"
-msgstr ""
-
-#: dist/js/s2j-alliance-manager-admin.js:26
-msgid "Select All"
-msgstr ""
-
-#: dist/js/s2j-alliance-manager-admin.js:26
-msgid "Delete Selected"
-msgstr ""
-
-#: dist/js/s2j-alliance-manager-admin.js:26
-msgid "Save Rank Labels"
-msgstr ""
-
-#: dist/js/s2j-alliance-manager-admin.js:26
-msgid "No rank labels added yet. Click \"Add New Rank Label\" to get started."
-msgstr ""
-
-#: dist/js/s2j-alliance-manager-admin.js:26
-msgid "Select this rank label"
-msgstr ""
-
-#: dist/js/s2j-alliance-manager-admin.js:26
-msgid "Title"
-msgstr ""
-
-#: dist/js/s2j-alliance-manager-admin.js:26
-msgid "Enter rank label title"
-msgstr ""
-
-#: dist/js/s2j-alliance-manager-admin.js:26
-msgid "Slug"
-msgstr ""
-
-#: dist/js/s2j-alliance-manager-admin.js:26
-msgid "Enter slug (lowercase letters, numbers, hyphens only)"
-msgstr ""
-
-#: dist/js/s2j-alliance-manager-admin.js:26
-msgid ""
-"This slug will be used in URLs. Only lowercase letters, numbers, and hyphens "
-"are allowed."
-msgstr ""
-
-#: dist/js/s2j-alliance-manager-admin.js:26
-msgid "Description"
-msgstr ""
-
-#: dist/js/s2j-alliance-manager-admin.js:26
-msgid "Enter description"
-msgstr ""
-
-#: dist/js/s2j-alliance-manager-admin.js:26
-msgid "Thumbnail"
-msgstr ""
-
-#: dist/js/s2j-alliance-manager-admin.js:26
-msgid "Logo Size"
-msgstr ""
-
-#: dist/js/s2j-alliance-manager-admin.js:26
-msgid "No size specification (current output)"
-msgstr ""
-
-#: dist/js/s2j-alliance-manager-admin.js:26
-msgid "Set width for this rank"
-msgstr ""
-
-#: dist/js/s2j-alliance-manager-admin.js:26
-msgid "Set height for this rank"
-msgstr ""
-
-#: dist/js/s2j-alliance-manager-admin.js:26
-msgid "Width (px)"
-msgstr ""
-
-#: dist/js/s2j-alliance-manager-admin.js:26
-msgid "Height (px)"
-msgstr ""
-
-#: dist/js/s2j-alliance-manager-admin.js:26
-msgid "Carousel display can be enabled when there are 4-8 child elements."
-msgstr ""
-
-#: dist/js/s2j-alliance-manager-admin.js:26
-msgid ""
-"Carousel display is only available when there are 4-8 child elements "
-"(current: %d)."
-msgstr ""
-
-#: dist/js/s2j-alliance-manager-admin.js:26
-msgid "Enable Carousel Display"
-msgstr ""
-
-#: dist/js/s2j-alliance-manager-admin.js:26
-msgid "Failed to test FFmpeg availability."
-msgstr ""
-
-#: dist/js/s2j-alliance-manager-admin.js:26
-msgid "FFmpeg Library Management"
-msgstr ""
-
-#: dist/js/s2j-alliance-manager-admin.js:26
-msgid "e.g., /usr/bin/ffmpeg or ffmpeg"
-msgstr ""
-
-#: dist/js/s2j-alliance-manager-admin.js:26
-msgid "Testing..."
-msgstr ""
-
-#: dist/js/s2j-alliance-manager-admin.js:26
-msgid ""
-"Enter the path to the FFmpeg executable. Leave empty to use the system "
-"default."
-msgstr ""
-"FFmpeg実行ファイルのパスを入力してください。空欄のままにするとシステムデフォ"
-"ルトが使用されます。"
-
-#: dist/js/s2j-alliance-manager-admin.js:26
-msgid "Refreshing..."
-msgstr ""
-
-#: dist/js/s2j-alliance-manager-admin.js:26
-msgid "Debug information refreshed successfully."
-msgstr ""
-
-#: dist/js/s2j-alliance-manager-admin.js:26
-msgid "Failed to refresh debug information."
-msgstr ""
-
-#: dist/js/s2j-alliance-manager-classic.js:1
-msgid "Alliance banner inserted successfully."
-msgstr ""
-
-#: dist/js/s2j-alliance-manager-gutenberg.js:1
-msgid "Choose how alliance banners are displayed."
-msgstr ""
-
-#: dist/js/s2j-alliance-manager-gutenberg.js:1
-msgid "Choose alignment for Single Column Grid display."
-msgstr ""
-
-#: dist/js/s2j-alliance-manager-gutenberg.js:1
-msgid ""
-"This block will display your alliance partner banners. Configure the display "
-"style in the block settings."
-msgstr ""
-
-#: dist/js/s2j-alliance-manager-gutenberg.js:1
-msgid "Display Style:"
-msgstr ""
-
-#: dist/js/s2j-alliance-manager-gutenberg.js:1
-msgid "Alliance banners will be displayed here based on your settings."
 msgstr ""
 
 #: dist/blocks/alliance-banner/block.json

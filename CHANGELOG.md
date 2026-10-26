@@ -2,6 +2,22 @@
 
 ## unreleased
 
+## 2.0.16 - 2026-10-26
+
+### Added
+
+* npm スクリプト `makejson:keep` (`wp i18n make-json --no-purge`)、Composer `autoload.classmap` (`includes/`)
+
+### Changed
+
+* メインプラグインの bootstrap 順 (ABSPATH → 定数 → `require_once`)、プラグインヘッダー docblock の整形
+* 管理画面ビルド成果物を `*-admin.*` から `*-settings.*` にリネーム (Vite / enqueue / スモークテスト / ドキュメント)
+* `makejson` を purge デフォルトに変更 (孤児 JED の整理、`makejson:keep` で従来の `--no-purge` 相当)
+* PHPStan 解析対象に `s2j-alliance-manager.php` を追加
+* Intelephense 向け `.vscode/settings.json` (`Core` / `standard` stubs、PHP v8.3)
+* 管理画面アセット enqueue 判定を `str_contains` に変更
+* 日本語翻訳 (`ja.po` / `.mo`、Gutenberg 用 `.json`) を更新
+
 ## 2.0.15 - 2026-10-24
 
 ### Fixed

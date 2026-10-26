@@ -1,4 +1,11 @@
 {
+  "intelephense.stubs": [
+    "Core",
+    "standard",
+    "wordpress",
+    "wordpress-globals"
+  ],
+  "intelephense.environment.phpVersion": "8.3.0",
   "json.schemaDownload.enable": true,
   "textlint.configPath": "${workspaceFolder}/.textlintrc.json",
   "textlint.nodePath": "${workspaceFolder}/node_modules",

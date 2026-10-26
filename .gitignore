@@ -87,3 +87,5 @@ tests/.wordpress-tests-lib/
 
 # DynamoDB Local files
 .dynamodb/
+# i18n — languages/*-{32hex}.json (JED) はコミット対象。gitignore しない。
+# 孤児 JED は npm run makejson (purge 既定) で削除。--no-purge は makejson:keep のみ。

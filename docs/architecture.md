@@ -80,12 +80,12 @@
 　│└┬─ alliance-banner/
 　│　└─ `block.json`  # ブロック定義
 　├┬─ css/  # プラグイン用のスタイル定義
-　│├─ `s2j-alliance-manager-admin.css`
+　│├─ `s2j-alliance-manager-settings.css`
 　│├─ `s2j-alliance-manager-gutenberg.css`
 　│├─ `s2j-alliance-manager-frontend.css`
 　│└─ `s2j-alliance-manager-classic.css`
 　└┬─ js/  # プラグイン用の Gutenberg ブロック、設定画面
-　　├─ `s2j-alliance-manager-admin.js`
+　　├─ `s2j-alliance-manager-settings.js`
 　　├─ `s2j-alliance-manager-gutenberg.js`
 　　├─ `s2j-alliance-manager-frontend.js`
 　　└─ `s2j-alliance-manager-classic.js`

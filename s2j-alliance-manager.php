@@ -6,11 +6,11 @@
  * @author Koutarou ISHIKAWA
  * @copyright 2025 Koutarou ISHIKAWA
  * @license GPL v3 or later
-
+ *
  * Plugin Name: S2J Alliance Manager
  * Plugin URI: https://github.com/stein2nd/s2j-alliance-manager
  * Description: Manage linked banners (including logos and videos) for partner companies in alliance relationships and display them in blocks on the front page and other locations.
- * Version: 2.0.15
+ * Version: 2.0.16
  * Author: Koutarou ISHIKAWA
  * Author URI: https://stein2nd.wordpress.com
  * License: GPL v3 or later
@@ -23,22 +23,24 @@
  * Network: false
  */
 
-// 直接アクセスされた場合は、終了します。
 if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
-// プラグイン定数を定義します。
-define( 'S2J_ALLIANCE_MANAGER_VERSION', '2.0.15' );
+define( 'S2J_ALLIANCE_MANAGER_VERSION', '2.0.16' );
 define( 'S2J_ALLIANCE_MANAGER_PLUGIN_FILE', __FILE__ );
 define( 'S2J_ALLIANCE_MANAGER_PLUGIN_DIR', plugin_dir_path( __FILE__ ) );
 define( 'S2J_ALLIANCE_MANAGER_PLUGIN_URL', plugin_dir_url( __FILE__ ) );
 define( 'S2J_ALLIANCE_MANAGER_PLUGIN_BASENAME', plugin_basename( __FILE__ ) );
 
+require_once S2J_ALLIANCE_MANAGER_PLUGIN_DIR . 'includes/SettingsPage.php';
+require_once S2J_ALLIANCE_MANAGER_PLUGIN_DIR . 'includes/RestController.php';
+require_once S2J_ALLIANCE_MANAGER_PLUGIN_DIR . 'includes/AllianceManager.php';
+
 /**
  * Singleton パターンで実装した、プラグインのメインクラス
  *
- * @version 2.0.15
+ * @version 2.0.16
  * @since 1.0.0
  * @package S2J_Alliance_Manager
  */
@@ -84,14 +86,7 @@ class S2J_Alliance_Manager {
 	 * @return void
 	 */
 	private function load_dependencies() {
-		// 設定ページ
-		require_once S2J_ALLIANCE_MANAGER_PLUGIN_DIR . 'includes/SettingsPage.php';
-
-		// REST API コントローラー
-		require_once S2J_ALLIANCE_MANAGER_PLUGIN_DIR . 'includes/RestController.php';
-
-		// Alliance Manager
-		require_once S2J_ALLIANCE_MANAGER_PLUGIN_DIR . 'includes/AllianceManager.php';
+		// includes/*.php はファイル先頭で require 済み (静的解析・型解決のため)。
 	}
 
 	/**
@@ -104,7 +99,7 @@ class S2J_Alliance_Manager {
 		// プラグインを初期化します。
 		add_action( 'init', array( $this, 'init' ) );
 
-		// 管理用アセット (s2j-alliance-manager-admin.js, s2j-alliance-manager-admin.css) を、キューに追加します。
+		// 管理用アセット (s2j-alliance-manager-settings.js, s2j-alliance-manager-settings.css) を、キューに追加します。
 		add_action( 'admin_enqueue_scripts', array( $this, 'admin_enqueue_scripts' ) );
 
 		// フロントエンド用スクリプトとフロントエンド用スタイルをキューに追加します。
@@ -152,7 +147,7 @@ class S2J_Alliance_Manager {
 	}
 
 	/**
-	 * 管理用アセット (s2j-alliance-manager-admin.js, s2j-alliance-manager-admin.css) を、キューに追加します。
+	 * 管理用アセット (s2j-alliance-manager-settings.js, s2j-alliance-manager-settings.css) を、キューに追加します。
 	 * 「admin_enqueue_scripts」フックから呼ばれます。
 	 *
 	 * @param string $hook Current admin page hook suffix.
@@ -160,7 +155,7 @@ class S2J_Alliance_Manager {
 	 */
 	public function admin_enqueue_scripts( $hook ) {
 		// 管理ページでのみ読み込みます。
-		if ( strpos( $hook, 's2j-alliance-manager' ) === false ) {
+		if ( ! str_contains( $hook, 's2j-alliance-manager' ) ) {
 			return;
 		}
 
@@ -170,7 +165,7 @@ class S2J_Alliance_Manager {
 		// 管理用スクリプトをキューに追加します。
 		wp_enqueue_script(
 			's2j-alliance-manager-admin',
-			S2J_ALLIANCE_MANAGER_PLUGIN_URL . 'dist/js/s2j-alliance-manager-admin.js',
+			S2J_ALLIANCE_MANAGER_PLUGIN_URL . 'dist/js/s2j-alliance-manager-settings.js',
 			array( 'jquery', 'wp-api-fetch', 'wp-components', 'wp-element', 'react', 'react-dom' ),
 			S2J_ALLIANCE_MANAGER_VERSION,
 			true
@@ -179,7 +174,7 @@ class S2J_Alliance_Manager {
 		// 管理用スタイルをキューに追加します。
 		wp_enqueue_style(
 			's2j-alliance-manager-admin',
-			S2J_ALLIANCE_MANAGER_PLUGIN_URL . 'dist/css/s2j-alliance-manager-admin.css',
+			S2J_ALLIANCE_MANAGER_PLUGIN_URL . 'dist/css/s2j-alliance-manager-settings.css',
 			array( 'wp-components' ),
 			S2J_ALLIANCE_MANAGER_VERSION
 		);

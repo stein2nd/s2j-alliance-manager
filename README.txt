@@ -4,7 +4,7 @@ Tags: gutenberg, blocks, alliance, partners, management, banners, logos, videos
 Requires at least: 6.3
 Tested up to: 6.8
 Requires PHP: 8.3
-Stable tag: 2.0.16
+Stable tag: 2.0.17
 License: GPLv3 or later
 License URI: https://www.gnu.org/licenses/gpl-3.0.html
 

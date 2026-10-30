@@ -2,6 +2,14 @@
 
 ## unreleased
 
+## 2.0.17 - 2026-10-30
+
+### Changed
+
+* 依存 npm モジュールを最新化 (Rollup v4.66.0、Sass v1.107.0、`@s2j/docs-linter` v1.0.31、`@typescript-eslint/*` v8.72.1等)
+* `composer.lock` を更新 (Composer メタデータ `published-time` 追記分を反映)
+* README バッジ表記を依存バージョンに合わせて更新
+
 ## 2.0.16 - 2026-10-26
 
 ### Added

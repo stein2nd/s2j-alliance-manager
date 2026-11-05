@@ -2,6 +2,14 @@
 
 ## unreleased
 
+## 2.0.18 - 2026-11-05
+
+### Changed
+
+* 依存 npm モジュールを最新化 (WordPress パッケージ v8.1 / v20 / v44系、Vite v8.3.6、Rollup v4.67.5、Stylelint v18、`@s2j/docs-linter` v1.0.32等)
+* `composer.lock` を更新
+* README バッジ (Rollup) を更新
+
 ## 2.0.17 - 2026-10-30
 
 ### Changed

@@ -2,6 +2,12 @@
 
 ## unreleased
 
+## 2.0.20 - 2026-11-20
+
+### Changed
+
+* GitHub Actions (`dist` / `lint-docs`) を Node.js v24対応に更新 (`actions/checkout`・`setup-node`・`upload-artifact` v5、CI の `node-version` 24)
+
 ## 2.0.19 - 2026-11-20
 
 ### Changed

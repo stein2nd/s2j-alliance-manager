@@ -2,6 +2,12 @@
 
 ## unreleased
 
+## 2.0.21 - 2026-11-20
+
+### Fixed
+
+* GitHub Actions `dist`: `actions/upload-artifact` を v6に更新 (v5はランタイムが Node v20デフォルトのため非推奨 Annotation が残っていた)
+
 ## 2.0.20 - 2026-11-20
 
 ### Changed
